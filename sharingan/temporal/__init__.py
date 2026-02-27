@@ -6,6 +6,7 @@ from sharingan.temporal.tda import TemporalDilatedAttention
 from sharingan.temporal.motion_pooling import MotionAwareAdaptivePooling
 from sharingan.temporal.memory_tokens import TemporalMemoryTokens
 from sharingan.temporal.engine import TemporalEngine
+from sharingan.temporal.multi_scale_tas import MultiScaleTASStream
 
 __all__ = [
     "TemporalAttentionShift",
@@ -14,4 +15,5 @@ __all__ = [
     "MotionAwareAdaptivePooling",
     "TemporalMemoryTokens",
     "TemporalEngine",
+    "MultiScaleTASStream",
 ]
