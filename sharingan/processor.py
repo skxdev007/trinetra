@@ -201,7 +201,7 @@ class VideoProcessor:
             self.timestamps = []
             self.frame_indices = []
             
-            for frame_idx, frame in sampler.sample(loader, source_fps=loader.fps):
+            for frame_idx, frame, change_score in sampler.sample(loader, source_fps=loader.fps):
                 frames.append(frame)
                 self.timestamps.append(frame_idx / loader.fps)
                 self.frame_indices.append(frame_idx)
