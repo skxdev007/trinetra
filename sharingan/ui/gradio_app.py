@@ -976,6 +976,21 @@ def create_gradio_interface() -> gr.Blocks:
                 
                 # Configuration panel
                 with gr.Accordion("⚙️ Advanced Configuration", open=False):
+                    # Configuration Presets
+                    gr.Markdown("### 🎯 Configuration Presets")
+                    config_preset = gr.Radio(
+                        choices=[
+                            "Custom",
+                            "Fast Processing (Low Quality)",
+                            "Balanced (Recommended)",
+                            "High Quality (Slow)",
+                            "Maximum Detail (Very Slow)"
+                        ],
+                        value="Balanced (Recommended)",
+                        label="Preset",
+                        info="Quick presets for common use cases"
+                    )
+                    
                     gr.Markdown("### Multi-Scale TAS Settings")
                     with gr.Row():
                         tas_kernel_short = gr.Slider(
@@ -1250,6 +1265,95 @@ def create_gradio_interface() -> gr.Blocks:
                     )
         
         # Event handlers
+        def apply_preset(preset_name):
+            """Apply configuration preset and return updated values."""
+            presets = {
+                "Fast Processing (Low Quality)": {
+                    "tas_kernel_short": 2,
+                    "tas_kernel_mid": 4,
+                    "tas_kernel_long": 16,
+                    "tas_window_size": 32,
+                    "sampler_base_fps": 0.5,
+                    "sampler_max_fps": 2.0,
+                    "sampler_change_threshold": 0.5,
+                    "verifier_threshold": 0.6,
+                    "verifier_entity_threshold": 0.4,
+                    "scorer_causal_threshold": 0.6,
+                    "scorer_semantic_threshold": 0.4,
+                },
+                "Balanced (Recommended)": {
+                    "tas_kernel_short": 2,
+                    "tas_kernel_mid": 8,
+                    "tas_kernel_long": 32,
+                    "tas_window_size": 64,
+                    "sampler_base_fps": 1.0,
+                    "sampler_max_fps": 5.0,
+                    "sampler_change_threshold": 0.3,
+                    "verifier_threshold": 0.7,
+                    "verifier_entity_threshold": 0.5,
+                    "scorer_causal_threshold": 0.7,
+                    "scorer_semantic_threshold": 0.5,
+                },
+                "High Quality (Slow)": {
+                    "tas_kernel_short": 2,
+                    "tas_kernel_mid": 8,
+                    "tas_kernel_long": 48,
+                    "tas_window_size": 96,
+                    "sampler_base_fps": 2.0,
+                    "sampler_max_fps": 8.0,
+                    "sampler_change_threshold": 0.2,
+                    "verifier_threshold": 0.75,
+                    "verifier_entity_threshold": 0.6,
+                    "scorer_causal_threshold": 0.75,
+                    "scorer_semantic_threshold": 0.6,
+                },
+                "Maximum Detail (Very Slow)": {
+                    "tas_kernel_short": 2,
+                    "tas_kernel_mid": 12,
+                    "tas_kernel_long": 64,
+                    "tas_window_size": 128,
+                    "sampler_base_fps": 3.0,
+                    "sampler_max_fps": 10.0,
+                    "sampler_change_threshold": 0.15,
+                    "verifier_threshold": 0.8,
+                    "verifier_entity_threshold": 0.65,
+                    "scorer_causal_threshold": 0.8,
+                    "scorer_semantic_threshold": 0.65,
+                },
+            }
+            
+            if preset_name == "Custom":
+                # Don't change anything for custom
+                return [gr.update()] * 11
+            
+            preset = presets.get(preset_name, presets["Balanced (Recommended)"])
+            
+            return [
+                gr.update(value=preset["tas_kernel_short"]),
+                gr.update(value=preset["tas_kernel_mid"]),
+                gr.update(value=preset["tas_kernel_long"]),
+                gr.update(value=preset["tas_window_size"]),
+                gr.update(value=preset["sampler_base_fps"]),
+                gr.update(value=preset["sampler_max_fps"]),
+                gr.update(value=preset["sampler_change_threshold"]),
+                gr.update(value=preset["verifier_threshold"]),
+                gr.update(value=preset["verifier_entity_threshold"]),
+                gr.update(value=preset["scorer_causal_threshold"]),
+                gr.update(value=preset["scorer_semantic_threshold"]),
+            ]
+        
+        # Wire up preset handler
+        config_preset.change(
+            fn=apply_preset,
+            inputs=[config_preset],
+            outputs=[
+                tas_kernel_short, tas_kernel_mid, tas_kernel_long, tas_window_size,
+                sampler_base_fps, sampler_max_fps, sampler_change_threshold,
+                verifier_threshold, verifier_entity_threshold,
+                scorer_causal_threshold, scorer_semantic_threshold
+            ]
+        )
+        
         def process_video_wrapper(
             video_path, youtube_url, vlm_model, device,
             tas_kernel_short, tas_kernel_mid, tas_kernel_long, tas_window_size,
