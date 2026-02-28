@@ -411,7 +411,7 @@ def process_video(
         # Initialize processor with configuration
         progress(0.05, desc="Initializing SHARINGAN...")
         
-        # Build configuration dictionary
+        # Build configuration dictionary for reference (not passed to VideoProcessor)
         config = {
             'vlm_model': vlm_model,
             'device': device,
@@ -451,13 +451,13 @@ def process_video(
             }
         }
         
+        # Initialize VideoProcessor with only the parameters it accepts
         processor = VideoProcessor(
             vlm_model=vlm_model,
             device=device,
             target_fps=sampler_max_fps,
             enable_temporal=True,
-            batch_size=32,
-            config=config
+            batch_size=32
         )
         
         # Process video with progress updates
