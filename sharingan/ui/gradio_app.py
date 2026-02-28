@@ -196,7 +196,7 @@ PROCESSED_VIDEOS: Dict[str, Dict[str, Any]] = {}
 
 def download_youtube_video(youtube_url: str, output_dir: str = None) -> Tuple[bool, str, str]:
     """
-    Download YouTube video using yt-dlp.
+    Download YouTube video using yt-dlp with caching to prevent duplicate downloads.
     
     Args:
         youtube_url: YouTube video URL
@@ -211,14 +211,34 @@ def download_youtube_video(youtube_url: str, output_dir: str = None) -> Tuple[bo
         if not re.match(youtube_pattern, youtube_url):
             return False, "", "Invalid YouTube URL format"
         
-        # Create output directory
+        # Extract video ID for caching
+        video_id = None
+        if 'youtube.com/watch?v=' in youtube_url:
+            video_id = youtube_url.split('v=')[1].split('&')[0]
+        elif 'youtu.be/' in youtube_url:
+            video_id = youtube_url.split('youtu.be/')[1].split('?')[0]
+        
+        # Create cache directory
         if output_dir is None:
-            output_dir = tempfile.mkdtemp(prefix="sharingan_youtube_")
+            cache_dir = Path(tempfile.gettempdir()) / "sharingan_youtube_cache"
+            cache_dir.mkdir(parents=True, exist_ok=True)
+            output_dir = str(cache_dir)
         else:
             Path(output_dir).mkdir(parents=True, exist_ok=True)
         
-        # Output template
-        output_template = str(Path(output_dir) / "%(title)s.%(ext)s")
+        # Check if video already exists in cache
+        if video_id:
+            existing_files = list(Path(output_dir).glob(f"*{video_id}*"))
+            if existing_files:
+                video_path = str(existing_files[0])
+                print(f"✓ Using cached video: {video_path}")
+                return True, video_path, ""
+        
+        # Output template with video ID for caching
+        if video_id:
+            output_template = str(Path(output_dir) / f"%(title)s-{video_id}.%(ext)s")
+        else:
+            output_template = str(Path(output_dir) / "%(title)s.%(ext)s")
         
         # Check if yt-dlp is installed
         try:
@@ -248,7 +268,11 @@ def download_youtube_video(youtube_url: str, output_dir: str = None) -> Tuple[bo
             return False, "", f"yt-dlp error: {result.stderr}"
         
         # Find downloaded file
-        video_files = list(Path(output_dir).glob('*.*'))
+        if video_id:
+            video_files = list(Path(output_dir).glob(f"*{video_id}*"))
+        else:
+            video_files = list(Path(output_dir).glob('*.*'))
+        
         if not video_files:
             return False, "", "Video downloaded but file not found"
         

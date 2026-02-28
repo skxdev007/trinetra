@@ -48,29 +48,37 @@ class SmolVLMEncoder:
         try:
             model_name = "HuggingFaceTB/SmolVLM-500M-Instruct"
             
-            print(f"📦 Loading SmolVLM-500M (8-bit quantized)...")
+            print(f"📦 Loading SmolVLM-500M...")
             
-            # 8-bit quantization config
-            from transformers import BitsAndBytesConfig
-            quantization_config = BitsAndBytesConfig(
-                load_in_8bit=True,
-                llm_int8_threshold=6.0,
-            )
-            
+            # Load processor
             self.processor = AutoProcessor.from_pretrained(model_name)
-            self.model = AutoModelForVision2Seq.from_pretrained(
-                model_name,
-                quantization_config=quantization_config,
-                device_map="auto",
-                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32
-            )
             
-            if self.device == "cpu":
+            # Load model based on device
+            if self.device == "cuda" and torch.cuda.is_available():
+                # Use 8-bit quantization for GPU
+                from transformers import BitsAndBytesConfig
+                quantization_config = BitsAndBytesConfig(
+                    load_in_8bit=True,
+                    llm_int8_threshold=6.0,
+                )
+                
+                self.model = AutoModelForVision2Seq.from_pretrained(
+                    model_name,
+                    quantization_config=quantization_config,
+                    device_map="auto",
+                    torch_dtype=torch.float16
+                )
+                print(f"✓ SmolVLM-500M loaded on {self.device} (8-bit quantized)")
+            else:
+                # Load without quantization for CPU
+                self.model = AutoModelForVision2Seq.from_pretrained(
+                    model_name,
+                    torch_dtype=torch.float32
+                )
                 self.model = self.model.to(self.device)
+                print(f"✓ SmolVLM-500M loaded on {self.device}")
             
             self.model.eval()
-            
-            print(f"✓ SmolVLM-500M loaded on {self.device}")
             
         except Exception as e:
             raise EncodingError(f"Failed to load SmolVLM model: {str(e)}")
