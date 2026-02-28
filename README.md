@@ -20,7 +20,6 @@
 * ⚡ **Temporal Reasoning** – Cross-frame attention and memory tokens
 * 🎯 **Event Detection** – Automatically identify key moments
 * 💾 **Efficient Storage** – 130x compression with Int8 quantization
-* 🌐 **Web UI** – Beautiful Flask-based interface
 * 🚀 **Fast Processing** – Batch processing and GPU acceleration
 
 ---
@@ -62,26 +61,6 @@ response = processor.chat('What happens in this video?')
 print(response)
 ```
 
-### Web UI
-
-```bash
-# Using CLI command
-sharingan-core ui
-
-# Or using module (alternative)
-python -m sharingan.cli ui
-
-# Custom port
-sharingan-core ui --port 8080
-```
-
-Or programmatically:
-
-```python
-from sharingan.ui import run_ui
-run_ui(port=5000, open_browser=True)
-```
-
 ---
 
 ## 📖 Documentation
@@ -119,6 +98,179 @@ response = processor.chat('Describe main events', use_llm=True)
 * Video Summarization – Auto summaries
 * Accessibility – Descriptions for visually impaired
 * Research – Analyze video datasets at scale
+
+---
+
+## 🌐 Gradio Web Interface
+
+SHARINGAN includes a modern Gradio-based web interface for intuitive video processing and querying. The UI provides a complete visual experience for interacting with the deep video understanding system.
+
+### Quick Start
+
+Launch the UI with one command:
+
+```bash
+python scripts/launch_ui.py
+```
+
+The interface will open at `http://localhost:7860` in your browser.
+
+### Launch Options
+
+```bash
+# Launch on custom host and port
+python scripts/launch_ui.py --host 0.0.0.0 --port 8080
+
+# Create public URL for sharing (great for demos!)
+python scripts/launch_ui.py --share
+
+# Enable authentication for security
+python scripts/launch_ui.py --auth username:password
+
+# Load pre-processed videos from cache
+python scripts/launch_ui.py --load-cache ./cache
+
+# Combine options for production deployment
+python scripts/launch_ui.py --host 0.0.0.0 --port 8080 --auth admin:pass --share
+```
+
+### UI Components
+
+The Gradio interface includes four main sections:
+
+#### 1. 📹 Video Upload & Processing
+- **Drag-and-drop** video upload (supports MP4, AVI, MOV, WebM)
+- **Real-time progress** tracking with ETA and memory usage
+- **Processing status** display showing current pipeline stage
+- **Automatic caching** for instant re-querying
+
+![Video Upload Interface](docs/images/ui_upload.png)
+
+#### 2. ⚙️ Advanced Configuration Panel
+- **Multi-Scale TAS Settings** – Adjust temporal attention scales (short/mid/long)
+- **Adaptive Sampler** – Configure FPS bounds and change detection
+- **Cross-Modal Verifier** – Set similarity thresholds for hallucination detection
+- **Causal Edge Scorer** – Choose heuristic or learned mode
+- **Model Selection** – Pick SmolVLM, CLIP, and Qwen variants
+- **Preset Profiles** – Fast, Balanced, High Accuracy configurations
+
+![Configuration Panel](docs/images/ui_config.png)
+
+#### 3. 💬 Query Interface
+- **Natural language input** – Ask questions in plain English
+- **Example queries** dropdown with common question types:
+  - "What happens between 0:30 and 1:00?" (window query)
+  - "Find person speaking" (semantic query)
+  - "Why did the person leave?" (causal query)
+  - "Summarize this video" (summary query)
+- **Query history** – Review previous questions and answers
+- **Response with timestamps** – Answers include precise time references
+
+![Query Interface](docs/images/ui_query.png)
+
+#### 4. 📊 Visualizations & Results
+- **Causal Graph View** – Interactive network showing event relationships
+- **Timeline View** – Visual representation of detected events
+- **Reasoning Scaffold** – Step-by-step reasoning path display
+- **Confidence Scores** – Visual indicators for answer reliability
+- **Event Details** – Expandable cards with frame descriptions
+
+![Visualizations](docs/images/ui_viz.png)
+
+### Example Usage Workflow
+
+Here's a typical workflow using the Gradio UI:
+
+**Step 1: Upload Video**
+```
+1. Click "Upload Video" or drag-and-drop your video file
+2. Wait for upload to complete (progress bar shows status)
+3. Video preview appears automatically
+```
+
+**Step 2: Configure Processing (Optional)**
+```
+1. Expand "⚙️ Advanced Configuration" panel
+2. Choose a preset: "Fast", "Balanced", or "High Accuracy"
+   - OR customize individual settings
+3. Adjust Multi-Scale TAS kernels for your video type:
+   - Fast-paced (sports): [2, 4, 16]
+   - Slow-paced (lectures): [4, 16, 64]
+4. Set sampling rate based on video length:
+   - Short videos (<5 min): Max FPS = 5.0
+   - Long videos (>1 hour): Max FPS = 2.0
+```
+
+**Step 3: Process Video**
+```
+1. Click "Process Video" button
+2. Watch real-time progress:
+   - "Sampling frames..." (adaptive frame selection)
+   - "Generating descriptions..." (SmolVLM processing)
+   - "Verifying descriptions..." (CLIP verification)
+   - "Building event graph..." (causal edge scoring)
+   - "Creating memory store..." (hierarchical storage)
+3. Processing completes with summary:
+   - Total frames processed
+   - Events detected
+   - Causal relationships found
+   - Processing time
+```
+
+**Step 4: Query Your Video**
+```
+1. Type your question in the query box, or select from examples:
+   - "What happens in the first minute?"
+   - "Find all scenes with people talking"
+   - "Why did the person pick up the object?"
+   - "Summarize the main events"
+2. Click "Submit Query" or press Enter
+3. View results:
+   - Natural language answer with timestamps
+   - Reasoning path showing how answer was derived
+   - Confidence score
+   - Related events in timeline
+4. Click on timeline events to see frame details
+5. Explore causal graph to understand relationships
+```
+
+**Step 5: Iterate and Refine**
+```
+1. Ask follow-up questions based on initial results
+2. Adjust configuration if needed (e.g., lower thresholds for more events)
+3. Re-process video with new settings (uses cache when possible)
+4. Export results or save processed video for later
+```
+
+### UI Features
+
+* 📹 **Video Upload** – Drag-and-drop interface with format validation
+* ⚙️ **Advanced Configuration** – Full control over all pipeline parameters
+* 💬 **Chat Interface** – Natural language queries with example templates
+* 📊 **Visualizations** – Interactive causal graphs and event timelines
+* 🔒 **Privacy** – All processing happens locally, no external API calls
+* 💾 **Caching** – Instant re-querying of processed videos
+* 🎨 **Responsive Design** – Works on desktop, tablet, and mobile
+* 🌐 **Public Sharing** – Optional public URLs for demos and collaboration
+
+### Why Gradio?
+
+SHARINGAN uses Gradio instead of traditional web frameworks because:
+
+- **ML/AI Optimized** – Built specifically for machine learning applications
+- **Zero Frontend Code** – No HTML/CSS/JavaScript required
+- **Real-time Updates** – Built-in progress tracking and streaming
+- **Interactive Visualizations** – Native support for plots, graphs, and media
+- **One-Command Deploy** – Launch with a single Python command
+- **Public Sharing** – Create shareable URLs instantly with `--share`
+- **Authentication** – Built-in user authentication support
+- **Modern UI** – Clean, professional interface out of the box
+
+### Documentation
+
+For complete UI documentation, see:
+- **Launch Guide**: [docs/gradio_ui_launch.md](docs/gradio_ui_launch.md)
+- **Configuration Guide**: [docs/gradio_ui_configuration.md](docs/gradio_ui_configuration.md)
 
 ---
 

@@ -5,9 +5,15 @@ torch>=1.10.0
 torchvision>=0.11.0
 Pillow>=8.0.0
 tqdm>=4.60.0
-flask>=2.0.0
 scipy>=1.7.0
-werkzeug>=2.0.0
+
+# Web UI
+gradio>=4.0.0
+matplotlib>=3.5.0
+networkx>=3.0
+
+# YouTube video download
+yt-dlp>=2023.0.0
 
 # Optional: CLIP (install separately)
 # git+https://github.com/openai/CLIP.git

@@ -273,25 +273,9 @@ Features:
 
 ---
 
-# **8. Web Interface (`sharingan/ui/`)**
+# **8. Processing Pipeline**
 
-### **Flask Backend (`app.py`)**
-
-* Upload endpoints
-* Background video processing
-* Status polling
-* Streaming-compatible endpoints (Range headers)
-
-### **Templates**
-
-* `index.html`: upload and progress UI
-* `player.html`: interactive timeline and chat interface
-
----
-
-# **9. Processing Pipeline**
-
-## **9.1 Video Processing Flow**
+## **8.1 Video Processing Flow**
 
 ```
 Video
@@ -311,7 +295,7 @@ Queryable Cache
 
 ---
 
-## **9.2 Query Processing Flow**
+## **8.2 Query Processing Flow**
 
 ```
 User Query
@@ -329,7 +313,7 @@ Returned Results
 
 ---
 
-# **10. Performance Characteristics**
+# **9. Performance Characteristics**
 
 | Component         | Memory | Notes            |
 | ----------------- | ------ | ---------------- |
@@ -343,7 +327,7 @@ Returned Results
 
 ---
 
-# **11. Extensibility**
+# **10. Extensibility**
 
 ### **Adding a New Temporal Module**
 
@@ -363,7 +347,7 @@ class CustomEncoder:
 
 ---
 
-# **12. Future Work**
+# **11. Future Work**
 
 * Audio-video fusion
 * Real-time stream ingestion

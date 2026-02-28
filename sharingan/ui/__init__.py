@@ -1,5 +1,5 @@
 """Sharingan Web UI."""
 
-from sharingan.ui.app import run_ui
+from sharingan.ui.gradio_app import launch_app, create_gradio_interface
 
-__all__ = ["run_ui"]
+__all__ = ["launch_app", "create_gradio_interface"]

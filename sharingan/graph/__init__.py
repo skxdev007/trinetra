@@ -9,9 +9,15 @@ from sharingan.graph.event_graph import (
     EventEdge,
     TemporalEventGraph,
 )
+from sharingan.graph.causal_scorer import (
+    EdgeScore,
+    CausalEdgeScorer,
+)
 
 __all__ = [
     "EventNode",
     "EventEdge",
     "TemporalEventGraph",
+    "EdgeScore",
+    "CausalEdgeScorer",
 ]

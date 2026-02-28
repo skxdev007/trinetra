@@ -44,9 +44,7 @@ setup(
         "torchvision>=0.11.0",
         "Pillow>=8.0.0",
         "tqdm>=4.60.0",
-        "flask>=2.0.0",
         "scipy>=1.7.0",
-        "werkzeug>=2.0.0",
     ],
     extras_require={
         "smolvlm": [
@@ -76,11 +74,5 @@ setup(
         ],
     },
     include_package_data=True,
-    package_data={
-        "sharingan": [
-            "ui/templates/*.html",
-            "ui/static/*",
-        ],
-    },
     zip_safe=False,
 )
