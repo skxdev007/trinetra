@@ -18,7 +18,7 @@ def main():
     print("=" * 80)
     print("SHARINGAN YouTube Video Test")
     print("=" * 80)
-    print(f"\n📹 YouTube URL: {youtube_url}\n")
+    print(f"\nYouTube URL: {youtube_url}\n")
     
     # Step 1: Download video
     print("Step 1: Downloading YouTube video...")
@@ -26,10 +26,10 @@ def main():
     success, video_path, error = download_youtube_video(youtube_url)
     
     if not success:
-        print(f"❌ Download failed: {error}")
+        print(f"Download failed: {error}")
         return
     
-    print(f"✅ Video downloaded: {video_path}\n")
+    print(f"Video downloaded: {video_path}\n")
     
     # Step 2: Initialize processor
     print("Step 2: Initializing SHARINGAN processor...")
@@ -41,7 +41,7 @@ def main():
         enable_temporal=True,
         batch_size=32
     )
-    print("✅ Processor initialized\n")
+    print("Processor initialized\n")
     
     # Step 3: Process video
     print("Step 3: Processing video (this may take a while)...")
@@ -49,8 +49,8 @@ def main():
     try:
         results = processor.process(video_path)
         
-        print("✅ Video processed successfully!\n")
-        print("📊 Processing Results:")
+        print("Video processed successfully!\n")
+        print("Processing Results:")
         print("-" * 80)
         
         video_info = results.get('video_info', {})
@@ -63,7 +63,7 @@ def main():
         # Show first few events
         events = results.get('events', [])
         if events:
-            print(f"\n📝 First 5 Events:")
+            print(f"\nFirst 5 Events:")
             print("-" * 80)
             for i, event in enumerate(events[:5], 1):
                 timestamp = event.get('timestamp', 0)
@@ -73,7 +73,7 @@ def main():
         print()
         
     except Exception as e:
-        print(f"❌ Processing failed: {e}")
+        print(f"Processing failed: {e}")
         import traceback
         traceback.print_exc()
         return
@@ -89,25 +89,25 @@ def main():
     ]
     
     for i, query in enumerate(test_queries, 1):
-        print(f"\n🔍 Query {i}: {query}")
+        print(f"\nQuery {i}: {query}")
         print("-" * 40)
         try:
             response = processor.chat(query, use_llm=False)
             
             if isinstance(response, dict):
                 answer = response.get('answer', str(response))
-                print(f"💬 Answer: {answer[:200]}")
+                print(f"Answer: {answer[:200]}")
                 if len(answer) > 200:
                     print("   ...")
             else:
-                print(f"💬 Answer: {str(response)[:200]}")
+                print(f"Answer: {str(response)[:200]}")
         except Exception as e:
-            print(f"❌ Query failed: {e}")
+            print(f"Query failed: {e}")
     
     print("\n" + "=" * 80)
-    print("✅ Test completed!")
+    print("Test completed!")
     print("=" * 80)
-    print("\n💡 Tip: Open http://127.0.0.1:7860 in your browser to use the full UI")
+    print("\nTip: Open http://127.0.0.1:7860 in your browser to use the full UI")
     print()
 
 if __name__ == "__main__":
