@@ -1,0 +1,395 @@
+/* SHARINGAN-DEEP Website Styles */
+/* Matches the professional, clean aesthetic from the reference image */
+
+:root {
+    --primary-blue: #1a237e;
+    --light-blue: #e3f2fd;
+    --accent-blue: #5c6bc0;
+    --text-dark: #263238;
+    --text-light: #546e7a;
+    --border-color: #b0bec5;
+    --highlight-bg: #f5f5f5;
+    --code-bg: #263238;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    line-height: 1.7;
+    color: var(--text-dark);
+    background: #ffffff;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Header */
+header {
+    background: var(--light-blue);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.75rem 0;
+}
+
+.header-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 4rem 0 3rem;
+    border-bottom: 3px solid var(--primary-blue);
+    margin-bottom: 3rem;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+}
+
+.hero .subtitle {
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.hero .tagline {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    font-style: italic;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Core Insight Section */
+.core-insight {
+    margin-bottom: 4rem;
+}
+
+.core-insight h2 {
+    font-size: 2rem;
+    color: var(--primary-blue);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.highlight-box {
+    background: var(--light-blue);
+    border-left: 4px solid var(--accent-blue);
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+}
+
+.highlight-box p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-dark);
+}
+
+.insight-explanation {
+    font-size: 1.05rem;
+    color: var(--text-dark);
+    margin-top: 1rem;
+}
+
+/* Section Styles */
+section {
+    margin-bottom: 4rem;
+}
+
+h2 {
+    font-size: 2rem;
+    color: var(--primary-blue);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--light-blue);
+    padding-bottom: 0.5rem;
+}
+
+h3 {
+    font-size: 1.4rem;
+    color: var(--accent-blue);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+h4 {
+    font-size: 1.2rem;
+    color: var(--text-dark);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+p {
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+    color: var(--text-dark);
+}
+
+ul {
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+    color: var(--text-dark);
+}
+
+/* Component Cards */
+.component {
+    background: #fafafa;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.component h3 {
+    margin-top: 0;
+}
+
+/* Diagram Container */
+.diagram-container {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.mermaid {
+    display: flex;
+    justify-content: center;
+    min-height: 200px;
+}
+
+/* Comparison Section */
+.comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.comparison-col {
+    background: #fafafa;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.comparison-col h4 {
+    color: var(--accent-blue);
+    margin-bottom: 1rem;
+}
+
+.comparison-col ul {
+    margin-left: 1.5rem;
+}
+
+.why-conclusion {
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    padding: 1rem;
+    background: var(--light-blue);
+    border-radius: 4px;
+}
+
+/* Results Grid */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.result-card {
+    background: var(--light-blue);
+    border: 2px solid var(--accent-blue);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.result-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+}
+
+.result-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.result-note {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-style: italic;
+}
+
+/* Use Cases */
+.use-case {
+    background: #fafafa;
+    border-left: 4px solid var(--accent-blue);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+}
+
+.use-case h4 {
+    margin-top: 0;
+    color: var(--accent-blue);
+}
+
+/* Technical Details Grid */
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.tech-item {
+    background: #fafafa;
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+/* Code Block */
+.code-block {
+    margin: 2rem 0;
+}
+
+.code-block pre {
+    background: var(--code-bg);
+    color: #aed581;
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.code-block code {
+    color: #aed581;
+}
+
+/* Footer */
+footer {
+    background: var(--primary-blue);
+    color: white;
+    padding: 2rem 0;
+    margin-top: 4rem;
+    text-align: center;
+}
+
+footer p {
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+footer a {
+    color: #90caf9;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero .subtitle {
+        font-size: 1.2rem;
+    }
+
+    .hero .tagline {
+        font-size: 1rem;
+    }
+
+    .comparison {
+        grid-template-columns: 1fr;
+    }
+
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tech-grid {
+        grid-template-columns: 1fr;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+    }
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Link Styles */
+a {
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Strong/Bold Text */
+strong {
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
+/* Loading State */
+body:not(.loaded) {
+    opacity: 0;
+}
+
+body.loaded {
+    opacity: 1;
+    transition: opacity 0.3s;
+}
