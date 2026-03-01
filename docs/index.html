@@ -3,210 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHARINGAN-DEEP | Temporal Video Understanding Research</title>
-    <meta name="description" content="Independent research on efficient video understanding using temporal event graphs and small language models.">
+    <title id="page-title">SHARINGAN-DEEP | Architecture Reference</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </head>
 <body>
-
-<header>
-    <div class="container">
-        <h1>SHARINGAN-DEEP</h1>
-        <div class="contact">
-            <a href="mailto:your.email@university.edu">Email</a> · 
-            <a href="https://github.com/skxdev007/sharingan">GitHub</a> · 
-            <a href="https://linkedin.com/in/yourprofile">LinkedIn</a>
+    <header>
+        <div class="container">
+            <div class="header-subtitle" id="header-text"></div>
         </div>
-    </div>
-</header>
+    </header>
 
-<main class="container">
-    <div class="intro-card">
-        <p>I'm a 3rd-year CS undergraduate building this as independent research. If you work on video understanding, efficient ML, or temporal reasoning and want to discuss — I'd genuinely like to hear from you.</p>
-    </div>
+    <main class="container">
+        <section class="hero">
+            <h1 id="site-title"></h1>
+            <p class="subtitle" id="site-subtitle"></p>
+            <p class="tagline" id="site-tagline"></p>
+        </section>
 
-    <section id="core-claim">
-        <h2>The Core Claim</h2>
-        <p>We show that a 0.5B parameter language model reading structured temporal scaffolds can perform temporal video reasoning tasks that typically require models 140× larger.</p>
-        <p>The key architectural difference: <strong>Reactive models</strong> (Gemini, GPT-4o) process video frames at query time. <strong>SHARINGAN-DEEP</strong> processes video once during ingestion, builds a temporal event graph, and answers queries by reading structured text.</p>
-    </section>
-
-    <div class="hero-metric">
-        <span class="number">129</span>
-        <span class="label">events detected in a 47-minute chemistry video (NileRed)</span>
-    </div>
-
-    <section id="evidence">
-        <h2>Real Evidence</h2>
-        <p>This is not a benchmark score — it's an observation from running the system. The event graph captures temporal structure that would be invisible to frame-sampling approaches. Each event includes:</p>
-        <ul>
-            <li>Timestamp and duration</li>
-            <li>Semantic description</li>
-            <li>Causal relationships to other events</li>
-            <li>Entity tracking across time</li>
-        </ul>
-    </section>
-
-    <section id="why-this-works">
-        <h2>Why This Might Work</h2>
-        
-        <div class="comparison">
-            <div class="comparison-col">
-                <h4>Reactive Models (Gemini, GPT-4o)</h4>
-                <ul>
-                    <li>Process video at query time</li>
-                    <li>Limited by context window</li>
-                    <li>Compress frames → lose temporal information</li>
-                    <li>No persistent understanding</li>
-                    <li>Expensive per query</li>
-                </ul>
+        <section class="core-insight">
+            <h2 id="core-insight-title"></h2>
+            <div class="highlight-box">
+                <p><em id="core-insight-highlight"></em></p>
             </div>
-            <div class="comparison-col">
-                <h4>SHARINGAN-DEEP (Proactive)</h4>
-                <ul>
-                    <li>Process video once at ingest</li>
-                    <li>Unlimited temporal span</li>
-                    <li>Extract semantics → preserve meaning</li>
-                    <li>Persistent event graph</li>
-                    <li>Near-zero cost per query</li>
-                </ul>
+            <p class="insight-explanation" id="core-insight-explanation"></p>
+        </section>
+
+        <section class="overview">
+            <h2 id="overview-title"></h2>
+            <p id="overview-intro"></p>
+            <ul id="overview-features"></ul>
+            <p id="overview-conclusion"></p>
+        </section>
+
+        <section class="architecture">
+            <h2 id="architecture-title"></h2>
+            <div id="architecture-components"></div>
+        </section>
+
+        <section class="why-it-works">
+            <h2 id="comparison-title"></h2>
+            <div class="comparison">
+                <div class="comparison-col">
+                    <h4 id="reactive-title"></h4>
+                    <ul id="reactive-points"></ul>
+                </div>
+                <div class="comparison-col">
+                    <h4 id="proactive-title"></h4>
+                    <ul id="proactive-points"></ul>
+                </div>
             </div>
+            <p class="why-conclusion" id="comparison-conclusion"></p>
+        </section>
+
+        <section class="results">
+            <h2 id="results-title"></h2>
+            <p id="results-intro"></p>
+            <div class="results-grid" id="results-metrics"></div>
+        </section>
+
+        <section class="use-cases">
+            <h2 id="use-cases-title"></h2>
+            <div id="use-cases-list"></div>
+        </section>
+
+        <section class="technical-details">
+            <h2 id="technical-title"></h2>
+            <div class="tech-grid" id="technical-specs"></div>
+        </section>
+
+        <section class="getting-started">
+            <h2 id="getting-started-title"></h2>
+            <div class="code-block">
+                <pre><code id="getting-started-code"></code></pre>
+            </div>
+        </section>
+
+        <section class="future">
+            <h2 id="future-title"></h2>
+            <ul id="future-directions"></ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p id="footer-tagline"></p>
+            <p id="footer-links"></p>
         </div>
+    </footer>
 
-        <p><strong>The hypothesis:</strong> Language is a better compression format than pixels for temporal reasoning. We convert video to structured language once, then let small LLMs do what they do best — reading and reasoning over text.</p>
-    </section>
-
-    <section id="architecture">
-        <h2>Architecture Overview</h2>
-        <p>The system has six main components:</p>
-
-        <h3>1. Multi-Scale Temporal Adaptive Sampling (TAS)</h3>
-        <p>Videos contain information at multiple temporal scales. We sample frames adaptively across these scales, allocating more frames to information-dense segments.</p>
-
-        <h3>2. Event Detection & Segmentation</h3>
-        <p>Raw video becomes a sequence of meaningful events: scene transitions, action boundaries, and state changes. Each event receives a timestamp, duration, and semantic description.</p>
-
-        <h3>3. Temporal Event Graph</h3>
-        <p>Events form a causal narrative. The graph captures temporal ordering, causal relationships, and hierarchical structure. This enables reasoning about "why" and "what happens next."</p>
-
-        <h3>4. Hierarchical Memory</h3>
-        <p>Long videos overwhelm context windows. We use 4-level compression: frame → event → episode → video. Queries retrieve information at the appropriate level.</p>
-
-        <h3>5. Cross-Modal Verification</h3>
-        <p>Vision models hallucinate. We verify visual understanding against audio, text (OCR), and temporal consistency.</p>
-
-        <h3>6. Context-Aware Query Routing</h3>
-        <p>Different queries need different information. We route temporal queries to the event graph, causal queries to the causal scorer, descriptive queries to hierarchical memory, and counting queries to the entity tracker.</p>
-    </section>
-
-    <section id="results">
-        <h2>Honest Results</h2>
-        <p>These are preliminary results from ongoing development. Benchmark evaluation is in progress.</p>
-        
-        <p><strong>Current status:</strong></p>
-        <ul>
-            <li><strong>60-70%</strong> accuracy on Video-MME (baseline, improvements ongoing)</li>
-            <li><strong>129 events</strong> detected in 47-minute chemistry video</li>
-            <li><strong>&lt;1s</strong> query latency after ingestion</li>
-        </ul>
-
-        <p><strong>What we're comparing against:</strong></p>
-        <ul>
-            <li>Gemini 1.5 Pro: ~10s per query, processes frames reactively</li>
-            <li>GPT-4o: Similar latency, context window limitations</li>
-        </ul>
-
-        <p><strong>Important caveat:</strong> These are not controlled benchmark comparisons yet. We're working on rigorous Video-MME and EgoSchema evaluations.</p>
-    </section>
-
-    <section id="open-questions">
-        <div class="open-questions">
-            <h3>Open Questions</h3>
-            <p>I genuinely don't know the answers to these yet:</p>
-            <ol>
-                <li><strong>Does explicit causal graph structure actually improve temporal QA, or does the benefit come entirely from better prompting?</strong> We build a NetworkX graph with causal edges, but it's unclear if the graph structure itself helps or if we're just doing better event description.</li>
-                
-                <li><strong>At what video length does O(K) memory advantage become practically significant?</strong> For 5-minute videos, the difference between O(T) and O(K) doesn't matter. At what duration does it start to matter? 30 minutes? 2 hours?</li>
-                
-                <li><strong>Can change-score-based adaptive sampling match uniform sampling quality on action-heavy content?</strong> Our TAS allocates frames based on visual change. Does this hurt performance on videos with constant motion (sports, action scenes)?</li>
-                
-                <li><strong>How much does cross-modal verification actually reduce hallucination?</strong> We verify vision against audio and OCR, but we haven't measured the false positive rate with and without verification.</li>
-            </ol>
-        </div>
-    </section>
-
-    <section id="technical">
-        <h2>Technical Details</h2>
-        <p><strong>Vision Encoder:</strong> SmolVLM-2B (context-aware variant)<br>
-        <strong>LLM Backend:</strong> Qwen-2.5-0.5B to 7B (configurable)<br>
-        <strong>Embedding Model:</strong> Sentence transformers for semantic similarity<br>
-        <strong>Graph Storage:</strong> NetworkX-based event graph with temporal edges<br>
-        <strong>Memory Architecture:</strong> 4-level hierarchy (frame → event → episode → video)<br>
-        <strong>Sampling Strategy:</strong> Multi-scale TAS with learnable attention weights</p>
-    </section>
-
-    <section id="verify">
-        <h2>How to Verify This</h2>
-        <pre><code>pip install sharingan-core
-
-from sharingan import VideoProcessor
-
-# Process video once
-processor = VideoProcessor()
-video_memory = processor.process("video.mp4")
-
-# Query forever
-answer = video_memory.query("What happened at 3:45?")
-summary = video_memory.query("Summarize the key events")
-causal = video_memory.query("Why did the liquid turn purple?")</code></pre>
-
-        <p><strong>To reproduce the 129-events result:</strong></p>
-        <ol>
-            <li>Clone the repo: <code>git clone https://github.com/skxdev007/sharingan</code></li>
-            <li>Install dependencies: <code>pip install -r requirements.txt</code></li>
-            <li>Run on NileRed video: <code>python examples/full_demo.py --video nileRed_aspirin.mp4</code></li>
-            <li>Check <code>cache/</code> folder for event graph JSON</li>
-        </ol>
-    </section>
-
-    <section id="next">
-        <h2>What I'm Working On Next</h2>
-        <ul>
-            <li>Rigorous Video-MME evaluation with controlled comparisons</li>
-            <li>EgoSchema benchmark (long-form temporal reasoning)</li>
-            <li>Ablation studies on causal graph vs. flat event list</li>
-            <li>Audio integration for event detection</li>
-            <li>Measuring hallucination rates with/without cross-modal verification</li>
-        </ul>
-    </section>
-</main>
-
-<footer>
-    <div class="container">
-        <p><strong>Last updated:</strong> March 2026 · <strong>Status:</strong> Independent research, ongoing development · <strong>License:</strong> MIT</p>
-        <p>If you have thoughts on any of the open questions above, or if you've worked on similar problems, I'd genuinely appreciate hearing from you.</p>
-        <p><a href="https://github.com/skxdev007/sharingan">GitHub</a> · <a href="mailto:your.email@university.edu">Email</a></p>
-    </div>
-</footer>
-
-<script>
-// Initialize Mermaid with academic theme
-mermaid.initialize({ 
-    startOnLoad: true,
-    theme: 'base',
-    themeVariables: {
-        primaryColor: '#f7f5f0',
-        primaryTextColor: '#1a1916',
-        primaryBorderColor: '#e0ddd5',
-        lineColor: '#5a5550',
-        secondaryColor: '#ffffff',
-        tertiaryColor: '#faf8f5',
-        fontSize: '16px',
-        fontFamily: 'Source Serif 4, Georgia, serif'
-    }
-});
-</script>
-
+    <script src="parser.js"></script>
 </body>
 </html>
