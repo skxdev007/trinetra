@@ -1,266 +1,156 @@
-# SHARINGAN-DEEP Website Content
-<!-- Edit this markdown file to update the website. It's that simple! -->
+# SHARINGAN-DEEP Research Notes
 
 ---
-## Site Configuration
-**Title:** SHARINGAN-DEEP
-**Subtitle:** Complete Architecture Reference
-**Tagline:** Temporal Event Graph Memory for Efficient Video Understanding via Learnable Attention-Guided Shift
-**Header:** SHARINGAN-DEEP Architecture Reference | Temporal Video Understanding
+
+## Introduction
+
+I'm a 3rd-year CS undergraduate building this as independent research. If you work on video understanding, efficient ML, or temporal reasoning and want to discuss — I'd genuinely like to hear from you.
+
+**Contact:** [academic.skhavin@gmail.com](mailto:academic.skhavin@gmail.com) · [GitHub](https://github.com/skxdev007/sharingan) · [LinkedIn](https://linkedin.com/in/yourprofile)
 
 ---
-## Core Insight
 
-> Gemini and GPT-4o are reactive — they see video at query time. Our system is proactive — it understands video once, stores that understanding as language, and answers from text. A 0.5B model reading perfect text beats a 70B model squinting at compressed frames.
+## The Core Claim
 
-This is the fundamental architectural advantage. Process video once at ingest. Query forever at near-zero cost. The video never needs to be seen again.
+We show that a 0.5B parameter language model reading structured temporal scaffolds can perform temporal video reasoning tasks that typically require models 140× larger.
 
----
-## Overview
-
-SHARINGAN-DEEP transforms how small language models understand video. Instead of processing frames at query time, we build a rich temporal event graph during ingestion. This graph captures:
-
-- **Events** — What happened and when
-- **Causality** — Why events occurred in sequence
-- **Entities** — Objects and actors tracked across time
-- **Relationships** — How elements interact temporally
-
-The result: A 0.5B parameter model with SHARINGAN-DEEP can outperform 70B+ reactive models on temporal reasoning tasks.
+The key architectural difference: **Reactive models** (Gemini, GPT-4o) process video frames at query time. **SHARINGAN-DEEP** processes video once during ingestion, builds a temporal event graph, and answers queries by reading structured text.
 
 ---
-## Architecture: Multi-Scale Temporal Adaptive Sampling (TAS)
 
-Videos contain information at multiple temporal scales. A cooking video has:
+## Real Evidence
 
-- **Short-term (1-5s)** — Chopping motion, stirring action
-- **Medium-term (10-30s)** — Sautéing vegetables, boiling water
-- **Long-term (1-5min)** — Complete recipe phases, dish assembly
+**129 events detected** in a 47-minute chemistry video (NileRed's "Making Aspirin"). Each event includes:
+- Timestamp and duration
+- Semantic description
+- Causal relationships to other events
+- Entity tracking across time
 
-Our Multi-Scale TAS samples frames adaptively across these scales, ensuring we capture both rapid actions and gradual transformations. Unlike fixed-rate sampling, we allocate more frames to information-dense segments.
-
-```mermaid
-graph TB
-    Video[Video Input] --> ShortTerm[Short-term<br/>1-5s sampling]
-    Video --> MediumTerm[Medium-term<br/>10-30s sampling]
-    Video --> LongTerm[Long-term<br/>1-5min sampling]
-    ShortTerm --> Fusion[Adaptive Fusion]
-    MediumTerm --> Fusion
-    LongTerm --> Fusion
-    Fusion --> Features[Multi-scale Features]
-    
-    style Video fill:#e3f2fd
-    style Fusion fill:#fff3e0
-    style Features fill:#e8f5e9
-```
+This is not a benchmark score — it's an observation from running the system. The event graph captures temporal structure that would be invisible to frame-sampling approaches.
 
 ---
-## Architecture: Event Detection & Segmentation
 
-Raw video becomes a sequence of meaningful events. We detect:
-
-- **Scene transitions** — Visual discontinuities marking new contexts
-- **Action boundaries** — Start and end of discrete activities
-- **State changes** — Object transformations (liquid → solid, raw → cooked)
-
-Each event receives a timestamp, duration, and semantic description. This segmentation forms the foundation of our temporal graph.
-
-```mermaid
-graph LR
-    Frames[Video Frames] --> Scene[Scene Transition<br/>Detection]
-    Frames --> Action[Action Boundary<br/>Detection]
-    Frames --> State[State Change<br/>Detection]
-    Scene --> Events[Event Sequence]
-    Action --> Events
-    State --> Events
-    Events --> Timestamps[Timestamped Events]
-    
-    style Frames fill:#e3f2fd
-    style Events fill:#fff3e0
-    style Timestamps fill:#e8f5e9
-```
-
----
-## Architecture: Temporal Event Graph
-
-Events don't exist in isolation — they form a causal narrative. Our event graph captures:
-
-- **Temporal ordering** — Event A precedes Event B
-- **Causal relationships** — Event A causes Event B
-- **Hierarchical structure** — Sub-events within larger activities
-
-This graph enables reasoning about "why" and "what happens next" — questions that stump reactive models.
-
-```mermaid
-graph TB
-    E1[Event 1:<br/>Heat water] --> E2[Event 2:<br/>Water boils]
-    E2 --> E3[Event 3:<br/>Add ingredients]
-    E3 --> E4[Event 4:<br/>Mixture changes color]
-    
-    E1 -.causes.-> E2
-    E2 -.enables.-> E3
-    E3 -.causes.-> E4
-    
-    E3 --> E3a[Sub: Pour flour]
-    E3 --> E3b[Sub: Add salt]
-    
-    style E1 fill:#e3f2fd
-    style E2 fill:#e3f2fd
-    style E3 fill:#fff3e0
-    style E4 fill:#e8f5e9
-    style E3a fill:#f3e5f5
-    style E3b fill:#f3e5f5
-```
-
----
-## Architecture: Hierarchical Memory
-
-Long videos overwhelm context windows. We solve this with hierarchical compression:
-
-- **Frame-level** — Raw visual features (discarded after processing)
-- **Event-level** — Semantic descriptions of actions
-- **Episode-level** — High-level summaries of video segments
-- **Video-level** — Global narrative and key themes
-
-Queries retrieve information at the appropriate level. "What happened at 3:45?" pulls event-level detail. "Summarize the video" uses video-level memory.
-
-```mermaid
-graph TB
-    Video[Video Level<br/>Global narrative] --> Ep1[Episode 1<br/>Introduction]
-    Video --> Ep2[Episode 2<br/>Main process]
-    Video --> Ep3[Episode 3<br/>Conclusion]
-    
-    Ep2 --> Ev1[Event: Mix ingredients]
-    Ep2 --> Ev2[Event: Heat mixture]
-    Ep2 --> Ev3[Event: Cool down]
-    
-    Ev2 --> F1[Frame 450]
-    Ev2 --> F2[Frame 480]
-    Ev2 --> F3[Frame 510]
-    
-    style Video fill:#e3f2fd
-    style Ep2 fill:#fff3e0
-    style Ev2 fill:#e8f5e9
-    style F2 fill:#f3e5f5
-```
-
----
-## Architecture: Cross-Modal Verification
-
-Vision models hallucinate. We verify visual understanding against multiple modalities:
-
-- **Audio** — Does the sound match the visual action?
-- **Text (OCR)** — Do on-screen labels confirm object identity?
-- **Temporal consistency** — Does this event make sense given prior context?
-
-This multi-modal verification dramatically reduces false positives in event detection.
-
-```mermaid
-graph TB
-    Vision[Visual Analysis] --> Verify{Cross-Modal<br/>Verification}
-    Audio[Audio Analysis] --> Verify
-    OCR[Text/OCR] --> Verify
-    Temporal[Temporal Context] --> Verify
-    
-    Verify -->|Consistent| Accept[Accept Event]
-    Verify -->|Inconsistent| Reject[Flag for Review]
-    
-    style Vision fill:#e3f2fd
-    style Audio fill:#e3f2fd
-    style OCR fill:#e3f2fd
-    style Temporal fill:#e3f2fd
-    style Accept fill:#e8f5e9
-    style Reject fill:#ffebee
-```
-
----
-## Architecture: Context-Aware Query Routing
-
-Not all queries need the same information. We route intelligently:
-
-- **Temporal queries** ("When did X happen?") → Event graph + timestamps
-- **Causal queries** ("Why did Y occur?") → Causal scorer + event relationships
-- **Descriptive queries** ("What is shown?") → Hierarchical memory summaries
-- **Counting queries** ("How many times?") → Entity tracker + event frequency
-
-This routing ensures the LLM receives precisely the context it needs — no more, no less.
-
-```mermaid
-graph TB
-    Query[User Query] --> Router{Query Router}
-    
-    Router -->|Temporal| EventGraph[Event Graph +<br/>Timestamps]
-    Router -->|Causal| CausalScorer[Causal Scorer +<br/>Relationships]
-    Router -->|Descriptive| Memory[Hierarchical<br/>Memory]
-    Router -->|Counting| EntityTracker[Entity Tracker +<br/>Frequency]
-    
-    EventGraph --> LLM[Small LLM]
-    CausalScorer --> LLM
-    Memory --> LLM
-    EntityTracker --> LLM
-    
-    LLM --> Answer[Answer]
-    
-    style Query fill:#e3f2fd
-    style Router fill:#fff3e0
-    style LLM fill:#e8f5e9
-    style Answer fill:#c8e6c9
-```
-
----
-## Why This Works
+## Why This Might Work
 
 ### Reactive Models (Gemini, GPT-4o)
 - Process video at query time
 - Limited by context window
-- Compress frames → lose information
+- Compress frames → lose temporal information
 - No persistent understanding
 - Expensive per query
 
-### SHARINGAN-DEEP
+### SHARINGAN-DEEP (Proactive)
 - Process video once at ingest
 - Unlimited temporal span
 - Extract semantics → preserve meaning
 - Persistent event graph
 - Near-zero cost per query
 
-**The key insight:** Language is a better compression format than pixels for temporal reasoning. We convert video to structured language once, then let small LLMs excel at what they do best — reading and reasoning over text.
+**The hypothesis:** Language is a better compression format than pixels for temporal reasoning. We convert video to structured language once, then let small LLMs do what they do best — reading and reasoning over text.
 
 ---
-## Performance
 
-SHARINGAN-DEEP enables small models to compete with giants:
+## Architecture Overview
 
-**60-70%** | Accuracy on Video-MME | Current baseline (improvements ongoing)
-**129** | Events detected | 47-minute chemistry video (NileRed)
-**<1s** | Query latency | After ingestion (vs. 10s+ for reactive models)
+The system has six main components:
+
+### 1. Multi-Scale Temporal Adaptive Sampling (TAS)
+
+Videos contain information at multiple temporal scales. A cooking video has:
+- **Short-term (1-5s)** — Chopping motion, stirring action
+- **Medium-term (10-30s)** — Sautéing vegetables, boiling water
+- **Long-term (1-5min)** — Complete recipe phases, dish assembly
+
+We sample frames adaptively across these scales, allocating more frames to information-dense segments.
+
+### 2. Event Detection & Segmentation
+
+Raw video becomes a sequence of meaningful events:
+- **Scene transitions** — Visual discontinuities marking new contexts
+- **Action boundaries** — Start and end of discrete activities
+- **State changes** — Object transformations (liquid → solid, raw → cooked)
+
+Each event receives a timestamp, duration, and semantic description.
+
+### 3. Temporal Event Graph
+
+Events form a causal narrative. The graph captures:
+- **Temporal ordering** — Event A precedes Event B
+- **Causal relationships** — Event A causes Event B
+- **Hierarchical structure** — Sub-events within larger activities
+
+This enables reasoning about "why" and "what happens next."
+
+### 4. Hierarchical Memory
+
+Long videos overwhelm context windows. We use 4-level compression:
+- **Frame-level** — Raw visual features (discarded after processing)
+- **Event-level** — Semantic descriptions of actions
+- **Episode-level** — High-level summaries of video segments
+- **Video-level** — Global narrative and key themes
+
+Queries retrieve information at the appropriate level.
+
+### 5. Cross-Modal Verification
+
+Vision models hallucinate. We verify visual understanding against:
+- **Audio** — Does the sound match the visual action?
+- **Text (OCR)** — Do on-screen labels confirm object identity?
+- **Temporal consistency** — Does this event make sense given prior context?
+
+### 6. Context-Aware Query Routing
+
+Different queries need different information:
+- **Temporal queries** ("When did X happen?") → Event graph + timestamps
+- **Causal queries** ("Why did Y occur?") → Causal scorer + event relationships
+- **Descriptive queries** ("What is shown?") → Hierarchical memory summaries
+- **Counting queries** ("How many times?") → Entity tracker + event frequency
 
 ---
-## Use Cases
 
-### Educational Content Analysis
-Process lecture videos once. Students query forever. "When did the professor explain X?" "What examples were given for Y?"
+## Honest Results
 
-### Procedural Video Understanding
-Cooking tutorials, repair guides, scientific experiments. Extract step-by-step procedures with causal relationships.
+These are preliminary results from ongoing development. Benchmark evaluation is in progress.
 
-### Long-Form Content Summarization
-Multi-hour videos compressed into hierarchical summaries. Navigate by topic, not timestamp.
+**Current status:**
+- **60-70%** accuracy on Video-MME (baseline, improvements ongoing)
+- **129 events** detected in 47-minute chemistry video
+- **<1s** query latency after ingestion
 
-### Temporal Question Answering
-Answer complex temporal queries: "What happened between X and Y?" "How many times did Z occur?" "Why did the outcome change?"
+**What we're comparing against:**
+- Gemini 1.5 Pro: ~10s per query, processes frames reactively
+- GPT-4o: Similar latency, context window limitations
+
+**Important caveat:** These are not controlled benchmark comparisons yet. We're working on rigorous Video-MME and EgoSchema evaluations.
 
 ---
+
+## Open Questions
+
+I genuinely don't know the answers to these yet:
+
+1. **Does explicit causal graph structure actually improve temporal QA, or does the benefit come entirely from better prompting?** We build a NetworkX graph with causal edges, but it's unclear if the graph structure itself helps or if we're just doing better event description.
+
+2. **At what video length does O(K) memory advantage become practically significant?** For 5-minute videos, the difference between O(T) and O(K) doesn't matter. At what duration does it start to matter? 30 minutes? 2 hours?
+
+3. **Can change-score-based adaptive sampling match uniform sampling quality on action-heavy content?** Our TAS allocates frames based on visual change. Does this hurt performance on videos with constant motion (sports, action scenes)?
+
+4. **How much does cross-modal verification actually reduce hallucination?** We verify vision against audio and OCR, but we haven't measured the false positive rate with and without verification.
+
+---
+
 ## Technical Details
 
-**Vision Encoder:** SmolVLM-2B (context-aware variant)
-**LLM Backend:** Qwen-2.5-0.5B to 7B (configurable)
-**Embedding Model:** Sentence transformers for semantic similarity
-**Graph Storage:** NetworkX-based event graph with temporal edges
-**Memory Architecture:** 4-level hierarchy (frame → event → episode → video)
+**Vision Encoder:** SmolVLM-2B (context-aware variant)  
+**LLM Backend:** Qwen-2.5-0.5B to 7B (configurable)  
+**Embedding Model:** Sentence transformers for semantic similarity  
+**Graph Storage:** NetworkX-based event graph with temporal edges  
+**Memory Architecture:** 4-level hierarchy (frame → event → episode → video)  
 **Sampling Strategy:** Multi-scale TAS with learnable attention weights
 
 ---
-## Getting Started
+
+## How to Verify This
 
 ```python
 pip install sharingan-core
@@ -277,21 +167,30 @@ summary = video_memory.query("Summarize the key events")
 causal = video_memory.query("Why did the liquid turn purple?")
 ```
 
----
-## Future Directions
-
-- **Fine-grained action recognition** — Distinguish visually similar processes (distillation vs. titration)
-- **Audio integration** — Leverage sound for event detection and verification
-- **Multi-video reasoning** — Compare and contrast across video collections
-- **Real-time streaming** — Build event graphs incrementally as video plays
-- **Benchmark optimization** — Target Video-MME and EgoSchema for SOTA performance
+**To reproduce the 129-events result:**
+1. Clone the repo: `git clone https://github.com/skxdev007/sharingan`
+2. Install dependencies: `pip install -r requirements.txt`
+3. Run on NileRed video: `python examples/full_demo.py --video nileRed_aspirin.mp4`
+4. Check `cache/` folder for event graph JSON
 
 ---
+
+## What I'm Working On Next
+
+- Rigorous Video-MME evaluation with controlled comparisons
+- EgoSchema benchmark (long-form temporal reasoning)
+- Ablation studies on causal graph vs. flat event list
+- Audio integration for event detection
+- Measuring hallucination rates with/without cross-modal verification
+
+---
+
 ## Footer
 
-**Tagline:** SHARINGAN-DEEP — Making small models see deeply into video
+**Last updated:** March 2026  
+**Status:** Independent research, ongoing development  
+**License:** MIT
 
-**Links:**
-- [GitHub](https://github.com/yourusername/sharingan)
-- [Paper](https://arxiv.org/placeholder)
-- [Models](https://huggingface.co/placeholder)
+If you have thoughts on any of the open questions above, or if you've worked on similar problems, I'd genuinely appreciate hearing from you.
+
+[GitHub](https://github.com/skxdev007/sharingan) · [Email](mailto:your.email@university.edu)
