@@ -3,46 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">SHARINGAN-DEEP | Architecture Reference</title>
+    <title id="page-title">SHARINGAN-DEEP | Temporal Video Understanding</title>
+    <meta name="description" content="Novel O(T) temporal reasoning architecture. Process video once, query forever. Small LLMs beat commercial VLMs on temporal benchmarks.">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </head>
-<body>
-    <header>
-        <div class="container">
-            <div class="header-subtitle" id="header-text"></div>
-        </div>
-    </header>
+<body class="loading">
 
-    <main class="container">
-        <section class="hero">
-            <h1 id="site-title"></h1>
+<!-- ── HEADER ──────────────────────────────────────────── -->
+<header>
+    <div class="container">
+        <a href="#" class="header-logo">SHARINGAN-DEEP</a>
+        <nav>
+            <ul class="header-nav">
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#why-it-works">vs GPT-4o</a></li>
+                <li><a href="#results">Results</a></li>
+                <li><a href="#getting-started">Code</a></li>
+            </ul>
+        </nav>
+        <!-- hidden — kept for parser compatibility -->
+        <div class="header-subtitle" id="header-text" style="display:none"></div>
+    </div>
+</header>
+
+<!-- ── HERO ────────────────────────────────────────────── -->
+<main>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-tag">Research Preview — Novel TAS Architecture</div>
+            <h1 id="site-title">SHARINGAN<br><em>DEEP</em></h1>
             <p class="subtitle" id="site-subtitle"></p>
             <p class="tagline" id="site-tagline"></p>
-        </section>
+            
+            <div class="hero-metrics">
+                <div class="hero-metric">
+                    <div class="metric-val">O<span class="accent">(T)</span></div>
+                    <div class="metric-label">Ingest time</div>
+                </div>
+                <div class="hero-metric">
+                    <div class="metric-val">O<span class="accent">(1)</span></div>
+                    <div class="metric-label">Query time</div>
+                </div>
+                <div class="hero-metric">
+                    <div class="metric-val">0.5<span class="accent">B</span></div>
+                    <div class="metric-label">Parameters needed</div>
+                </div>
+            </div>
+            
+            <div class="hero-actions">
+                <a href="https://github.com/skxdev007/sharingan" class="btn btn-primary" target="_blank">GitHub →</a>
+                <a href="#architecture" class="btn btn-ghost">Architecture</a>
+            </div>
+        </div>
+    </section>
 
-        <section class="core-insight">
+    <!-- ── CORE INSIGHT ─────────────────────────────────────── -->
+    <section class="core-insight reveal" id="core-insight">
+        <div class="container">
+            <div class="section-label">The Core Insight</div>
             <h2 id="core-insight-title"></h2>
             <div class="highlight-box">
                 <p><em id="core-insight-highlight"></em></p>
             </div>
             <p class="insight-explanation" id="core-insight-explanation"></p>
-        </section>
+        </div>
+    </section>
 
-        <section class="overview">
+    <!-- ── OVERVIEW ─────────────────────────────────────────── -->
+    <section class="overview reveal" id="overview">
+        <div class="container">
+            <div class="section-label">System Overview</div>
             <h2 id="overview-title"></h2>
             <p id="overview-intro"></p>
             <ul id="overview-features"></ul>
             <p id="overview-conclusion"></p>
-        </section>
+        </div>
+    </section>
 
-        <section class="architecture">
-            <h2 id="architecture-title"></h2>
+    <!-- ── ARCHITECTURE ─────────────────────────────────────── -->
+    <section class="architecture reveal" id="architecture">
+        <div class="container">
+            <div class="section-label">Architecture Components</div>
+            <h2 id="architecture-title">How the pipeline works</h2>
             <div id="architecture-components"></div>
-        </section>
+        </div>
+    </section>
 
-        <section class="why-it-works">
+    <!-- ── WHY IT WORKS ──────────────────────────────────────── -->
+    <section class="why-it-works reveal" id="why-it-works">
+        <div class="container">
+            <div class="section-label">Competitive Analysis</div>
             <h2 id="comparison-title"></h2>
             <div class="comparison">
                 <div class="comparison-col">
@@ -55,44 +106,152 @@
                 </div>
             </div>
             <p class="why-conclusion" id="comparison-conclusion"></p>
-        </section>
+        </div>
+    </section>
 
-        <section class="results">
+    <!-- ── RESULTS ───────────────────────────────────────────── -->
+    <section class="results reveal" id="results">
+        <div class="container">
+            <div class="section-label">Benchmarks &amp; Results</div>
             <h2 id="results-title"></h2>
             <p id="results-intro"></p>
             <div class="results-grid" id="results-metrics"></div>
-        </section>
+        </div>
+    </section>
 
-        <section class="use-cases">
+    <!-- ── USE CASES ─────────────────────────────────────────── -->
+    <section class="use-cases reveal" id="use-cases">
+        <div class="container">
+            <div class="section-label">Applications</div>
             <h2 id="use-cases-title"></h2>
             <div id="use-cases-list"></div>
-        </section>
+        </div>
+    </section>
 
-        <section class="technical-details">
+    <!-- ── TECHNICAL ─────────────────────────────────────────── -->
+    <section class="technical-details reveal" id="technical">
+        <div class="container">
+            <div class="section-label">Technical Specifications</div>
             <h2 id="technical-title"></h2>
             <div class="tech-grid" id="technical-specs"></div>
-        </section>
+        </div>
+    </section>
 
-        <section class="getting-started">
+    <!-- ── GETTING STARTED ───────────────────────────────────── -->
+    <section class="getting-started reveal" id="getting-started">
+        <div class="container">
+            <div class="section-label">Quick Start</div>
             <h2 id="getting-started-title"></h2>
             <div class="code-block">
                 <pre><code id="getting-started-code"></code></pre>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="future">
+    <!-- ── FUTURE ────────────────────────────────────────────── -->
+    <section class="future reveal" id="future">
+        <div class="container">
+            <div class="section-label">Research Directions</div>
             <h2 id="future-title"></h2>
             <ul id="future-directions"></ul>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p id="footer-tagline"></p>
-            <p id="footer-links"></p>
         </div>
-    </footer>
+    </section>
+</main>
 
-    <script src="parser.js"></script>
+<!-- ── FOOTER ────────────────────────────────────────────── -->
+<footer>
+    <div class="container">
+        <p id="footer-tagline"></p>
+        <p id="footer-links"></p>
+    </div>
+</footer>
+
+<script src="parser.js"></script>
+<script>
+// ── Mermaid init ─────────────────────────────────────────
+mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    themeVariables: {
+        background: '#0a0a0c',
+        primaryColor: '#16161a',
+        primaryTextColor: '#e8e6e0',
+        primaryBorderColor: 'rgba(255,255,255,0.14)',
+        lineColor: 'rgba(255,255,255,0.25)',
+        secondaryColor: '#1e1e24',
+        tertiaryColor: '#1a1a20',
+        edgeLabelBackground: '#111114',
+        fontSize: '13px',
+        fontFamily: "'JetBrains Mono', monospace"
+    }
+});
+
+// ── Scroll reveal ────────────────────────────────────────
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            revealObserver.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+// Called after content loads
+function initReveal() {
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+}
+
+// ── Syntax highlight code block ──────────────────────────
+function highlightCode(el) {
+    let code = el.textContent;
+    code = code
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        // comments
+        .replace(/(#.*$)/gm, '<span class="tok-cm">$1</span>')
+        // keywords
+        .replace(/\b(from|import|def|class|return|if|else|for|in|and|or|not|True|False|None|with|as|pass)\b/g, '<span class="tok-kw">$1</span>')
+        // strings
+        .replace(/(".*?"|'.*?')/g, '<span class="tok-str">$1</span>')
+        // function calls
+        .replace(/(\w+)(?=\()/g, '<span class="tok-fn">$1</span>');
+    el.innerHTML = code;
+}
+
+// ── Page load animation ──────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    // Remove loading class after a tiny delay for smooth paint
+    requestAnimationFrame(() => {
+        document.body.classList.remove('loading');
+    });
+    
+    // Override parser's render callback to add extras
+    const originalLoad = ContentParser.prototype.render;
+    ContentParser.prototype.render = function() {
+        originalLoad.call(this);
+        
+        // Syntax highlight
+        const codeEl = document.getElementById('getting-started-code');
+        if (codeEl) highlightCode(codeEl);
+        
+        // Scroll reveal
+        setTimeout(initReveal, 100);
+        
+        // Tech items — add value wrapper
+        document.querySelectorAll('.tech-item').forEach(item => {
+            const strong = item.querySelector('strong');
+            const text = item.textContent.replace(strong?.textContent || '', '').trim();
+            if (strong && text) {
+                item.innerHTML = '';
+                item.appendChild(strong);
+                const val = document.createElement('span');
+                val.className = 'tech-item-value';
+                val.textContent = text;
+                item.appendChild(val);
+            }
+        });
+    };
+});
+</script>
+
 </body>
 </html>
