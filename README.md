@@ -12,6 +12,7 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Website](https://img.shields.io/badge/website-trinetra-blue)](https://skxdev007.github.io/trinetra)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18850769.svg)](https://doi.org/10.5281/zenodo.18850769)
 
 ---
 
@@ -271,7 +272,7 @@ Apache 2.0 License – see LICENSE file.
 * [SmolVLM](https://huggingface.co/HuggingFaceTB/SmolVLM-500M-Instruct)
 * [Qwen2.5](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct)
 
-## � Citation
+## 📚 Citation
 
 If you use Trinetra in your research, please cite:
 
@@ -280,9 +281,12 @@ If you use Trinetra in your research, please cite:
   title={Trinetra: Proactive Video Understanding via Temporal Event Graphs},
   author={S Khavin},
   year={2026},
-  url={https://github.com/skxdev007/trinetra}
+  url={https://github.com/skxdev007/trinetra},
+  doi={10.5281/zenodo.18850769}
 }
 ```
+
+**DOI:** [10.5281/zenodo.18850769](https://doi.org/10.5281/zenodo.18850769)
 
 ## 📧 Contact
 
