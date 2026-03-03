@@ -325,6 +325,9 @@ class VideoProcessor:
         # Compute similarities
         similarities = np.dot(self.embeddings, query_embedding)
         
+        # Apply temporal filters to adjust similarities based on query intent
+        similarities = self._apply_temporal_filters(similarities, self.timestamps, text)
+        
         # Get top-k
         top_k = min(top_k, len(similarities))
         top_indices = np.argsort(similarities)[-top_k:][::-1]
@@ -340,6 +343,86 @@ class VideoProcessor:
         
         print(f"✓ Found {len(results)} results")
         return results
+    
+    def _apply_temporal_filters(self, similarities: np.ndarray, timestamps: List[float], query: str) -> np.ndarray:
+        """
+        Apply temporal filters to adjust similarity scores based on query intent and video duration.
+        
+        Fixes:
+        1. Teaser bias: Penalize first 60s for "final" queries
+        2. Temporal weighting: Boost relevant time regions based on query keywords
+        3. First-frame bias: Penalize first 2 seconds
+        4. Long-form video handling: Adaptive temporal boost based on video duration
+        
+        Args:
+            similarities: Raw similarity scores from CLIP
+            timestamps: Timestamp for each frame
+            query: User query text
+            
+        Returns:
+            Adjusted similarity scores
+        """
+        if len(similarities) == 0 or len(timestamps) == 0:
+            return similarities
+        
+        video_duration = max(timestamps)
+        query_lower = query.lower()
+        filtered_similarities = similarities.copy()
+        
+        # Determine video length category for adaptive filtering
+        is_short_video = video_duration < 900  # < 15 minutes
+        is_medium_video = 900 <= video_duration < 3600  # 15-60 minutes
+        is_long_video = video_duration >= 3600  # >= 60 minutes (1 hour)
+        
+        for i, timestamp in enumerate(timestamps):
+            weight = 1.0
+            
+            # Fix 1: First-frame bias removal (applies to all queries)
+            if timestamp < 2.0:
+                weight *= 0.3
+            
+            # Fix 2: Teaser bias filter (for "final" queries)
+            if any(keyword in query_lower for keyword in ['final', 'end', 'result', 'finished', 'complete', 'done']):
+                # Penalize first 60 seconds (teaser/intro section)
+                if timestamp < 60.0:
+                    weight *= 0.1
+                
+                # Adaptive temporal boost based on video duration
+                if is_short_video:
+                    # Short videos: Boost last 20%
+                    if timestamp > video_duration * 0.8:
+                        weight *= 1.5
+                elif is_medium_video:
+                    # Medium videos: Boost last 15% more aggressively
+                    if timestamp > video_duration * 0.85:
+                        weight *= 2.0
+                elif is_long_video:
+                    # Long videos: Boost last 10% very aggressively
+                    # This fixes the woodworking video issue where final reveal is at 98.5%
+                    if timestamp > video_duration * 0.90:
+                        weight *= 3.0
+                    # Additional boost for last 5% (where true finales often occur)
+                    if timestamp > video_duration * 0.95:
+                        weight *= 2.0  # Multiplicative: 3.0 * 2.0 = 6.0x total boost
+            
+            # Fix 3: Temporal weighting based on query keywords
+            # Beginning queries: Exponential decay from start
+            if 'beginning' in query_lower or 'start' in query_lower or 'first' in query_lower:
+                weight *= 1.0 / (1.0 + timestamp / 60.0)
+            
+            # End queries: Linear increase toward end
+            elif 'end' in query_lower or 'last' in query_lower:
+                weight *= timestamp / video_duration
+            
+            # Middle queries: Gaussian peak in middle
+            elif 'middle' in query_lower:
+                distance_from_middle = abs(timestamp - video_duration / 2)
+                weight *= 1.0 - (distance_from_middle / (video_duration / 2))
+            
+            # Apply combined weight
+            filtered_similarities[i] *= weight
+        
+        return filtered_similarities
     
     def chat(self, question: str, use_llm: bool = True) -> str:
         """
