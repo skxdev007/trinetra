@@ -276,10 +276,10 @@ Apache 2.0 License – see LICENSE file.
 If you use Trinetra in your research, please cite:
 
 ```bibtex
-@software{trinetra2024,
+@software{trinetra2026,
   title={Trinetra: Proactive Video Understanding via Temporal Event Graphs},
-  author={Your Name},
-  year={2024},
+  author={S Khavin},
+  year={2026},
   url={https://github.com/skxdev007/trinetra}
 }
 ```
