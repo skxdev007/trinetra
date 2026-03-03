@@ -194,7 +194,14 @@ class FrameEncoder:
         try:
             if "clip" in self.model_name.lower():
                 import clip
-                text_tokens = clip.tokenize([text]).to(self.device)
+                
+                # Truncate text to fit CLIP's 77 token limit
+                # Rough estimate: 77 tokens ≈ 300 characters
+                max_chars = 300
+                if len(text) > max_chars:
+                    text = text[:max_chars-3] + "..."
+                
+                text_tokens = clip.tokenize([text], truncate=True).to(self.device)
                 with torch.no_grad():
                     text_embedding = self.model.encode_text(text_tokens)
                     text_embedding = F.normalize(text_embedding, dim=-1)
