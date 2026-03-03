@@ -1,12 +1,12 @@
-# SHARINGAN-DEEP Website Content
+# TRINETRA-DEEP Website Content
 <!-- Edit this markdown file to update the website. It's that simple! -->
 
 ---
 ## Site Configuration
-**Title:** SHARINGAN-DEEP
+**Title:** TRINETRA-DEEP
 **Subtitle:** Complete Architecture Reference
 **Tagline:** Temporal Event Graph Memory for Efficient Video Understanding via Learnable Attention-Guided Shift
-**Header:** SHARINGAN-DEEP Architecture Reference | Temporal Video Understanding
+**Header:** TRINETRA-DEEP Architecture Reference | Temporal Video Understanding
 
 ---
 ## Core Insight
@@ -18,14 +18,14 @@ This is the fundamental architectural advantage. Process video once at ingest. Q
 ---
 ## Overview
 
-SHARINGAN-DEEP transforms how small language models understand video. Instead of processing frames at query time, we build a rich temporal event graph during ingestion. This graph captures:
+TRINETRA-DEEP transforms how small language models understand video. Instead of processing frames at query time, we build a rich temporal event graph during ingestion. This graph captures:
 
 - **Events** — What happened and when
 - **Causality** — Why events occurred in sequence
 - **Entities** — Objects and actors tracked across time
 - **Relationships** — How elements interact temporally
 
-The result: A 0.5B parameter model with SHARINGAN-DEEP can outperform 70B+ reactive models on temporal reasoning tasks.
+The result: A 0.5B parameter model with TRINETRA-DEEP can outperform 70B+ reactive models on temporal reasoning tasks.
 
 ---
 ## Architecture: Multi-Scale Temporal Adaptive Sampling (TAS)
@@ -216,7 +216,7 @@ graph TB
 - No persistent understanding
 - Expensive per query
 
-### SHARINGAN-DEEP
+### TRINETRA-DEEP
 - Process video once at ingest
 - Unlimited temporal span
 - Extract semantics → preserve meaning
@@ -228,7 +228,7 @@ graph TB
 ---
 ## Performance
 
-SHARINGAN-DEEP enables small models to compete with giants:
+TRINETRA-DEEP enables small models to compete with giants:
 
 **60-70%** | Accuracy on Video-MME | Current baseline (improvements ongoing)
 **129** | Events detected | 47-minute chemistry video (NileRed)
@@ -239,9 +239,9 @@ SHARINGAN-DEEP enables small models to compete with giants:
 
 ### Table 1: State-of-the-Art (SOTA) Comparison
 
-This is the "Money Table" — showing that even with a smaller brain (0.5B model), SHARINGAN's architecture allows it to punch way above its weight class in Temporal Reasoning.
+This is the "Money Table" — showing that even with a smaller brain (0.5B model), Trinetra's architecture allows it to punch way above its weight class in Temporal Reasoning.
 
-| Metric | Reactive LMM (Gemini/GPT) | SHARINGAN-DEEP |
+| Metric | Reactive LMM (Gemini/GPT) | TRINETRA-DEEP |
 |--------|---------------------------|----------------|
 | **Max Video Depth** | Limited by Context (~30-60 min for detail) | Unlimited (Tested to 155 min) |
 | **"Final Result" Latency** | High (must scan entire 2.5hr buffer) | Instant (< 1s via Graph) |
@@ -256,15 +256,15 @@ This is the "Money Table" — showing that even with a smaller brain (0.5B model
 |-------|--------|------------------|-------------------|---------------|
 | Gemini 1.5 Pro | 1T+ | 75.0% | 62.1% | 68.4% |
 | GPT-4o | 100B+ | 71.8% | 58.4% | 65.2% |
-| **SHARINGAN (Ours)** | **0.5B** | **64.2%*** | **59.5%*** | **61.8%*** |
+| **Trinetra (Ours)** | **0.5B** | **64.2%*** | **59.5%*** | **61.8%*** |
 
-*Evaluated on a representative 20-video subset using the SHARINGAN temporal graph extraction method.
+*Evaluated on a representative 20-video subset using the Trinetra temporal graph extraction method.
 
 ### Table 3: Efficiency & Inference Latency
 
-This table shows how SHARINGAN "beats" large models on a laptop. Once you ingest a video, querying it is basically free and instant, whereas Gemini has to "re-watch" it every time.
+This table shows how Trinetra "beats" large models on a laptop. Once you ingest a video, querying it is basically free and instant, whereas Gemini has to "re-watch" it every time.
 
-| Metric | Gemini 1.5 Pro | GPT-4o | SHARINGAN-DEEP |
+| Metric | Gemini 1.5 Pro | GPT-4o | TRINETRA-DEEP |
 |--------|----------------|--------|----------------|
 | **Tokens per Query** | 1M+ (Video) | 128k+ (Video) | < 500 (Text) |
 | **Query Latency** | 15.2s | 10.8s | **0.8s** |
@@ -274,20 +274,20 @@ This table shows how SHARINGAN "beats" large models on a laptop. Once you ingest
 
 ### Table 4: Ablation Study (The "Why it Works" Table)
 
-Academics at top labs love "Ablations." This shows that the Event Graph is the reason SHARINGAN wins, not just luck.
+Academics at top labs love "Ablations." This shows that the Event Graph is the reason Trinetra wins, not just luck.
 
 | Configuration | Video-MME Accuracy | Causal Reasoning Score |
 |---------------|-------------------|------------------------|
 | Base Model (Qwen-0.5B) | 12.4% | 8.1% |
 | + Multi-Scale TAS | 35.8% | 22.4% |
 | + Temporal Event Graph | 58.2% | 51.0% |
-| **+ SHARINGAN (Full System)** | **64.2%** | **60.5%** |
+| **+ Trinetra (Full System)** | **64.2%** | **60.5%** |
 
 ### Table 5: Long-Horizon Recall (The "Lost-in-the-Middle" Test)
 
-Top researchers care about Long-Context. This shows that SHARINGAN doesn't "forget" the beginning of a long video.
+Top researchers care about Long-Context. This shows that Trinetra doesn't "forget" the beginning of a long video.
 
-| Video Length | GPT-4o Accuracy | SHARINGAN Accuracy |
+| Video Length | GPT-4o Accuracy | Trinetra Accuracy |
 |--------------|-----------------|-------------------|
 | 5 Minutes | 70% | 65% |
 | 30 Minutes | 42% (Window limit) | 64% |
@@ -344,9 +344,9 @@ Answer complex temporal queries: "What happened between X and Y?" "How many time
 ## Getting Started
 
 ```python
-pip install sharingan-core
+pip install trinetra
 
-from sharingan import VideoProcessor
+from trinetra import VideoProcessor
 
 # Process video once
 processor = VideoProcessor()
@@ -370,9 +370,9 @@ causal = video_memory.query("Why did the liquid turn purple?")
 ---
 ## Footer
 
-**Tagline:** SHARINGAN-DEEP — Making small models see deeply into video
+**Tagline:** TRINETRA-DEEP — Making small models see deeply into video
 
 **Links:**
-- [GitHub](https://github.com/yourusername/sharingan)
+- [GitHub](https://github.com/skxdev007/trinetra)
 - [Paper](https://arxiv.org/placeholder)
 - [Models](https://huggingface.co/placeholder)

@@ -41,13 +41,14 @@ htmlcov/
 
 # Sharingan specific
 cache/
+egoschema_videos/
 uploads/
 *.mp4
 *.avi
 *.mov
 *.mkv
 test_video.*
-.kiro
+.kiro/
 # OS
 .DS_Store
 Thumbs.db
