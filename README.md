@@ -1,9 +1,12 @@
 # 👁️ Trinetra - Deep Temporal Video Understanding
 
-<p align="center">
-  <img src="https://media1.tenor.com/m/n7LORMHtCRcAAAAC/marah-sedih.gif" alt="Trinetra GIF" style="width:100%; height:auto;"/>
-</p>
-
+```
+|''||''| '||''|.   '||' '|.   '|' '||''''|  |''||''| '||''|.       |    
+   ||     ||   ||   ||   |'|   |   ||  .       ||     ||   ||     |||    
+   ||     ||''|'    ||   | '|. |   ||''|       ||     ||''|'     |  ||   
+   ||     ||   |.   ||   |   |||   ||          ||     ||   |.   .''''|.  
+  .||.   .||.  '|' .||. .|.   '|  .||.....|   .||.   .||.  '|' .|.  .||. 
+```
 
 **Trinetra** is a proactive video understanding system that processes video once and enables unlimited queries at near-zero cost. Unlike reactive models (Gemini, GPT-4o) that re-process video for every query, Trinetra builds a rich temporal event graph during ingestion and answers from structured text.
 
