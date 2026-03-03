@@ -1,7 +1,7 @@
 # 👁️ Trinetra - Deep Temporal Video Understanding
 
 <p align="center">
-  <img src="https://media1.tenor.com/m/YeM3fMlamBoAAAAd/naruto.gif" alt="Trinetra GIF" style="width:100%; height:auto;"/>
+  <img src="https://media1.tenor.com/m/n7LORMHtCRcAAAAC/marah-sedih.gif" alt="Trinetra GIF" style="width:100%; height:auto;"/>
 </p>
 
 
