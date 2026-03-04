@@ -28,6 +28,38 @@ TRINETRA-DEEP transforms how small language models understand video. Instead of 
 
 The result: A 0.5B parameter model with TRINETRA-DEEP can outperform 70B+ reactive models on temporal reasoning tasks.
 
+### System Architecture
+
+```mermaid
+graph TD
+    A[Video Input] --> B[Adaptive Sampler]
+    B --> C[Context-Aware SmolVLM]
+    C --> D[Cross-Modal Verifier]
+    D --> E[Temporal Event Graph Builder]
+    E --> F[Hierarchical Memory Store]
+    
+    G[User Query] --> H[Query Router]
+    H --> I1[Window Query]
+    H --> I2[Semantic Query]
+    H --> I3[Causal Query]
+    H --> I4[Summary Query]
+    
+    I1 --> J[Reasoning Scaffold Builder]
+    I2 --> J
+    I3 --> J
+    I4 --> J
+    
+    J --> K[Memory Retrieval]
+    F --> K
+    K --> L[Small LLM Response]
+    
+    style C fill:#e1f5ff
+    style D fill:#ffe1e1
+    style E fill:#e1ffe1
+    style F fill:#fff5e1
+    style H fill:#f5e1ff
+```
+
 ---
 ## Architecture: Multi-Scale Temporal Adaptive Sampling (TAS)
 
@@ -225,6 +257,31 @@ graph TB
 - Near-zero cost per query
 
 **The key insight:** Language is a better compression format than pixels for temporal reasoning. We convert video to structured language once, then let small LLMs excel at what they do best — reading and reasoning over text.
+
+### Processing Pipeline
+
+```mermaid
+sequenceDiagram
+    participant V as Video
+    participant AS as Adaptive Sampler
+    participant SM as SmolVLM
+    participant CV as Cross-Modal Verifier
+    participant CS as Causal Scorer
+    participant TG as Temporal Graph
+    participant HM as Hierarchical Memory
+    
+    V->>AS: Raw frames
+    AS->>AS: Compute change scores
+    AS->>SM: Selected keyframes
+    SM->>SM: Rolling 8-frame context
+    SM->>CV: Frame descriptions
+    CV->>CV: Verify against CLIP
+    CV->>CS: Verified events
+    CS->>CS: Score causal edges
+    CS->>TG: Build event graph
+    TG->>HM: Store frame/event/chapter
+    HM-->>HM: Compress & index
+```
 
 ---
 ## Performance

@@ -1,8 +1,8 @@
-# Trinetra Architecture - Explained for Beginners
+# TRINETRA Architecture - Explained for Beginners
 
 ## The Big Picture
 
-Think of Trinetra like a **smart video note-taking machine** that watches a video once and remembers everything, so you can ask questions about it forever without rewatching.
+Think of TRINETRA like a **smart video note-taking machine** that watches a video once and remembers everything, so you can ask questions about it forever without rewatching.
 
 ```
 Video → Pick Important Frames → Understand Content → Remember Smartly → Answer Questions Fast

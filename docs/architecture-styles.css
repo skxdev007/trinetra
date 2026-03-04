@@ -1,19 +1,21 @@
 /* Architecture Page Styles */
 /* Clean, readable documentation styling */
 
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+
 :root {
     --primary-blue: #1a237e;
     --light-blue: #e3f2fd;
     --accent-blue: #5c6bc0;
-    --text-dark: #1a1a1a;
-    --text-light: #4a4a4a;
+    --text-dark: #000000;
+    --text-light: #181818;
     --border-color: #d4c5b9;
     --highlight-bg: #f9f6f2;
     --code-bg: #2d2d2d;
     --success-green: #4caf50;
     --warning-orange: #ff9800;
     --cream-bg: #faf8f5;
-    --nav-bg: #2d2d2d;
+    --nav-bg: rgba(45, 45, 45, 0.85);
 }
 
 * {
@@ -44,6 +46,8 @@ body.loaded {
 /* Header */
 header {
     background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: white;
     padding: 0;
     position: sticky;
@@ -59,6 +63,12 @@ nav {
     padding: 1rem 0;
 }
 
+.nav-links {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
 .nav-link {
     color: white;
     text-decoration: none;
@@ -66,6 +76,7 @@ nav {
     padding: 0.5rem 1rem;
     border-radius: 4px;
     transition: background 0.3s;
+    font-family: 'Instrument Serif', Georgia, serif;
 }
 
 .nav-link:hover {
@@ -73,10 +84,11 @@ nav {
     text-decoration: none;
 }
 
-.header-title {
-    font-size: 1.1rem;
+.nav-brand {
+    font-size: 1.2rem;
     font-weight: 600;
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: 'Instrument Serif', Georgia, serif;
+    color: white;
 }
 
 /* Main Content */
@@ -93,7 +105,7 @@ h1 {
     font-weight: 700;
     border-bottom: 3px solid var(--text-dark);
     padding-bottom: 0.5rem;
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: 'Instrument Serif', Georgia, serif;
 }
 
 h2 {
@@ -104,7 +116,7 @@ h2 {
     font-weight: 600;
     border-bottom: 2px solid var(--border-color);
     padding-bottom: 0.5rem;
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: 'Instrument Serif', Georgia, serif;
 }
 
 h3 {
@@ -113,7 +125,7 @@ h3 {
     margin-top: 2rem;
     margin-bottom: 1rem;
     font-weight: 600;
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: 'Instrument Serif', Georgia, serif;
 }
 
 h4 {
@@ -122,7 +134,7 @@ h4 {
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
     font-weight: 600;
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: 'Instrument Serif', Georgia, serif;
 }
 
 p {
@@ -306,6 +318,8 @@ img {
 /* Footer */
 footer {
     background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: white;
     padding: 2rem 0;
     margin-top: 4rem;
@@ -327,6 +341,22 @@ footer a {
 footer a:hover {
     color: white;
     text-decoration: underline;
+}
+
+.footer-contact {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 0.95rem;
+}
+
+.footer-contact p {
+    margin-bottom: 0.5rem;
+}
+
+.footer-contact a {
+    color: #90caf9;
+    font-weight: 500;
 }
 
 /* Error State */
