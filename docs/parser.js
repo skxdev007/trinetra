@@ -40,7 +40,8 @@ class ContentParser {
         lines.forEach(line => {
             const match = line.match(/\*\*(.+?):\*\*\s*(.+)/);
             if (match) {
-                this.config[match[1].toLowerCase()] = match[2];
+                const key = match[1].toLowerCase().replace(/ /g, '-');
+                this.config[key] = match[2];
             }
         });
     }
@@ -95,6 +96,15 @@ class ContentParser {
         document.getElementById('site-title').textContent = this.config.title;
         document.getElementById('site-subtitle').textContent = this.config.subtitle;
         document.getElementById('site-tagline').textContent = this.config.tagline;
+
+        // Add architecture link if present
+        if (this.config['architecture-link']) {
+            const heroSection = document.querySelector('.hero');
+            const linkDiv = document.createElement('div');
+            linkDiv.className = 'architecture-link-container';
+            linkDiv.innerHTML = this.config['architecture-link'];
+            heroSection.appendChild(linkDiv);
+        }
 
         // Render sections
         this.sections.forEach(section => {

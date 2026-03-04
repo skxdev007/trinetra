@@ -76,6 +76,31 @@ header {
     margin: 0 auto;
 }
 
+/* Architecture Link Button */
+.architecture-link-container {
+    margin-top: 2rem;
+}
+
+.architecture-link {
+    display: inline-block;
+    background: var(--accent-blue);
+    color: white !important;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(92, 107, 192, 0.3);
+}
+
+.architecture-link:hover {
+    background: var(--primary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 35, 126, 0.4);
+    text-decoration: none !important;
+}
+
 /* Core Insight Section */
 .core-insight {
     margin-bottom: 4rem;

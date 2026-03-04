@@ -297,5 +297,4 @@ Open an issue on GitHub for support or visit [https://skxdev007.github.io/trinet
 
 ---
 
-Made with ☕ & ❤️
-
+Made with ☕ & ❤️ in India 🇮🇳 for the world

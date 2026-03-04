@@ -7,6 +7,7 @@
 **Subtitle:** Complete Architecture Reference
 **Tagline:** Temporal Event Graph Memory for Efficient Video Understanding via Learnable Attention-Guided Shift
 **Header:** TRINETRA-DEEP Architecture Reference | Temporal Video Understanding
+**Architecture Link:** <a href="architecture.html" class="architecture-link">📖 Detailed Architecture Guide for Beginners</a>
 
 ---
 ## Core Insight
