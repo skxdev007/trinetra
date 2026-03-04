@@ -90,61 +90,76 @@ class ContentParser {
     }
 
     render() {
-        // Set page metadata
-        document.getElementById('page-title').textContent = `${this.config.title} | ${this.config.subtitle}`;
-        document.getElementById('header-text').textContent = this.config.header;
-        document.getElementById('site-title').textContent = this.config.title;
-        document.getElementById('site-subtitle').textContent = this.config.subtitle;
-        document.getElementById('site-tagline').textContent = this.config.tagline;
+        try {
+            // Set page metadata
+            document.getElementById('page-title').textContent = `${this.config.title} | ${this.config.subtitle}`;
+            document.getElementById('site-title').textContent = this.config.title;
+            document.getElementById('site-subtitle').textContent = this.config.subtitle;
+            document.getElementById('site-tagline').textContent = this.config.tagline;
 
-        // Add architecture link if present
-        if (this.config['architecture-link']) {
-            const heroSection = document.querySelector('.hero');
-            const linkDiv = document.createElement('div');
-            linkDiv.className = 'architecture-link-container';
-            linkDiv.innerHTML = this.config['architecture-link'];
-            heroSection.appendChild(linkDiv);
-        }
-
-        // Render sections
-        this.sections.forEach(section => {
-            switch (section.type) {
-                case 'core-insight':
-                    this.renderCoreInsight(section);
-                    break;
-                case 'overview':
-                    this.renderOverview(section);
-                    break;
-                case 'architecture':
-                    this.renderArchitecture(section);
-                    break;
-                case 'comparison':
-                    this.renderComparison(section);
-                    break;
-                case 'performance':
-                    this.renderPerformance(section);
-                    break;
-                case 'use-cases':
-                    this.renderUseCases(section);
-                    break;
-                case 'technical':
-                    this.renderTechnical(section);
-                    break;
-                case 'getting-started':
-                    this.renderGettingStarted(section);
-                    break;
-                case 'future':
-                    this.renderFuture(section);
-                    break;
-                case 'footer':
-                    this.renderFooter(section);
-                    break;
+            // Add architecture link if present
+            if (this.config['architecture-link']) {
+                const heroSection = document.querySelector('.hero');
+                if (heroSection) {
+                    const linkDiv = document.createElement('div');
+                    linkDiv.className = 'architecture-link-container';
+                    linkDiv.innerHTML = this.config['architecture-link'];
+                    heroSection.appendChild(linkDiv);
+                }
             }
-        });
 
-        // Initialize Mermaid diagrams
-        mermaid.run();
-        document.body.classList.add('loaded');
+            // Render sections
+            this.sections.forEach(section => {
+                try {
+                    switch (section.type) {
+                        case 'core-insight':
+                            this.renderCoreInsight(section);
+                            break;
+                        case 'overview':
+                            this.renderOverview(section);
+                            break;
+                        case 'architecture':
+                            this.renderArchitecture(section);
+                            break;
+                        case 'comparison':
+                            this.renderComparison(section);
+                            break;
+                        case 'performance':
+                            this.renderPerformance(section);
+                            break;
+                        case 'use-cases':
+                            this.renderUseCases(section);
+                            break;
+                        case 'technical':
+                            this.renderTechnical(section);
+                            break;
+                        case 'getting-started':
+                            this.renderGettingStarted(section);
+                            break;
+                        case 'future':
+                            this.renderFuture(section);
+                            break;
+                        case 'footer':
+                            this.renderFooter(section);
+                            break;
+                    }
+                } catch (sectionError) {
+                    console.error(`Error rendering section ${section.type}:`, sectionError);
+                }
+            });
+
+            // Initialize Mermaid diagrams with error handling
+            try {
+                mermaid.run().catch(err => console.error('Mermaid error:', err));
+            } catch (mermaidError) {
+                console.error('Mermaid initialization error:', mermaidError);
+            }
+            
+            document.body.classList.add('loaded');
+        } catch (error) {
+            console.error('Render error:', error);
+            document.body.classList.add('loaded');
+        }
     }
 
     renderCoreInsight(section) {
@@ -177,7 +192,7 @@ class ContentParser {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
 
-        // Extract intro (first paragraph)
+        // Extract intro (first paragraph before any diagram)
         const firstP = tempDiv.querySelector('p');
         if (firstP) {
             document.getElementById('overview-intro').innerHTML = firstP.innerHTML;
@@ -189,10 +204,17 @@ class ContentParser {
             document.getElementById('overview-features').innerHTML = ul.innerHTML;
         }
 
-        // Extract conclusion (last paragraph)
+        // Extract conclusion (last paragraph after list, before diagram)
         const paragraphs = tempDiv.querySelectorAll('p');
         if (paragraphs.length > 1) {
             document.getElementById('overview-conclusion').innerHTML = paragraphs[paragraphs.length - 1].innerHTML;
+        }
+        
+        // Add diagram if present
+        const diagram = tempDiv.querySelector('.diagram-container');
+        if (diagram) {
+            const overviewSection = document.querySelector('.overview');
+            overviewSection.appendChild(diagram);
         }
     }
 
@@ -219,11 +241,23 @@ class ContentParser {
         let proactivePoints = [];
         let conclusion = '';
         let currentSection = null;
+        let inMermaid = false;
 
         lines.forEach(line => {
+            // Skip mermaid diagram lines
+            if (line.startsWith('```mermaid')) {
+                inMermaid = true;
+                return;
+            }
+            if (line.startsWith('```') && inMermaid) {
+                inMermaid = false;
+                return;
+            }
+            if (inMermaid) return;
+            
             if (line.startsWith('### Reactive Models')) {
                 currentSection = 'reactive';
-            } else if (line.startsWith('### SHARINGAN-DEEP')) {
+            } else if (line.startsWith('### TRINETRA-DEEP')) {
                 currentSection = 'proactive';
             } else if (line.startsWith('**The key insight:**')) {
                 conclusion = line;
@@ -235,7 +269,7 @@ class ContentParser {
         });
 
         document.getElementById('reactive-title').textContent = 'Reactive Models (Gemini, GPT-4o)';
-        document.getElementById('proactive-title').textContent = 'SHARINGAN-DEEP';
+        document.getElementById('proactive-title').textContent = 'TRINETRA-DEEP';
 
         const reactiveList = document.getElementById('reactive-points');
         reactivePoints.forEach(point => {
@@ -252,6 +286,16 @@ class ContentParser {
         });
 
         document.getElementById('comparison-conclusion').innerHTML = this.parseMarkdown(conclusion);
+        
+        // Add diagram if present
+        const html = this.parseMarkdown(section.content);
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        const diagram = tempDiv.querySelector('.diagram-container');
+        if (diagram) {
+            const comparisonSection = document.querySelector('.why-it-works');
+            comparisonSection.appendChild(diagram);
+        }
     }
 
     renderPerformance(section) {
