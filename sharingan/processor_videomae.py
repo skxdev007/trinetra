@@ -125,12 +125,14 @@ class VideoProcessorVideoMAE:
         # Process frames
         print(f"⚙️  Processing frames...")
         frames = []
+        frames_for_classifier = []  # Keep original frames for classifier
         self.timestamps = []
         self.frame_indices = []
         embeddings = []
         
         for frame_idx, frame, change_score in sampler.sample(loader, source_fps=loader.fps):
             frames.append(frame)
+            frames_for_classifier.append(frame.copy())  # Store copy for classifier
             self.timestamps.append(frame_idx / loader.fps)
             self.frame_indices.append(frame_idx)
             
@@ -150,7 +152,7 @@ class VideoProcessorVideoMAE:
         
         # Classify actions
         print(f"🎯 Classifying actions...")
-        action_predictions = self._action_classifier.classify_batch(embeddings)
+        action_predictions = self._action_classifier.classify_batch(embeddings, frames=frames_for_classifier)
         
         # Build text-based TEG
         print(f"📝 Building text-based TEG...")
