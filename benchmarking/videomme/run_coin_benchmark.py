@@ -10,7 +10,7 @@ import time
 import json
 
 # Add sharingan to path
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 print("Starting benchmark...", flush=True)
 
@@ -35,7 +35,7 @@ def main():
         print(f"⚠ Using CPU (slower - consider enabling GPU)", flush=True)
     
     # Load QA data
-    qa_file = Path("benchmarking/videomme/long_video_coin/temporalbench_long_qa.json")
+    qa_file = Path(__file__).parent / "long_video_coin/temporalbench_long_qa.json"
     print(f"\nLoading QA data...", flush=True)
     with open(qa_file) as f:
         qa_data = json.load(f)
@@ -66,8 +66,16 @@ def main():
     )
     print(f"Processor ready!", flush=True)
     
+    # Setup output directory and files
+    output_dir = Path(__file__).parent / "long_video_coin/results"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    results_file = output_dir / f"results_clip_{timestamp}.json"
+    predictions_file = output_dir / f"predictions_clip_{timestamp}.jsonl"
+    
     # Process videos and answer questions
-    video_dir = Path("benchmarking/videomme/long_video_coin/dataset/long_video/COIN")
+    video_dir = Path(__file__).parent / "long_video_coin/dataset/long_video/COIN"
     results = []
     correct = 0
     total = 0
@@ -102,18 +110,21 @@ def main():
         for q_idx, qa in enumerate(questions, 1):
             question = qa['question']
             gt = qa['GT']
+            question_id = qa['idx']  # Use the idx field as question_id
             
             try:
                 response = processor.chat(question, use_llm=False)
                 
-                # Extract answer
-                resp_upper = response.strip().upper()
-                if resp_upper.startswith('A') or ('A' in resp_upper and 'B' not in resp_upper):
-                    predicted = 'A'
-                elif resp_upper.startswith('B') or ('B' in resp_upper and 'A' not in resp_upper):
-                    predicted = 'B'
+                # Extract answer - look for final answer in last 50 characters
+                import re
+                response_tail = response.strip()[-50:]
+                match = re.search(r'\b([AB])\b', response_tail)
+                if match:
+                    predicted = match.group(1)
                 else:
-                    predicted = 'A'
+                    # Fallback: look for "Answer: X" pattern
+                    answer_match = re.search(r'(?:answer|choice|option)[:\s]+([AB])', response.lower())
+                    predicted = answer_match.group(1).upper() if answer_match else 'A'
                 
                 is_correct = (predicted == gt)
                 if is_correct:
@@ -124,11 +135,41 @@ def main():
                 
                 results.append({
                     'video': video_name,
+                    'question_id': question_id,
                     'question': question[:100],
                     'predicted': predicted,
                     'ground_truth': gt,
                     'correct': is_correct
                 })
+                
+                # Save incrementally after each question
+                elapsed_time = time.time() - overall_start
+                accuracy = (correct / total * 100) if total > 0 else 0
+                
+                # Save predictions in TemporalBench .jsonl format
+                with open(predictions_file, 'w') as f:
+                    for result in results:
+                        f.write(json.dumps({
+                            'video': result['video'],
+                            'question_id': result['question_id'],
+                            'pred': result['predicted']
+                        }) + '\n')
+                
+                # Save detailed results
+                with open(results_file, 'w') as f:
+                    json.dump({
+                        'metadata': {
+                            'model': 'clip',
+                            'total_questions': total,
+                            'correct': correct,
+                            'accuracy': accuracy,
+                            'device': device,
+                            'elapsed_time': elapsed_time,
+                            'timestamp': datetime.now().isoformat(),
+                            'status': 'in_progress'
+                        },
+                        'results': results
+                    }, f, indent=2)
                 
             except Exception as e:
                 print(f"    Q{q_idx}: Error - {e}")
@@ -138,20 +179,26 @@ def main():
     
     total_time = time.time() - overall_start
     
-    # Save results
-    output_dir = Path("benchmarking/videomme/long_video_coin/results")
-    output_dir.mkdir(parents=True, exist_ok=True)
+    # Final save with completion status
+    with open(predictions_file, 'w') as f:
+        for result in results:
+            f.write(json.dumps({
+                'video': result['video'],
+                'question_id': result['question_id'],
+                'pred': result['predicted']
+            }) + '\n')
     
-    results_file = output_dir / f"results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     with open(results_file, 'w') as f:
         json.dump({
             'metadata': {
+                'model': 'clip',
                 'total_questions': total,
                 'correct': correct,
                 'accuracy': (correct/total*100) if total > 0 else 0,
                 'device': device,
                 'total_time': total_time,
-                'timestamp': datetime.now().isoformat()
+                'timestamp': datetime.now().isoformat(),
+                'status': 'completed'
             },
             'results': results
         }, f, indent=2)
@@ -165,7 +212,11 @@ def main():
     print(f"Accuracy: {(correct/total*100):.1f}%")
     print(f"Time: {total_time:.1f}s ({total_time/60:.1f} min)")
     print(f"Device: {device.upper()}")
-    print(f"Results saved: {results_file}")
+    print(f"\nResults saved:")
+    print(f"  Predictions (TemporalBench format): {predictions_file}")
+    print(f"  Detailed results: {results_file}")
+    print(f"\nTo get official BA/MBA scores, run:")
+    print(f"  python get_qa_acc.py --pred_file {predictions_file}")
     print(f"{'='*80}")
 
 if __name__ == "__main__":

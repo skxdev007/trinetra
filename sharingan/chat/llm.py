@@ -12,13 +12,15 @@ class VideoLLM:
     Uses retrieved video segments as context for natural language responses.
     """
     
-    def __init__(self, device: str = "auto"):
+    def __init__(self, model_name: str = "qwen-0.5b", device: str = "auto"):
         """
         Initialize the LLM.
         
         Args:
+            model_name: Model to use ("qwen-0.5b" or "qwen-1.5b")
             device: Device to run on ("cpu", "cuda", or "auto")
         """
+        self.model_name = model_name
         self.device = self._select_device(device)
         self.model = None
         self.tokenizer = None
@@ -33,37 +35,48 @@ class VideoLLM:
         return device
     
     def _load_model(self) -> None:
-        """Load Qwen2.5-0.5B model with 8-bit quantization."""
+        """Load Qwen2.5 model with 4-bit quantization."""
         try:
             from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
             
-            print(f"📦 Loading Qwen2.5-0.5B (8-bit)...")
+            # Map model names to HuggingFace identifiers
+            model_map = {
+                "qwen-0.5b": "Qwen/Qwen2.5-0.5B-Instruct",
+                "qwen-1.5b": "Qwen/Qwen2.5-1.5B-Instruct"
+            }
             
-            # 8-bit quantization config
-            quantization_config = BitsAndBytesConfig(
-                load_in_8bit=True,
-                llm_int8_threshold=6.0,
-            )
+            hf_model_name = model_map.get(self.model_name, "Qwen/Qwen2.5-0.5B-Instruct")
             
-            model_name = "Qwen/Qwen2.5-0.5B-Instruct"
+            print(f"📦 Loading {hf_model_name} with 4-bit quantization...")
+            print(f"   Note: Downloads 3.1GB FP16 model, then quantizes to ~900MB VRAM")
             
             # Load tokenizer
             self.tokenizer = AutoTokenizer.from_pretrained(
-                model_name,
+                hf_model_name,
                 trust_remote_code=True
             )
             
-            # Load model with 8-bit quantization
+            # 4-bit quantization config (NF4 for better quality)
+            quantization_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_compute_dtype=torch.float16,
+                bnb_4bit_use_double_quant=True,
+            )
+            
+            # Load model with 4-bit quantization
             self.model = AutoModelForCausalLM.from_pretrained(
-                model_name,
+                hf_model_name,
                 quantization_config=quantization_config,
                 device_map="auto",
                 trust_remote_code=True,
-                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32
+                low_cpu_mem_usage=True
             )
             
             self.model.eval()
-            print(f"✓ Qwen2.5-0.5B loaded on {self.device}")
+            
+            vram_usage = "~900MB" if self.model_name == "qwen-1.5b" else "~538MB"
+            print(f"✓ {self.model_name} loaded with 4-bit quantization ({vram_usage} VRAM)")
             
         except ImportError as e:
             raise ImportError(
@@ -71,7 +84,7 @@ class VideoLLM:
                 "Install with: pip install transformers bitsandbytes accelerate"
             ) from e
         except Exception as e:
-            raise RuntimeError(f"Failed to load Qwen2.5-0.5B: {str(e)}") from e
+            raise RuntimeError(f"Failed to load {self.model_name}: {str(e)}") from e
     
     def chat(
         self,
@@ -181,6 +194,52 @@ class VideoLLM:
         """Clear chat history."""
         self.chat_history = []
     
+    def generate(self, prompt: str, max_new_tokens: int = 256, temperature: float = 0.7) -> str:
+        """
+        Generate response from a direct prompt (no chat formatting).
+        
+        Args:
+            prompt: Direct prompt text
+            max_new_tokens: Maximum tokens to generate
+            temperature: Sampling temperature
+            
+        Returns:
+            Generated response
+        """
+        if self.model is None:
+            return "LLM not available. Please ensure Qwen2.5 is properly installed."
+        
+        try:
+            # Tokenize
+            inputs = self.tokenizer(
+                prompt,
+                return_tensors="pt",
+                truncation=True,
+                max_length=2048
+            ).to(self.model.device)
+            
+            # Generate
+            with torch.no_grad():
+                outputs = self.model.generate(
+                    **inputs,
+                    max_new_tokens=max_new_tokens,
+                    temperature=temperature,
+                    do_sample=True,
+                    top_p=0.9,
+                    pad_token_id=self.tokenizer.eos_token_id
+                )
+            
+            # Decode response
+            response = self.tokenizer.decode(
+                outputs[0][inputs['input_ids'].shape[1]:],
+                skip_special_tokens=True
+            )
+            
+            return response.strip()
+            
+        except Exception as e:
+            return f"Error generating response: {str(e)}"
+    
     def __repr__(self) -> str:
         """String representation."""
-        return f"VideoLLM(model=Qwen2.5-0.5B, device={self.device})"
+        return f"VideoLLM(model={self.model_name}, device={self.device})"

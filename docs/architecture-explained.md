@@ -115,28 +115,59 @@ Instead of processing all 30 frames per second, the sampler intelligently picks 
 ---
 
 ### **2. Vision Encoding**
-**Files:** `sharingan/vlm/encoder.py`, `sharingan/vlm/smolvlm.py`, `sharingan/vlm/context_aware_smolvlm.py`
+**Files:** `sharingan/vlm/encoder.py`, `sharingan/vlm/smolvlm.py`, `sharingan/vlm/context_aware_smolvlm.py`, `sharingan/vlm/videomae_encoder.py`, `sharingan/vlm/action_classifier.py`
 
 **Job:** Convert images into numbers that computers can understand and compare
 
-Two options available:
+Three options available:
 
-#### **CLIP (Fast & Efficient)**
+#### **CLIP (Fast & Efficient) - Cross-Modal Architecture**
 - Converts images directly to 512-dimensional vectors
 - Memory: ~400MB
 - Speed: Very fast
 - Quality: Good for basic semantic search
+- Architecture: Cross-modal embedding matching (vision ↔ text in shared space)
 - Use case: Quick processing, semantic similarity
+- Pipeline: `VideoProcessor` (existing)
 
-#### **SmolVLM (Detailed & Accurate)**
+#### **SmolVLM (Detailed & Accurate) - Cross-Modal Architecture**
 - Generates detailed text descriptions of each frame
 - Converts descriptions to embeddings using CLIP text encoder
 - Memory: ~538MB (8-bit quantized)
 - Speed: Slower but more accurate
 - Quality: Excellent for complex understanding
+- Architecture: Cross-modal embedding matching (vision ↔ text in shared space)
 - Use case: When you need detailed frame descriptions
+- Pipeline: `VideoProcessor` (existing)
 
-**Output:** Each frame becomes a 512-dimensional vector that captures its semantic meaning.
+#### **VideoMAE V2 (Motion-Aware) - Text-Based TEG Architecture** ⭐ NEW
+- Vision-only encoder with native 1024D embeddings (Large) or 1280D (Huge)
+- Memory: ~600MB (Large), ~1.2GB (Huge)
+- Speed: Moderate
+- Quality: Excellent for temporal reasoning and action recognition
+- Architecture: **Vision → Text translation** (no cross-modal matching)
+- Pipeline: VideoMAE → Action Classifier → Text Labels → TEG → Qwen
+- Use case: When you need superior temporal understanding and action recognition
+- Pipeline: `VideoProcessorVideoMAE` (new, separate)
+
+**Key Architectural Difference:**
+
+**CLIP/SmolVLM Pipeline (Cross-Modal):**
+```
+Video → Embeddings (512D) → Store embeddings
+Query → Text embedding (512D) → Cosine similarity → Results
+```
+
+**VideoMAE Pipeline (Text-Based TEG):**
+```
+Video → VideoMAE (1024D) → Action Classifier → Text labels → TEG
+Query → Qwen reads text → Results
+(No embedding matching at query time!)
+```
+
+**Output:** 
+- CLIP/SmolVLM: 512-dimensional vectors for cross-modal matching
+- VideoMAE: Text-based temporal event graph (no embeddings at query time)
 
 ---
 
@@ -1101,16 +1132,19 @@ Guides tiny models through complex reasoning:
 
 ## Comparison with Commercial VLMs
 
-| Feature | GPT-4o / Gemini | Trinetra |
-|---------|----------------|----------|
-| **Processing** | Every query | Once at ingest |
-| **Max video length** | 30-60 minutes | 155+ minutes |
-| **Query latency** | 15+ seconds | <1 second |
-| **Cost per 100 queries** | $50 | <$0.01 |
-| **Hardware** | H100 cluster | Consumer laptop |
-| **Privacy** | Cloud API | Local processing |
-| **Temporal reasoning** | Limited | Multi-scale |
-| **Causal reasoning** | Basic | Event graph |
+| Feature | GPT-4o / Gemini | Trinetra (CLIP/SmolVLM) | Trinetra (VideoMAE) |
+|---------|----------------|------------------------|---------------------|
+| **Processing** | Every query | Once at ingest | Once at ingest |
+| **Architecture** | Cross-modal VLM | Cross-modal embeddings | Text-based TEG |
+| **Query mechanism** | Re-process video | Embedding similarity | Text-based reasoning |
+| **Max video length** | 30-60 minutes | 155+ minutes | 155+ minutes |
+| **Query latency** | 15+ seconds | <1 second | <1 second |
+| **Cost per 100 queries** | $50 | <$0.01 | <$0.01 |
+| **Hardware** | H100 cluster | Consumer laptop | Consumer laptop |
+| **Privacy** | Cloud API | Local processing | Local processing |
+| **Temporal reasoning** | Limited | Multi-scale | Action-based |
+| **Causal reasoning** | Basic | Event graph | Text-based TEG |
+| **Motion understanding** | Limited | Moderate | Excellent |
 
 ---
 
@@ -1456,9 +1490,138 @@ Trinetra's architecture enables efficient, accurate, and cost-effective video un
 4. **Efficient storage** with 130× compression
 5. **Intelligent querying** with bias correction
 6. **Small LLMs** guided by reasoning scaffolds
+7. **Dual architecture support:**
+   - **CLIP/SmolVLM:** Cross-modal embedding matching (512D shared space)
+   - **VideoMAE:** Text-based TEG with action classification (no embedding matching)
 
-The result: Process video once, query forever at near-zero cost, with better temporal reasoning than commercial VLMs using only 0.5B parameter models running locally.
+The result: Process video once, query forever at near-zero cost, with better temporal reasoning than commercial VLMs using only 0.5B-1.5B parameter models running locally.
+
+### **Architecture Comparison**
+
+**CLIP/SmolVLM Pipeline (Cross-Modal):**
+- Vision and text in shared 512D embedding space
+- Query time: Cosine similarity search
+- Best for: Semantic search, general queries
+- Files: `sharingan/processor.py`, `sharingan/vlm/encoder.py`
+
+**VideoMAE Pipeline (Text-Based TEG):**
+- Vision → Text translation at ingest time
+- Query time: Text-based reasoning (no embeddings)
+- Best for: Action recognition, temporal reasoning
+- Files: `sharingan/processor_videomae.py`, `sharingan/vlm/videomae_encoder.py`, `sharingan/vlm/action_classifier.py`
+
+Both pipelines share the same core philosophy: **Process once, query forever.**
+
+---
+
+## VideoMAE Text-Based TEG Architecture (NEW)
+
+### **The Core Innovation**
+
+Unlike CLIP/SmolVLM which use cross-modal embedding matching, VideoMAE uses a fundamentally different approach:
+
+**Vision → Text Translation (No Cross-Modal Matching)**
+
+```
+VideoMAE V2 (1024D native embeddings)
+         ↓
+Action Classifier (cosine match against action bank)
+         ↓
+Text Labels: "[T=0s-4s] left hand turns knob clockwise, conf=0.91"
+         ↓
+Text-Based TEG (pure text, no embeddings)
+         ↓
+Qwen 2.5-1.5B reads text, answers query
+```
+
+### **Why This Architecture?**
+
+**The Key Insight:**
+> "A 0.5B model reading perfect text beats a 70B model squinting at compressed frames."
+
+**Advantages:**
+1. **No embedding matching at query time** - Vision → Text happens once during ingest
+2. **Native VideoMAE embeddings** - No projection, preserves fine-grained motion information
+3. **Action-aware** - Explicitly classifies actions instead of generic embeddings
+4. **Text-based reasoning** - Qwen operates purely on text (its strength)
+5. **Interpretable** - Text labels are human-readable
+
+**Disadvantages:**
+1. **Action bank required** - Needs pre-defined action labels (COIN's 778 labels)
+2. **Classification bottleneck** - Limited to known actions
+3. **No semantic search** - Can't do arbitrary "find red cup" queries (yet)
+
+### **Implementation Files**
+
+**New Files (Separate from CLIP pipeline):**
+- `sharingan/processor_videomae.py` - VideoMAE processor (text-based TEG)
+- `sharingan/vlm/videomae_encoder.py` - VideoMAE encoder (native 1024D)
+- `sharingan/vlm/action_classifier.py` - Action classifier (embeddings → text labels)
+
+**Modified Files:**
+- `sharingan/chat/llm.py` - Added `generate()` method and `model_name` parameter
+
+**Unchanged Files (CLIP pipeline intact):**
+- `sharingan/processor.py` - Original CLIP/SmolVLM processor
+- `sharingan/vlm/encoder.py` - Original CLIP encoder
+- All temporal reasoning modules
+
+### **Usage Example**
+
+```python
+# VideoMAE pipeline (text-based TEG)
+from sharingan.processor_videomae import VideoProcessorVideoMAE
+
+processor = VideoProcessorVideoMAE(
+    device='cuda',
+    llm_model='qwen-1.5b'
+)
+
+# Process video once
+results = processor.process('video.mp4')
+# Output: Text-based TEG with action labels
+
+# Query using text reasoning (no embeddings)
+response = processor.chat('What actions happened?')
+# Qwen reads text labels, generates response
+```
+
+### **Comparison: CLIP vs VideoMAE**
+
+| Aspect | CLIP Pipeline | VideoMAE Pipeline |
+|--------|--------------|-------------------|
+| **Embedding dim** | 512D | 1024D (native) |
+| **Vision encoder** | CLIP ViT-B/32 | VideoMAE V2-Large |
+| **Text encoder** | CLIP text | None (action classifier) |
+| **Query mechanism** | Cosine similarity | Text-based reasoning |
+| **Storage** | Embeddings (512D) | Text labels |
+| **Query input** | Text → embedding | Text → Qwen |
+| **Temporal reasoning** | Multi-scale TAS | Action sequences |
+| **Best for** | Semantic search | Action recognition |
+| **Processor file** | `processor.py` | `processor_videomae.py` |
+
+### **Future Enhancements**
+
+**Short-term:**
+1. Load full COIN 778 action labels
+2. Train action classifier on COIN dataset
+3. Add confidence thresholding for action predictions
+4. Implement action co-occurrence patterns
+
+**Long-term:**
+1. Hybrid architecture: VideoMAE for actions + CLIP for objects
+2. Learnable action embeddings (not just classification)
+3. Hierarchical action taxonomy (sub-actions → actions → activities)
+4. Cross-video action transfer learning
 
 ---
 
 **Made with ☕ & ❤️ in India 🇮🇳 for the world**
+
+---
+
+## Additional Resources
+
+- [Issues and Fixes](issues-and-fixes.md) - Detailed documentation of problems encountered and solutions
+- [VideoMAE Implementation](../VIDEOMAE_ARCHITECTURE_COMPLETE.md) - Complete VideoMAE architecture guide
+- [Benchmark Results](../benchmarking/videomme/long_video_coin/results/) - Performance metrics and comparisons

@@ -11,7 +11,7 @@ import time
 import json
 
 # Add sharingan to path
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 print("Starting SmolVLM benchmark...", flush=True)
 
@@ -19,13 +19,23 @@ from sharingan.processor import VideoProcessor
 
 print("VideoProcessor imported successfully!", flush=True)
 
-def save_incremental_results(output_file, metadata, results):
-    """Save results incrementally to file"""
+def save_incremental_results(output_file, predictions_file, metadata, results):
+    """Save results incrementally to both JSON and JSONL files"""
+    # Save detailed JSON
     with open(output_file, 'w') as f:
         json.dump({
             'metadata': metadata,
             'results': results
         }, f, indent=2)
+    
+    # Save predictions in TemporalBench .jsonl format
+    with open(predictions_file, 'w') as f:
+        for result in results:
+            f.write(json.dumps({
+                'video': result['video'],
+                'question_id': result['question_id'],
+                'pred': result['predicted']
+            }) + '\n')
 
 def main():
     print("\n" + "="*80, flush=True)
@@ -44,7 +54,7 @@ def main():
         print(f"⚠ Using CPU (slower - consider enabling GPU)", flush=True)
     
     # Load QA data
-    qa_file = Path("benchmarking/videomme/long_video_coin/temporalbench_long_qa.json")
+    qa_file = Path(__file__).parent / "long_video_coin/temporalbench_long_qa.json"
     print(f"\nLoading QA data...", flush=True)
     with open(qa_file) as f:
         qa_data = json.load(f)
@@ -73,19 +83,24 @@ def main():
     )
     print(f"Processor ready!", flush=True)
     
-    # Setup output directory and file
-    output_dir = Path("benchmarking/videomme/long_video_coin/results")
+    # Setup output directory and files
+    output_dir = Path(__file__).parent / "long_video_coin/results"
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_file = output_dir / f"results_smolvlm_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    output_file = output_dir / f"results_smolvlm_{timestamp}.json"
+    predictions_file = output_dir / f"predictions_smolvlm_{timestamp}.jsonl"
     
     # Process videos and answer questions
-    video_dir = Path("benchmarking/videomme/long_video_coin/dataset/long_video/COIN")
+    video_dir = Path(__file__).parent / "long_video_coin/dataset/long_video/COIN"
     results = []
     correct = 0
     total = 0
     
     print(f"\nProcessing videos...")
-    print(f"Results will be saved incrementally to: {output_file}")
+    print(f"Results will be saved incrementally to:")
+    print(f"  Predictions: {predictions_file}")
+    print(f"  Detailed: {output_file}")
     print("="*80)
     
     overall_start = time.time()
@@ -118,18 +133,21 @@ def main():
         for q_idx, qa in enumerate(questions, 1):
             question = qa['question']
             gt = qa['GT']
+            question_id = qa['idx']  # Use the idx field as question_id
             
             try:
                 response = processor.chat(question, use_llm=False)
                 
-                # Extract answer
-                resp_upper = response.strip().upper()
-                if resp_upper.startswith('A') or ('A' in resp_upper and 'B' not in resp_upper):
-                    predicted = 'A'
-                elif resp_upper.startswith('B') or ('B' in resp_upper and 'A' not in resp_upper):
-                    predicted = 'B'
+                # Extract answer - look for final answer in last 50 characters
+                import re
+                response_tail = response.strip()[-50:]
+                match = re.search(r'\b([AB])\b', response_tail)
+                if match:
+                    predicted = match.group(1)
                 else:
-                    predicted = 'A'
+                    # Fallback: look for "Answer: X" pattern
+                    answer_match = re.search(r'(?:answer|choice|option)[:\s]+([AB])', response.lower())
+                    predicted = answer_match.group(1).upper() if answer_match else 'A'
                 
                 is_correct = (predicted == gt)
                 if is_correct:
@@ -141,11 +159,31 @@ def main():
                 
                 results.append({
                     'video': video_name,
+                    'question_id': question_id,
                     'question': question[:100],
                     'predicted': predicted,
                     'ground_truth': gt,
                     'correct': is_correct
                 })
+                
+                # Save incrementally after each question
+                elapsed_time = time.time() - overall_start
+                accuracy = (correct / total * 100) if total > 0 else 0
+                
+                metadata = {
+                    'model': 'smolvlm',
+                    'videos_processed': video_idx,
+                    'total_videos': len(videos_qa),
+                    'total_questions': total,
+                    'correct': correct,
+                    'accuracy': accuracy,
+                    'device': device,
+                    'elapsed_time': elapsed_time,
+                    'timestamp': datetime.now().isoformat(),
+                    'status': 'in_progress'
+                }
+                
+                save_incremental_results(output_file, predictions_file, metadata, results)
                 
             except Exception as e:
                 print(f"    Q{q_idx}: Error - {e}")
@@ -158,23 +196,6 @@ def main():
         
         print(f"  Video accuracy: {video_accuracy:.1f}% ({video_correct}/{len(questions)})")
         print(f"  Running accuracy: {accuracy:.1f}% ({correct}/{total})")
-        
-        # Save results incrementally after each video
-        elapsed_time = time.time() - overall_start
-        metadata = {
-            'model': 'smolvlm',
-            'videos_processed': video_idx,
-            'total_videos': len(videos_qa),
-            'total_questions': total,
-            'correct': correct,
-            'accuracy': accuracy,
-            'device': device,
-            'elapsed_time': elapsed_time,
-            'timestamp': datetime.now().isoformat(),
-            'status': 'in_progress'
-        }
-        
-        save_incremental_results(output_file, metadata, results)
         print(f"  ✓ Results saved incrementally")
     
     total_time = time.time() - overall_start
@@ -193,7 +214,7 @@ def main():
         'status': 'completed'
     }
     
-    save_incremental_results(output_file, final_metadata, results)
+    save_incremental_results(output_file, predictions_file, final_metadata, results)
     
     # Summary
     print(f"\n{'='*80}")
@@ -204,7 +225,11 @@ def main():
     print(f"Accuracy: {(correct/total*100):.1f}%")
     print(f"Time: {total_time:.1f}s ({total_time/60:.1f} min)")
     print(f"Device: {device.upper()}")
-    print(f"Results saved: {output_file}")
+    print(f"\nResults saved:")
+    print(f"  Predictions (TemporalBench format): {predictions_file}")
+    print(f"  Detailed results: {output_file}")
+    print(f"\nTo get official BA/MBA scores, run:")
+    print(f"  python get_qa_acc.py --pred_file {predictions_file}")
     print(f"{'='*80}")
 
 if __name__ == "__main__":
