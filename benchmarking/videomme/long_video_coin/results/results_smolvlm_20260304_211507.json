@@ -1,0 +1,2557 @@
+{
+  "metadata": {
+    "model": "smolvlm",
+    "videos_processed": 105,
+    "total_videos": 492,
+    "total_questions": 363,
+    "correct": 175,
+    "accuracy": 48.209366391184574,
+    "device": "cpu",
+    "elapsed_time": 1505.4250059127808,
+    "timestamp": "2026-03-04T21:40:12.623121",
+    "status": "in_progress"
+  },
+  "results": [
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold a screwd",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold a screwd",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_133.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. A few pieces of meat are being grilled over a charcoal p",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_133.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. A few pieces of meat are being grilled over a charcoal p",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_133.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The camera zooms in onto a part of the skewer. A few pie",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text 'lemon' appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_45.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person turns the citrus reamer counter clockwise wit",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_45.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person lifts the lid of the box and takes out a pinc",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_45.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person turns the citrus reamer counter clockwise wit",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_45.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person turns the citrus reamer counter clockwise wit",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_45.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person turns the citrus reamer counter clockwise wit",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_45.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person turns the citrus reamer counter clockwise wit",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_45.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person turns the citrus reamer counter clockwise wit",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_42.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. A person holds an onion against the",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_42.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. A person holds an onion against the",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_42.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. A person holds an onion against the",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_42.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person holds an onion against the grater with the ri",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. A person holds an onion against the",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. A person holds an onion against the",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. A person holds an onion against the",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. The person picks up the bowl of oni",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. He extracts t",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. He extracts t",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. A person holds an onion against the",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. A person holds an onion against the",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. A person holds an onion against the",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "hNuX5Tthg_U_start_13.0_end_143.0.mp4",
+      "question": "Which caption best describes this video?\nA. The text fades away. A person holds an onion against the",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "c6ieABj3Kj0_start_50.0_end_72.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a clear tube in their left hand as they ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "c6ieABj3Kj0_start_50.0_end_72.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a clear tube in their left hand as they ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "c6ieABj3Kj0_start_50.0_end_72.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a clear tube in their left hand as they ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "c6ieABj3Kj0_start_50.0_end_72.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a clear tube in their left hand as they ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "c6ieABj3Kj0_start_59.0_end_87.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person holds a metal can in their left hand and with t",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "c6ieABj3Kj0_start_59.0_end_87.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person holds a metal can in their left hand and with t",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "c6ieABj3Kj0_start_59.0_end_87.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person holds a metal can in their left hand and with t",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "c6ieABj3Kj0_start_59.0_end_87.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person holds a metal can in their left hand and with t",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "c6ieABj3Kj0_start_50.0_end_87.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a clear tube in their left hand as they ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "c6ieABj3Kj0_start_50.0_end_87.0.mp4",
+      "question": "Which caption best describes this video?\nA. The camera zoomed into the process of pushing the tube i",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "c6ieABj3Kj0_start_50.0_end_87.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a clear tube in their left hand as they ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "c6ieABj3Kj0_start_50.0_end_87.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a clear tube in their left hand as they ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "6gn3q1D0pIs_start_10.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. The woman holds the bucket in the right hand and scoops ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "6gn3q1D0pIs_start_10.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. The woman holds the bucket in the right hand and scoops ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "6gn3q1D0pIs_start_10.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. The woman holds the bucket in the right hand and scoops ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "6gn3q1D0pIs_start_10.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. The woman holds the bucket in the right hand and scoops ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_9.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen in both hands. Removin",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_9.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen in both hands. Removin",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_9.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen in both hands. Removin",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_97.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a a calligraphy pen. Removing the top wi",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_97.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen. Removing the top with",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_97.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a a calligraphy pen. Removing the top wi",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_76.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person holds the pen upside down with the left hand ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_76.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person holds the pen upside down with the left hand ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_76.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person holds the pen upside down with the left hand ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_107.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. While holding the pen with the right hand and dipping th",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_107.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. While holding the pen with the right hand and dipping th",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_107.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. While holding the pen with the right hand and dipping th",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_97.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a a calligraphy pen. Removing the top wi",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_97.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand in order to begin to remo",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_97.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a a calligraphy pen. Removing the top wi",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_97.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a a calligraphy pen. Removing the top wi",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_51.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using both hands in order to guide a calligraphy",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_76.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person holds the pen upside down with the left hand ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_76.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person holds the pen upside down with the left hand ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_76.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person holds the pen upside down with the left hand ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_9.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen in both hands. Removin",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_9.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen in both hands. Removin",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_9.0_end_125.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen in both hands. Removin",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_9.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen in both hands. Removin",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_9.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen in both hands. Removin",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "z8q6bjOoZGU_start_9.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen in both hands. Removin",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "z8q6bjOoZGU_start_9.0_end_169.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding a calligraphy pen in both hands. Removin",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_85.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Two people in the woods picking up a black cushion from ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_85.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Two people in the woods picking up a black cushion from ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_85.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Two people in the woods picking up a black cushion from ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_102.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A nail is placed on the ground, and a person uses his ri",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_102.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person keeping his left foot with shoes and follow rig",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_102.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person keeping his left foot with shoes and follow rig",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_112.0_end_138.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person holds the top part of the stick with the righ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_112.0_end_138.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person holds the top part of the stick with the righ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_112.0_end_138.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person holds the top part of the stick with the righ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_83.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_83.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_83.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman setting up a tent outside. She's using both hand",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman setting up a tent outside. She's using both hand",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman setting up a tent outside. She's using both hand",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_85.0_end_172.0.mp4",
+      "question": "Which caption best describes this video?\nA. Two people in the woods picking up a black cushion from ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_85.0_end_172.0.mp4",
+      "question": "Which caption best describes this video?\nA. Two people in the woods picking up a black cushion from ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_85.0_end_172.0.mp4",
+      "question": "Which caption best describes this video?\nA. Two people in the woods picking up a black cushion from ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman setting up a tent outside. She's using both hand",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman is using both hands to work with some cables. Th",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman setting up a tent outside. She's using both hand",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman setting up a tent outside. She's using both hand",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_78.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person in the correct walking over to some sticks and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_78.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person in the correct walking over to some sticks and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_78.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person in the correct walking over to some sticks and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_78.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person in the correct walking over to some sticks and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_172.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_172.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_172.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_78.0_end_172.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person in the correct walking over to some sticks and ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_78.0_end_172.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person in the correct walking over to some sticks and ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_78.0_end_172.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person in the correct walking over to some sticks and ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_144.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_144.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_144.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_28.0_end_191.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person standing up in a forested area getting ready to",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_144.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman setting up a tent outside. She's using both hand",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_144.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman setting up a tent outside. She's using both hand",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_144.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman setting up a tent outside. She's using both hand",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "pCCVwljBs7M_start_0.0_end_144.0.mp4",
+      "question": "Which caption best describes this video?\nA. A woman setting up a tent outside. She's using both hand",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_63.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person moistens a white paper towel with water contain",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_63.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person moistens a white paper towel with water contain",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_63.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person moistens a white paper towel with water contain",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_47.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand with a sponge in it to ru",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_47.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand with a sponge in it to ru",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_47.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand with a sponge in it to ru",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_40.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. There are two persons in the video. A person lifts the w",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_59.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_46.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_46.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_46.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_46.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_47.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand with a sponge in it to ru",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_47.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone wipes off the white solution with a paper towel ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_47.0_end_82.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand with a sponge in it to ru",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "TGjyPv4UMGw_start_28.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right hand and a piece of folded pap",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "SzdcAAWolfs_start_18.0_end_75.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person hits the egg on the counter with his right ha",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "SzdcAAWolfs_start_18.0_end_75.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person hits the egg on the counter with his right ha",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "SzdcAAWolfs_start_18.0_end_75.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person hits the egg on the counter with his right ha",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "SzdcAAWolfs_start_18.0_end_75.0.mp4",
+      "question": "Which caption best describes this video?\nA. Holding the bowl with the left hand, he picks up the mug",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "SzdcAAWolfs_start_18.0_end_64.0.mp4",
+      "question": "Which caption best describes this video?\nA. Holding the bowl with the left hand, he picks up the mug",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "SzdcAAWolfs_start_18.0_end_64.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person hits the egg on the counter with his right ha",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "SzdcAAWolfs_start_18.0_end_64.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person hits the egg on the counter with his right ha",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "SzdcAAWolfs_start_49.0_end_75.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone placing down a large baking sheet on the counter",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "SzdcAAWolfs_start_49.0_end_75.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone placing down a large baking sheet on the counter",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "SzdcAAWolfs_start_49.0_end_75.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone placing down a large baking sheet on the counter",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_126.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to remove the lug nuts from ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_126.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to remove the lug nuts from ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_126.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to remove the lug nuts from ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_126.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to remove the lug nuts from ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "L1ysBppH9ok_start_65.0_end_126.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person is using both their hands to move what appears ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "L1ysBppH9ok_start_65.0_end_126.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person is using both their hands to move what appears ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "L1ysBppH9ok_start_65.0_end_126.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person is using both their hands to move what appears ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "L1ysBppH9ok_start_65.0_end_126.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person is using both their hands to move what appears ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "L1ysBppH9ok_start_65.0_end_111.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person is using both their hands to move what appears ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "L1ysBppH9ok_start_65.0_end_111.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person is using both their hands to move what appears ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "L1ysBppH9ok_start_65.0_end_111.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person is using both their hands to move what appears ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_77.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to remove the lug nuts from ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_77.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to remove the lug nuts from ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_77.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to remove the lug nuts from ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_111.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to tighten the lug nuts on h",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_111.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to remove the lug nuts from ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_111.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to remove the lug nuts from ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "L1ysBppH9ok_start_32.0_end_111.0.mp4",
+      "question": "Which caption best describes this video?\nA. A man using a tool in order to remove the lug nuts from ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Utr8SQWeRNc_start_55.0_end_89.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man picks up the brush from the right side with the ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Utr8SQWeRNc_start_55.0_end_89.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man picks up the brush from the right side with the ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Utr8SQWeRNc_start_55.0_end_89.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man picks up the brush from the right side with the ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Utr8SQWeRNc_start_81.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person, wearing a blue glove on their right hand, repe",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Utr8SQWeRNc_start_81.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person, wearing a blue glove on their right hand, repe",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Utr8SQWeRNc_start_81.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person, wearing a blue glove on their right hand, repe",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Utr8SQWeRNc_start_81.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person, wearing a blue glove on their right hand, repe",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Utr8SQWeRNc_start_27.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person bends and scrubs the inside of the toilet rep",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Utr8SQWeRNc_start_27.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person bends and scrubs the inside of the toilet rep",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Utr8SQWeRNc_start_27.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person bends and scrubs the inside of the toilet rep",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Utr8SQWeRNc_start_27.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person bends and scrubs the inside of the toilet rep",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Utr8SQWeRNc_start_27.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person bends and scrubs the inside of the toilet rep",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Utr8SQWeRNc_start_27.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person bends and scrubs the inside of the toilet rep",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Utr8SQWeRNc_start_27.0_end_74.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person bends and scrubs the inside of the toilet rep",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Utr8SQWeRNc_start_55.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man picks up the brush from the right side with the ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Utr8SQWeRNc_start_55.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man picks up the brush from the right side with the ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Utr8SQWeRNc_start_55.0_end_109.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man picks up the brush from the right side with the ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Utr8SQWeRNc_start_27.0_end_89.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person bends and scrubs the inside of the toilet rep",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Utr8SQWeRNc_start_27.0_end_89.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person bends and scrubs the inside of the toilet rep",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Utr8SQWeRNc_start_27.0_end_89.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person bends and scrubs the inside of the toilet rep",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "dsDcy5KJlbs_start_62.0_end_122.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person unscrews the jack with both hands. The person",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "dsDcy5KJlbs_start_62.0_end_122.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person screws the top part and squats down to work o",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "dsDcy5KJlbs_start_62.0_end_122.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person unscrews the jack with both hands. The person",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "dsDcy5KJlbs_start_62.0_end_122.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person unscrews the jack with both hands. The person",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "dsDcy5KJlbs_start_62.0_end_83.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person unscrews the jack with both hands. The person",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "dsDcy5KJlbs_start_62.0_end_83.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person unscrews the jack with both hands. The person",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "dsDcy5KJlbs_start_62.0_end_83.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person screws the jack with both hands. The person p",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "dsDcy5KJlbs_start_62.0_end_83.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person unscrews the jack with both hands. The person",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_51.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person retrieves the blue ink cartridge situated betwe",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_51.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person retrieves the blue ink cartridge situated betwe",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_51.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person retrieves the blue ink cartridge situated betwe",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_51.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person retrieves the blue ink cartridge situated betwe",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_51.0_end_115.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person retrieves the blue ink cartridge situated betwe",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_51.0_end_115.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person retrieves the blue ink cartridge situated betwe",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_51.0_end_115.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person retrieves the blue ink cartridge situated betwe",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_51.0_end_115.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person retrieves the blue ink cartridge situated betwe",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_103.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person holds the cartridge with the right hand over th",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_103.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person holds the cartridge with the right hand over th",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Vfp3kMEQnFI_start_103.0_end_150.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person holds the cartridge with the right hand over th",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "fgIW7IwwJ38_start_62.0_end_103.5.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses their right hand to hold the monitor secti",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "fgIW7IwwJ38_start_62.0_end_103.5.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses their right hand to hold the monitor secti",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "fgIW7IwwJ38_start_62.0_end_103.5.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses their right hand to hold the monitor secti",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "fgIW7IwwJ38_start_62.0_end_103.5.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses their right hand to hold the monitor secti",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "fgIW7IwwJ38_start_62.0_end_81.5.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses their right hand to hold the monitor secti",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "fgIW7IwwJ38_start_62.0_end_81.5.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses their right hand to hold the monitor secti",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "fgIW7IwwJ38_start_62.0_end_81.5.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses their right hand to hold the monitor secti",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "fgIW7IwwJ38_start_62.0_end_81.5.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses their right hand to hold the monitor secti",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "fgIW7IwwJ38_start_72.5_end_103.5.mp4",
+      "question": "Which caption best describes this video?\nA. Someome slowly bringing down a computer screen with both",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "fgIW7IwwJ38_start_72.5_end_103.5.mp4",
+      "question": "Which caption best describes this video?\nA. Someome slowly bringing down a computer screen with both",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "fgIW7IwwJ38_start_72.5_end_103.5.mp4",
+      "question": "Which caption best describes this video?\nA. Someone slowly bringing down a computer screen with both",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Hg937Un-km8_start_6.0_end_78.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing you how to put together a duvet on a mat",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Hg937Un-km8_start_6.0_end_78.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing you how to put together a duvet on a mat",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Hg937Un-km8_start_6.0_end_78.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing you how to put together a duvet on a mat",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Hg937Un-km8_start_6.0_end_78.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing you how to put together a duvet on a mat",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Hg937Un-km8_start_6.0_end_35.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing you how to put together a duvet on a mat",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Hg937Un-km8_start_6.0_end_35.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing you how to put together a duvet on a mat",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Hg937Un-km8_start_6.0_end_35.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing you how to put together a duvet on a mat",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "Hg937Un-km8_start_6.0_end_35.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing you how to put together a duvet on a mat",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Hg937Un-km8_start_26.0_end_78.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing how to make a bed. They use both hands t",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Hg937Un-km8_start_26.0_end_78.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing how to make a bed. They use both hands t",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "Hg937Un-km8_start_26.0_end_78.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone showing how to make a bed. They use both hands t",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_151.0_end_170.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses both hands to stretch the batter, repeated",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_151.0_end_170.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses both hands to stretch the batter, repeated",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_151.0_end_170.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses both hands to stretch the batter, repeated",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_161.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man spreads the sauce in a circular motion on the do",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_161.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man spreads the sauce in a circular motion on the do",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_161.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man spreads the sauce in a circular motion on the do",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_161.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man spreads the sauce in a circular motion on the do",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_157.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_157.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_157.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_151.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person places the batter on the surface, with the righ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_151.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses both hands to stretch the batter, repeated",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_151.0_end_179.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person uses both hands to stretch the batter, repeated",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_170.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_170.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_170.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "kZ6tcIYZG2o_start_54.0_end_170.0.mp4",
+      "question": "Which caption best describes this video?\nA. A mechanical arm is holding a bottle of sauce tilted dia",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "bKHFWlfkC1o_start_11.0_end_152.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man uses both hands to try to remove the screen prot",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "bKHFWlfkC1o_start_11.0_end_152.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man uses both hands to try to remove the screen prot",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "bKHFWlfkC1o_start_11.0_end_152.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man uses both hands to try to remove the screen prot",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "bKHFWlfkC1o_start_11.0_end_152.0.mp4",
+      "question": "Which caption best describes this video?\nA. The man uses both hands to try to remove the screen prot",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "bKHFWlfkC1o_start_114.0_end_152.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person presses the phone panel with the right index ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "bKHFWlfkC1o_start_114.0_end_152.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person presses the phone panel with the right index ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "bKHFWlfkC1o_start_114.0_end_152.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person presses and shakes the index finger for bette",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "bKHFWlfkC1o_start_114.0_end_152.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person presses the phone panel with the right index ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "IEPDnSoz6IM_start_37.0_end_91.0.mp4",
+      "question": "Which caption best describes this video?\nA. Holding the watch with her left hand and pressing it dow",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "IEPDnSoz6IM_start_37.0_end_91.0.mp4",
+      "question": "Which caption best describes this video?\nA. Holding the watch with her left hand and pressing it dow",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "IEPDnSoz6IM_start_37.0_end_91.0.mp4",
+      "question": "Which caption best describes this video?\nA. Holding the watch with her left hand and pressing it dow",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "IEPDnSoz6IM_start_37.0_end_91.0.mp4",
+      "question": "Which caption best describes this video?\nA. Holding the watch with her left hand and pressing it dow",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_329.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a  socket off of a",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_329.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a socket off of a ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_329.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a  socket off of a",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_321.0_end_423.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding the inner working of a light switch and ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_321.0_end_423.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding the inner working of a light switch and ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_321.0_end_423.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding the inner working of a light switch and ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_367.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places the switch inside the wall with both h",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_367.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places the switch inside the wall with both h",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_367.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places the switch inside the wall with both h",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_375.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a  socket off of a",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_375.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a  socket off of a",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_375.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a  socket off of a",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_406.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person installing the inner part of a light switch. Th",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_406.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person installing the inner part of a light switch. Th",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_423.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a  socket off of a",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_423.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a socket off of a ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_423.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a  socket off of a",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_423.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a  socket off of a",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_367.0_end_423.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places the switch inside the wall with both h",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_367.0_end_423.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places the switch inside the wall with both h",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_367.0_end_423.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places the switch inside the wall with both h",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_321.0_end_375.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding the inner working of a light switch and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_321.0_end_375.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding the inner working of a light switch and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_321.0_end_375.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding the inner working of a light switch and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a  socket off of a",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a  socket off of a",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to tighten a socket onto a w",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_209.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using a screwdriver to remove a socket off of a ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "XgzF7lwwa0A_start_321.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding the inner working of a light switch and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_321.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding the inner working of a light switch and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "XgzF7lwwa0A_start_321.0_end_456.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone holding the inner working of a light switch and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_7.0_end_38.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person pours onion into the bowl with the spoon held i",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_7.0_end_38.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person pours peas into the bowl with the spoon held in",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_7.0_end_38.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person pours tuna into the bowl with the spoon held in",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_40.0_end_186.0.mp4",
+      "question": "Which caption best describes this video?\nA. With two pieces of toast on cutting board each hand is n",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_40.0_end_186.0.mp4",
+      "question": "Which caption best describes this video?\nA. With two pieces of toast on cutting board each hand is n",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_40.0_end_186.0.mp4",
+      "question": "Which caption best describes this video?\nA. With two pieces of toast on cutting board each hand is n",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_155.0_end_186.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone slicing a sandwich diagonally. The person grabs ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_155.0_end_186.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone slicing a sandwich diagonally. The person grabs ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_155.0_end_186.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone slicing a sandwich diagonally. The person grabs ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_40.0_end_193.0.mp4",
+      "question": "Which caption best describes this video?\nA. With two pieces of toast on cutting board each hand is n",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_40.0_end_193.0.mp4",
+      "question": "Which caption best describes this video?\nA. With two pieces of toast on cutting board each hand is n",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_29.0_end_154.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places a toast in the left part of the pan wi",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_29.0_end_154.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places a toast in the left part of the pan wi",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_29.0_end_154.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places a toast in the left part of the pan wi",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_29.0_end_154.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places a toast in the left part of the pan wi",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_126.0_end_193.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone is preparing a simple guacamole. With their righ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_126.0_end_193.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone is preparing a simple guacamole. With their righ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_126.0_end_193.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone is preparing a simple guacamole. With their righ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_126.0_end_193.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone is preparing a simple guacamole. With their righ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_40.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. With two pieces of toast on cutting board each hand is n",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_40.0_end_161.0.mp4",
+      "question": "Which caption best describes this video?\nA. With two pieces of toast on cutting board each hand is n",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_7.0_end_56.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places a bowl on the table with her right han",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_7.0_end_56.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places a bowl on the table with her right han",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_7.0_end_56.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places a bowl on the table with her right han",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_29.0_end_186.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places a toast in the left part of the pan wi",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true
+    },
+    {
+      "video": "RLb2xvF5qqg_start_29.0_end_186.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places a toast in the left part of the pan wi",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    },
+    {
+      "video": "RLb2xvF5qqg_start_29.0_end_186.0.mp4",
+      "question": "Which caption best describes this video?\nA. The person places a toast in the left part of the pan wi",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false
+    }
+  ]
+}

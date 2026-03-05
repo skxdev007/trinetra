@@ -200,6 +200,7 @@ class VideoProcessor:
             frames = []
             self.timestamps = []
             self.frame_indices = []
+            self.embeddings = None  # Reset embeddings for new video
             
             for frame_idx, frame, change_score in sampler.sample(loader, source_fps=loader.fps):
                 frames.append(frame)
@@ -242,8 +243,9 @@ class VideoProcessor:
             # Cache embeddings
             print(f"💾 Caching embeddings...")
             store = EmbeddingStore(quantization=QuantizationType.INT8)
-            for i, emb in enumerate(self.embeddings):
-                store.add_embedding(emb, self.timestamps[i], self.frame_indices[i])
+            # Iterate based on timestamps length to ensure index consistency
+            for i in range(len(self.timestamps)):
+                store.add_embedding(self.embeddings[i], self.timestamps[i], self.frame_indices[i])
             store.save(str(cache_path))
             print(f"✓ Cached to {cache_path}")
             

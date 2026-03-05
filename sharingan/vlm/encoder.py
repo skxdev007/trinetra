@@ -75,18 +75,21 @@ class FrameEncoder:
             os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
             
             print(f"Loading CLIP model {clip_model_name}...")
+            print(f"Target device: {self.device}")
             
             # Load with jit=False to avoid WSL hanging issue
+            print(f"Step 1: Loading model to CPU first...")
             self.model, self.preprocess = clip.load(clip_model_name, device="cpu", jit=False)
+            print(f"Step 2: Setting model to eval mode...")
             self.model.eval()
             
             # Move to target device after loading
             if self.device != "cpu" and torch.cuda.is_available():
-                print(f"Moving model to {self.device}...")
+                print(f"Step 3: Moving model to {self.device}...")
                 self.model = self.model.to(self.device)
-                print(f"✓ Model on {self.device}")
+                print(f"✓ Model successfully loaded on {self.device}")
             else:
-                print(f"✓ Model on CPU")
+                print(f"✓ Model successfully loaded on CPU")
             
             # Get embedding dimension
             dim_map = {"ViT-B/32": 512, "ViT-B/16": 512, "ViT-L/14": 768}

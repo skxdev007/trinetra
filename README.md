@@ -20,7 +20,7 @@
 ---
 
 ## 🎯 Why Trinetra?
-
+u
 **Reactive Models (Gemini/GPT-4o):**
 - ❌ Process video at query time
 - ❌ Limited by context window (~30-60 min)
@@ -87,6 +87,8 @@ Temporal Event Graph → Hierarchical Memory → Query Router → Small LLM
 6. **Reasoning Scaffolds** – Guides small LLMs through complex temporal reasoning
 
 For detailed architecture, visit: [https://skxdev007.github.io/trinetra](https://skxdev007.github.io/trinetra)
+
+**Architecture Deep Dive:** [Beginner-Friendly Architecture Guide](https://skxdev007.github.io/trinetra/architecture.html)
 
 ---
 

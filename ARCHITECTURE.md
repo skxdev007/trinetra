@@ -39,20 +39,23 @@ Video → Frame Sampling → VLM Encoding → Temporal Reasoning → Storage →
 
 ## **2.1 Video Processing (`sharingan/video/`)**
 
-### **VideoLoader (`loader.py`)**
+### **VideoLoader** 
+**File:** `sharingan/video/loader.py`
 
 * Handles decoding via OpenCV or PyAV
 * Extracts framerate, duration, resolution, bit-depth
 * Supports streaming and offline files
 
-### **FrameSampler (`sampler.py`)**
+### **FrameSampler**
+**File:** `sharingan/video/sampler.py`
 
 * Uniform sampling (N frames per second)
 * Adaptive sampling using motion estimation
 * Keyframe-based sampling (I-frame detection)
 * Reduces computational overhead while preserving semantic content
 
-### **VideoProcessor (`api.py`)**
+### **VideoProcessor**
+**File:** `sharingan/video/api.py`
 
 * High-level orchestrator for the entire pipeline
 * Performs caching, state management, and concurrency control
@@ -61,18 +64,32 @@ Video → Frame Sampling → VLM Encoding → Temporal Reasoning → Storage →
 
 ## **2.2 Vision-Language Models (`sharingan/vlm/`)**
 
-### **FrameEncoder (`encoder.py`)**
+### **FrameEncoder**
+**File:** `sharingan/vlm/encoder.py`
 
 * CLIP-based encoding (ViT-B/32, ViT-B/16, ViT-L/14)
 * Produces 512-dim embeddings for each frame
 * Batch inference optimized for GPU/CPU
 
-### **SmolVLMEncoder (`smolvlm.py`)**
+### **SmolVLMEncoder**
+**File:** `sharingan/vlm/smolvlm.py`
 
 * Leverages SmolVLM-500M for multi-frame reasoning
 * Generates natural-language descriptions per sampled frame window
 * Outputs text embeddings via CLIP text encoder
 * Supports 8-bit quantization for efficient deployment
+
+### **Context-Aware SmolVLM**
+**File:** `sharingan/vlm/context_aware_smolvlm.py`
+
+* Enhanced SmolVLM with temporal context awareness
+* Maintains conversation history for coherent multi-turn interactions
+
+### **Lightweight Head**
+**File:** `sharingan/vlm/lightweight_head.py`
+
+* Efficient projection layers for embedding transformation
+* Reduces computational overhead in multi-modal fusion
 
 ---
 

@@ -221,6 +221,74 @@ if timestamp > video_duration * 0.95:
 
 ---
 
+## 🆕 ISSUES FIXED (2026-03-04)
+
+### 5. Benchmark Caching Index Error - FIXED ✅
+**Problem:** "list index out of range" error occurs during the "💾 Caching embeddings..." step in the benchmark, preventing 5 out of 6 videos from completing processing.
+
+**Impact:**
+- Benchmark fails at caching step for most videos
+- Only 25% accuracy on 4 questions instead of testing all 20 questions
+- 83% of test videos cannot complete processing
+
+**Test Results:**
+- Video 1 (99 frames): ✅ Success - Cached successfully
+- Video 2 (187 frames): ❌ Error - list index out of range
+- Video 3 (203 frames): ❌ Error - list index out of range
+- Video 4 (230 frames): ❌ Error - list index out of range
+- Video 5 (316 frames): ❌ Error - list index out of range
+- Video 6 (385 frames): ❌ Error - list index out of range
+
+**Root Cause:**
+Length mismatch between `self.embeddings` (numpy array) and `self.timestamps`/`self.frame_indices` (lists) when iterating during the caching step in `sharingan/processor.py`.
+
+**Specific Issue:**
+```python
+# Current code iterates over embeddings with enumerate()
+for i, embedding in enumerate(self.embeddings):
+    timestamp = self.timestamps[i]  # ❌ IndexError when lengths don't match
+    frame_idx = self.frame_indices[i]  # ❌ IndexError when lengths don't match
+```
+
+**Analysis:**
+- `self.embeddings` is a numpy array with shape (N, D)
+- `enumerate()` produces indices from 0 to N-1
+- `self.timestamps` and `self.frame_indices` may have different lengths
+- When N > len(timestamps), accessing `self.timestamps[i]` raises IndexError
+
+**Expected Behavior:**
+- System must ensure iteration index matches actual length of `self.timestamps` and `self.frame_indices`
+- System must verify `len(self.embeddings)` equals `len(self.timestamps)` and `len(self.frame_indices)` before caching
+- All videos in benchmark should complete processing without index errors
+
+**Regression Prevention:**
+- Embeddings must continue to be stored with correct quantization type (INT8)
+- Cached embeddings must continue to load correctly with associated timestamps and frame indices
+- Videos with cached embeddings must continue to load from cache instead of reprocessing
+- Temporal reasoning must continue to process embeddings correctly after caching
+
+**Status:** ✅ Fixed - Added `self.embeddings = None` reset in frame processing initialization
+
+**Files Modified:**
+1. `sharingan/processor.py` - Added embeddings reset when processing new video
+
+**Solution Implemented:**
+```python
+# Process frames
+print(f"⚙️  Processing frames...")
+frames = []
+self.timestamps = []
+self.frame_indices = []
+self.embeddings = None  # Reset embeddings for new video
+```
+
+**Results:**
+- **Before:** 5 out of 6 videos crashed with "list index out of range" ❌
+- **After:** All 6 videos processed successfully, 20/20 questions answered ✅
+- **Benchmark completion:** 6.6 seconds for 20 questions (55% accuracy)
+
+---
+
 *Document created: 2026-02-28*
 *Status: High-priority fixes implemented and verified*
-*Last updated: 2026-03-03 - Fixed long-form video timestamp accuracy with adaptive temporal boosting*
+*Last updated: 2026-03-04 - Fixed benchmark caching index error*

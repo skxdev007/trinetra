@@ -47,8 +47,17 @@ uploads/
 *.avi
 *.mov
 *.mkv
+*.webm
 test_video.*
 .kiro/
+
+# Benchmarking data
+benchmarking/mvbench/datasets/videos/
+benchmarking/mvbench/datasets/cache/
+benchmarking/mvbench/datasets/annotations/
+benchmarking/egoschema/videos/
+benchmarking/videomme/videos/
+benchmarking/videomme/long_video_coin/dataset/
 # OS
 .DS_Store
 Thumbs.db
