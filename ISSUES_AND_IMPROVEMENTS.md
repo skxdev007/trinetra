@@ -1212,3 +1212,245 @@ If anything breaks:
 ---
 
 *Last updated: 2026-03-05 - Added VideoMAE V2 + Qwen2.5-1.5B implementation plan*
+
+
+---
+
+## 🔬 FUTURE IMPROVEMENT: Long-Range Temporal Understanding for COIN (2026-03-05)
+
+### 8. VideoMAE Long-Range Temporal Gap - RESEARCH NEEDED ⏳
+
+**Context:** COIN dataset consists of long instructional videos (procedures spanning minutes), but standard VideoMAE is trained on short clips (16 frames ~0.5s). To achieve 65-73% accuracy and beat models like Gemini, we need to bridge the "long-range temporal gap."
+
+**Current Architecture Analysis:**
+
+Our VideoMAE implementation:
+```python
+# Current: Process each frame independently with 16-frame pseudo-video
+inputs = self.processor([pil_image] * 16, return_tensors="pt")  # Repeat same frame 16x
+outputs = self.model(**inputs, output_hidden_states=True)
+embedding = outputs.hidden_states[-1].mean(dim=1)  # Pool to single vector
+```
+
+**Problem:** 
+- We repeat the same frame 16 times → No temporal information
+- Each frame processed independently → No action sequence understanding
+- Cannot distinguish "A then B" vs "B then A"
+- Cannot capture long-range dependencies (e.g., "person picks up tool" → 30s later → "person uses tool")
+
+---
+
+### Proposed Solutions (Compatibility Analysis)
+
+#### Solution 1: Temporal Progressive Training ⚠️ INCOMPATIBLE
+
+**Proposal:** Fine-tune VideoMAE progressively on longer clips (16 → 32 → 64 frames).
+
+**Compatibility with Our Architecture:**
+- ❌ **Requires training/fine-tuning** - We're using pretrained models only
+- ❌ **Requires COIN training data** - We don't have labeled COIN videos for training
+- ❌ **Changes model weights** - Would need to maintain custom model checkpoint
+- ❌ **Breaks inference-only architecture** - Our system is designed for zero-shot inference
+
+**Verdict:** NOT compatible with our inference-only, pretrained-model architecture.
+
+---
+
+#### Solution 2: ST-Adapter (Spatio-Temporal Adapters) ⚠️ PARTIALLY COMPATIBLE
+
+**Proposal:** Insert tiny bottleneck layers into ViT blocks to learn temporal correlations without full fine-tuning.
+
+**Compatibility with Our Architecture:**
+- ⚠️ **Still requires training** - Adapters need to be trained on COIN
+- ⚠️ **Requires labeled data** - Need COIN annotations for adapter training
+- ✅ **Preserves base model** - Only trains adapter layers (~1% of parameters)
+- ⚠️ **Adds complexity** - Need to manage adapter weights separately
+
+**Verdict:** Partially compatible but still requires training infrastructure we don't have.
+
+---
+
+#### Solution 3: Tube Masking ❌ NOT APPLICABLE
+
+**Proposal:** Use VideoMAE's tube masking during pre-training to force temporal reconstruction.
+
+**Compatibility with Our Architecture:**
+- ❌ **Pre-training only** - Tube masking is a pre-training technique, not inference
+- ❌ **Requires training** - Would need to pre-train VideoMAE from scratch
+- ❌ **Not applicable to inference** - Cannot use masking during inference
+
+**Verdict:** NOT applicable - this is a pre-training technique, not an inference improvement.
+
+---
+
+### Alternative Solutions (Compatible with Our Architecture)
+
+#### Solution A: Multi-Frame Temporal Windows ✅ COMPATIBLE
+
+**Proposal:** Instead of repeating 1 frame 16 times, use actual temporal windows of 16 consecutive frames.
+
+**Implementation:**
+```python
+# Current (single frame):
+inputs = self.processor([frame] * 16, return_tensors="pt")  # Repeat 16x
+
+# Proposed (temporal window):
+# Collect 16 consecutive frames at stride
+temporal_window = frames[i:i+16:stride]  # e.g., stride=2 for 32-frame span
+inputs = self.processor(temporal_window, return_tensors="pt")
+```
+
+**Benefits:**
+- ✅ **No training required** - Uses pretrained VideoMAE as-is
+- ✅ **Captures short-term temporal dynamics** - Real motion across 16 frames
+- ✅ **Simple implementation** - Just change frame sampling
+- ✅ **Preserves architecture** - Still inference-only
+
+**Limitations:**
+- ⚠️ **Only captures 0.5-1s windows** - Not true long-range (minutes)
+- ⚠️ **Increases compute** - Need to process overlapping windows
+
+**Compatibility:** ✅ FULLY COMPATIBLE - Recommended for Phase 1
+
+---
+
+#### Solution B: Hierarchical Temporal Aggregation ✅ COMPATIBLE
+
+**Proposal:** Process video at multiple temporal scales and aggregate.
+
+**Implementation:**
+```python
+# Level 1: Fine-grained (16 frames, stride=1) → Capture immediate actions
+fine_embeddings = encode_windows(frames, window=16, stride=8)
+
+# Level 2: Medium-grained (32 frames, stride=2) → Capture action sequences  
+medium_embeddings = encode_windows(frames, window=32, stride=16)
+
+# Level 3: Coarse-grained (64 frames, stride=4) → Capture procedure phases
+coarse_embeddings = encode_windows(frames, window=64, stride=32)
+
+# Aggregate into TEG with multi-scale temporal context
+teg_node = {
+    'timestamp': t,
+    'fine_action': classify(fine_embeddings[i]),
+    'medium_sequence': classify(medium_embeddings[i//2]),
+    'coarse_phase': classify(coarse_embeddings[i//4])
+}
+```
+
+**Benefits:**
+- ✅ **No training required** - Uses pretrained VideoMAE
+- ✅ **Captures multi-scale temporal context** - From 0.5s to 2s windows
+- ✅ **Richer TEG nodes** - Multi-level action descriptions
+- ✅ **Better for LLM reasoning** - More temporal context in text
+
+**Limitations:**
+- ⚠️ **3x compute cost** - Process video at 3 scales
+- ⚠️ **Still limited to ~2s windows** - Not true long-range (minutes)
+
+**Compatibility:** ✅ FULLY COMPATIBLE - Recommended for Phase 2
+
+---
+
+#### Solution C: Temporal Context in Text TEG ✅ COMPATIBLE (CURRENT APPROACH)
+
+**Proposal:** Rely on text-based TEG and LLM's temporal reasoning rather than vision encoder.
+
+**Current Implementation:**
+```python
+# Our text TEG already provides temporal context:
+text_teg = [
+    "[T=0s] person picks up screwdriver",
+    "[T=5s] person removes lampshade", 
+    "[T=10s] person unscrews bulb",
+    "[T=15s] person installs new bulb",
+    "[T=20s] person replaces lampshade"
+]
+
+# LLM reads this temporal sequence and reasons about ordering
+```
+
+**Benefits:**
+- ✅ **Already implemented** - This is our current architecture
+- ✅ **No training required** - Pure inference
+- ✅ **Handles arbitrary time spans** - Minutes to hours
+- ✅ **LLM does temporal reasoning** - Qwen understands "A then B then C"
+
+**Limitations:**
+- ⚠️ **Depends on action classifier quality** - Need good Kinetics-400 labels
+- ⚠️ **Depends on LLM reasoning** - Qwen-1.5B may struggle with complex sequences
+
+**Compatibility:** ✅ FULLY COMPATIBLE - This is our current approach!
+
+---
+
+### Recommended Implementation Plan
+
+**Phase 1: Multi-Frame Temporal Windows (1-2 days)**
+- Modify `VideoMAEEncoder.encode_frame()` to accept temporal windows
+- Update frame sampling to collect 16-frame windows with stride
+- Expected improvement: +3-5% accuracy (better action recognition)
+
+**Phase 2: Hierarchical Temporal Aggregation (2-3 days)**
+- Add multi-scale encoding (fine/medium/coarse)
+- Enrich TEG nodes with multi-level action descriptions
+- Expected improvement: +5-8% accuracy (better sequence understanding)
+
+**Phase 3: Upgrade LLM to Qwen-7B (1 day)**
+- Better temporal reasoning over text TEG
+- Can handle longer, more complex action sequences
+- Expected improvement: +5-10% accuracy (better reasoning)
+
+**Total Expected Improvement:** +13-23% → Target: 65-73% accuracy ✅
+
+---
+
+### Why This Approach Preserves Our Architecture
+
+**Trinetra's Core Thesis:**
+> "Vision → Text translation happens ONCE at ingest. Query-time reasoning happens on text only."
+
+**What Changes:**
+- ✅ Better vision encoding (multi-frame windows, multi-scale)
+- ✅ Richer text descriptions (multi-level actions)
+- ✅ Better LLM reasoning (Qwen-7B)
+
+**What Stays the Same:**
+- ✅ Text-based TEG architecture
+- ✅ No training or fine-tuning
+- ✅ Inference-only system
+- ✅ Vision → Text → LLM pipeline
+
+---
+
+### Status & Next Steps
+
+**Current Status:**
+- ✅ Kinetics-400 classifier implemented (400 labels vs 15)
+- ✅ Text-based TEG working
+- ⏳ Single-frame encoding (no temporal windows yet)
+- ⏳ Single-scale encoding (no hierarchical aggregation yet)
+
+**Next Steps:**
+1. **Immediate:** Run benchmark with current Kinetics-400 classifier → Establish baseline
+2. **Phase 1:** Implement multi-frame temporal windows → +3-5% accuracy
+3. **Phase 2:** Add hierarchical temporal aggregation → +5-8% accuracy
+4. **Phase 3:** Upgrade to Qwen-7B → +5-10% accuracy
+
+**Target:** 65-73% accuracy to beat Gemini baseline ✅
+
+---
+
+**Verdict on Proposed Solutions:**
+- ❌ Temporal Progressive Training - NOT compatible (requires training)
+- ⚠️ ST-Adapter - Partially compatible but requires training
+- ❌ Tube Masking - NOT applicable (pre-training only)
+- ✅ Multi-Frame Windows - FULLY compatible, recommended
+- ✅ Hierarchical Aggregation - FULLY compatible, recommended
+- ✅ Text TEG + Better LLM - FULLY compatible, already implemented
+
+**Recommendation:** Focus on inference-time improvements (multi-frame windows, hierarchical aggregation, better LLM) rather than training-based solutions. This preserves our architecture's core thesis and avoids training infrastructure requirements.
+
+---
+
+*Last updated: 2026-03-05 - Analyzed long-range temporal solutions for COIN compatibility*
