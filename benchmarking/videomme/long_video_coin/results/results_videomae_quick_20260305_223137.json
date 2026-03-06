@@ -3,16 +3,16 @@
     "model": "videomae-large + qwen-1.5b",
     "vlm_model": "videomae-large",
     "llm_model": "qwen-1.5b",
-    "videos_tested": 12,
-    "total_questions": 45,
-    "correct": 22,
-    "accuracy": 48.888888888888886,
+    "videos_tested": 13,
+    "total_questions": 49,
+    "correct": 23,
+    "accuracy": 46.93877551020408,
     "device": "cuda",
-    "total_videomae_time": 226.34034037590027,
-    "total_llm_time": 274.8248915672302,
-    "avg_videomae_time": 18.861695031325024,
-    "avg_llm_time": 6.107219812605116,
-    "timestamp": "2026-03-05T22:39:59.032792",
+    "total_videomae_time": 1022.6950345039368,
+    "total_llm_time": 316.36041355133057,
+    "avg_videomae_time": 78.66884880799513,
+    "avg_llm_time": 6.456334970435318,
+    "timestamp": "2026-03-05T22:53:56.932475",
     "status": "in_progress"
   },
   "results": [
@@ -420,6 +420,42 @@
       "ground_truth": "B",
       "correct": false,
       "llm_time": 10.701858282089233
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_143.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_34.0_end_143.0.mp4_1",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 14.179718732833862
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_143.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_34.0_end_143.0.mp4_2",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 9.644221544265747
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_143.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_34.0_end_143.0.mp4_3",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. With the left",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 7.9745707511901855
+    },
+    {
+      "video": "hNuX5Tthg_U_start_34.0_end_143.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_34.0_end_143.0.mp4_4",
+      "question": "Which caption best describes this video?\nA. The text \"lemon\" appeared and disappeared. He extracts t",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 9.737010955810547
     }
   ]
 }

@@ -1,16 +1,19 @@
-"""Natural language query engine."""
+"""
+Query module for SHARINGAN.
 
-from sharingan.query.nl_query import NaturalLanguageQuery
-from sharingan.query.nl_query import QueryPlan as LegacyQueryPlan
-from sharingan.query.retriever import EmbeddingSearch, QueryResult
-from sharingan.query.router import QueryRouter, QueryType, QueryPlan
+Provides query intent classification and parsing.
+"""
+
+from sharingan.query.intent_classifier import (
+    QueryIntentClassifier,
+    QueryIntent,
+    QueryType,
+    TemporalConstraint
+)
 
 __all__ = [
-    "NaturalLanguageQuery",
-    "LegacyQueryPlan",
-    "EmbeddingSearch",
-    "QueryResult",
-    "QueryRouter",
-    "QueryType",
-    "QueryPlan",
+    'QueryIntentClassifier',
+    'QueryIntent',
+    'QueryType',
+    'TemporalConstraint'
 ]

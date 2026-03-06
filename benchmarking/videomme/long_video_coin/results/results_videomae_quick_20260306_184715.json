@@ -1,0 +1,200 @@
+{
+  "metadata": {
+    "model": "videomae-large + qwen-1.5b",
+    "vlm_model": "videomae-large",
+    "llm_model": "qwen-1.5b",
+    "videos_tested": 6,
+    "total_questions": 20,
+    "correct": 11,
+    "accuracy": 55.00000000000001,
+    "device": "cuda",
+    "total_videomae_time": 451.0314152240753,
+    "total_llm_time": 85.49191999435425,
+    "avg_videomae_time": 75.17190253734589,
+    "avg_llm_time": 4.274595999717713,
+    "timestamp": "2026-03-06T18:56:11.804960",
+    "status": "in_progress"
+  },
+  "results": [
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_1",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 17.740346908569336
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_2",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 3.6812775135040283
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_3",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 3.7816708087921143
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 4.154164791107178
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_1",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold a screwd",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 3.247127056121826
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_2",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 3.172834634780884
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_3",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a scr",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 3.327448606491089
+    },
+    {
+      "video": "XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold a screwd",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 3.343052625656128
+    },
+    {
+      "video": "XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_1",
+      "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 3.484215021133423
+    },
+    {
+      "video": "XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_2",
+      "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 3.4067981243133545
+    },
+    {
+      "video": "XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_3",
+      "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a ",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 3.348719835281372
+    },
+    {
+      "video": "XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "question_id": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_4",
+      "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 3.3372597694396973
+    },
+    {
+      "video": "hNuX5Tthg_U_start_133.0_end_161.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_133.0_end_161.0.mp4_1",
+      "question": "Which caption best describes this video?\nA. A few pieces of meat are being grilled over a charcoal p",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 3.5662407875061035
+    },
+    {
+      "video": "hNuX5Tthg_U_start_133.0_end_161.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_133.0_end_161.0.mp4_2",
+      "question": "Which caption best describes this video?\nA. A few pieces of meat are being grilled over a charcoal p",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 4.25641942024231
+    },
+    {
+      "video": "hNuX5Tthg_U_start_133.0_end_161.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_133.0_end_161.0.mp4_3",
+      "question": "Which caption best describes this video?\nA. The camera zooms in onto a part of the skewer. A few pie",
+      "predicted": "A",
+      "ground_truth": "B",
+      "correct": false,
+      "llm_time": 4.243824481964111
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_161.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_1",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 3.336116075515747
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_161.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_2",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 3.2201054096221924
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_161.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_3",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 3.388847827911377
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_161.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_4",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 3.9402663707733154
+    },
+    {
+      "video": "hNuX5Tthg_U_start_74.0_end_143.0.mp4",
+      "question_id": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_143.0.mp4_1",
+      "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and ",
+      "predicted": "A",
+      "ground_truth": "A",
+      "correct": true,
+      "llm_time": 3.515183925628662
+    }
+  ]
+}

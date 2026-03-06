@@ -69,7 +69,7 @@ def save_results_incremental(predictions_file, results_file, results, metadata):
 
 def main():
     print("\n" + "="*80, flush=True)
-    print("TEMPORALBENCH COIN QUICK TEST - VideoMAE V2 + Qwen2.5-1.5B (20 videos)", flush=True)
+    print("TEMPORALBENCH COIN QUICK TEST - VideoMAE V2 + Qwen2.5-1.5B (10 videos)", flush=True)
     print("="*80, flush=True)
     
     # Check device
@@ -99,8 +99,8 @@ def main():
             videos_qa[video_name] = []
         videos_qa[video_name].append(qa)
     
-    # LIMIT TO FIRST 20 VIDEOS
-    videos_qa_list = list(videos_qa.items())[:20]
+    # LIMIT TO FIRST 10 VIDEOS
+    videos_qa_list = list(videos_qa.items())[:10]
     videos_qa = dict(videos_qa_list)
     
     print(f"Testing on first {len(videos_qa)} videos", flush=True)

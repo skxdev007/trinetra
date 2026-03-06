@@ -300,13 +300,15 @@ class VideoProcessor:
             'frame_indices': self.frame_indices
         }
     
-    def query(self, text: str, top_k: int = 5) -> List[Dict[str, Any]]:
+    def query(self, text: str, top_k: int = 5, enforce_diversity: bool = True, use_comparative: bool = True) -> List[Dict[str, Any]]:
         """
-        Query video with natural language.
+        Query video with natural language and intelligent routing.
         
         Args:
             text: Query text
             top_k: Number of results to return
+            enforce_diversity: Enable magnet cluster suppression (default: True)
+            use_comparative: Enable comparative query handling (default: True)
             
         Returns:
             List of matches with timestamps and confidence scores
@@ -315,8 +317,17 @@ class VideoProcessor:
             raise ValueError("Process a video first using .process()")
         
         from sharingan.vlm import FrameEncoder
+        from sharingan.retrieval import MagnetClusterSuppressor, ComparativeRetrieval
+        from sharingan.query import QueryIntentClassifier
         
         print(f"🔍 Query: '{text}'")
+        
+        # Classify query intent
+        classifier = QueryIntentClassifier()
+        intent = classifier.classify(text)
+        
+        if intent.query_type.value != "point":
+            print(f"📊 Query type: {intent.query_type.value}")
         
         # Encode query
         if not self._encoder:
@@ -324,15 +335,67 @@ class VideoProcessor:
         
         query_embedding = self._encoder.encode_text(text)
         
-        # Compute similarities
+        # Handle comparative queries with dual-window retrieval
+        if use_comparative and intent.requires_dual_window:
+            print(f"🔀 Using dual-window retrieval")
+            
+            retriever = ComparativeRetrieval(video_duration=self.video_duration)
+            
+            # Extract windows from constraints
+            window1 = (intent.constraints[0].window_start, intent.constraints[0].window_end)
+            window2 = (intent.constraints[1].window_start, intent.constraints[1].window_end)
+            
+            # Dual-window retrieval
+            retrieval_results = retriever.retrieve_dual_window(
+                query_embedding,
+                self.embeddings,
+                np.array(self.timestamps),
+                np.array(self.frame_indices),
+                window1,
+                window2,
+                top_k_per_window=top_k//2
+            )
+            
+            # Convert to standard format
+            results = []
+            for r in retrieval_results:
+                results.append({
+                    'timestamp': r.timestamp,
+                    'frame': r.frame_idx,
+                    'confidence': r.confidence,
+                    'description': f"Relevant content found ({r.window_label} section)",
+                    'window': r.window_label
+                })
+            
+            print(f"✓ Found {len(results)} results from both windows")
+            return results
+        
+        # Standard single-window retrieval
         similarities = np.dot(self.embeddings, query_embedding)
         
         # Apply temporal filters to adjust similarities based on query intent
         similarities = self._apply_temporal_filters(similarities, self.timestamps, text)
         
-        # Get top-k
-        top_k = min(top_k, len(similarities))
-        top_indices = np.argsort(similarities)[-top_k:][::-1]
+        # Enforce temporal diversity (suppress magnet clusters)
+        if enforce_diversity:
+            suppressor = MagnetClusterSuppressor(
+                cluster_threshold=60.0,
+                max_cluster_ratio=0.4
+            )
+            
+            top_indices, magnet_detected = suppressor.enforce_diversity(
+                similarities,
+                np.array(self.timestamps),
+                np.array(self.frame_indices),
+                top_k=top_k
+            )
+            
+            if magnet_detected:
+                print(f"⚠️  Magnet cluster detected and suppressed")
+        else:
+            # Standard top-k without diversity enforcement
+            top_k = min(top_k, len(similarities))
+            top_indices = np.argsort(similarities)[-top_k:][::-1]
         
         results = []
         for idx in top_indices:

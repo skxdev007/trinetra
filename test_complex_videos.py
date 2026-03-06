@@ -1,24 +1,23 @@
 """
-SHARINGAN Complex Video Stress Test Suite
+Complex Video Stress Test for SHARINGAN.
 
-Tests 4 categories of complex videos:
-1. Texture & State Change (Chocolate Sculpture)
-2. Object Density & Text (PC Building)
-3. State Transformation (Chemistry)
-4. Action Segmentation (Woodworking)
+Tests 7 extremely challenging YouTube videos with:
+- Long-range causal dependencies
+- High-frequency "needle" facts
+- Subtle state transitions
+- Dense temporal reasoning requirements
 
-Each test saves results to a separate folder with detailed analysis.
+Author: SHARINGAN Team
+Date: March 6, 2026
 """
 
 import os
 import sys
-from pathlib import Path
-from datetime import datetime
-import tempfile
 import time
-
-# Add sharingan to path
-sys.path.insert(0, str(Path(__file__).parent))
+import tempfile
+from datetime import datetime
+from pathlib import Path
+from typing import List, Dict, Any
 
 from sharingan.processor import VideoProcessor
 
@@ -68,539 +67,623 @@ def download_youtube_video(url: str) -> str:
     raise FileNotFoundError(f"Failed to download video from {url}")
 
 
-def format_timestamp(seconds: float) -> str:
-    """Format seconds as MM:SS."""
-    minutes = int(seconds // 60)
-    secs = int(seconds % 60)
-    return f"{minutes:02d}:{secs:02d}"
+# Test dataset configuration
+VIDEOS = [
+    {
+        "id": "01_tally_ho",
+        "title": "Rebuilding a 110-year old wooden yacht - Year 4",
+        "channel": "Sampson Boat Co",
+        "url": "https://www.youtube.com/watch?v=z-Xl9tGqH14",
+        "duration": "02:45:12",
+        "category": "Craft/Making",
+        "hardness": 10,
+        "queries": [
+            {
+                "type": "COUNTING",
+                "query": "How many times did Leo use the steam box to bend planks during the bow section?",
+                "ground_truth": "14 times",
+                "expected_timestamps": []  # Will be filled after manual verification
+            },
+            {
+                "type": "COMPARATIVE",
+                "query": "How did the internal bracing change from the start of the year to the final deck beam installation?",
+                "ground_truth": "Evolved from skeleton ribs to watertight hull with deck beams",
+                "expected_timestamps": []
+            },
+            {
+                "type": "CAUSAL",
+                "query": "Why did the crew switch from using traditional oakum to cotton for the smaller seams?",
+                "ground_truth": "Cotton works better for smaller seams",
+                "expected_timestamps": []
+            },
+            {
+                "type": "NEEDLE",
+                "query": "What was the exact brand of the epoxy mentioned at the 45-minute mark?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": [2700]  # 45 minutes
+            },
+            {
+                "type": "ORDERING",
+                "query": "What happened immediately after the first bronze floor was bolted down?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            }
+        ]
+    },
+    {
+        "id": "02_bmw_v12",
+        "title": "Mechanically Perfect After 14 Years - BMW E31 850i",
+        "channel": "M539 Restorations",
+        "url": "https://www.youtube.com/watch?v=8XQ8UfE9AkW",
+        "duration": "01:58:30",
+        "category": "Repair/Restoration",
+        "hardness": 9,
+        "queries": [
+            {
+                "type": "COUNTING",
+                "query": "How many times did Sreten use the ultrasonic cleaner for the fuel injectors?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "COMPARATIVE",
+                "query": "How does the color of the transmission fluid at the start compare to the final fill?",
+                "ground_truth": "Dark/dirty at start, clean/red at end",
+                "expected_timestamps": []
+            },
+            {
+                "type": "CAUSAL",
+                "query": "Why did the technician have to remove the intake manifold a second time?",
+                "ground_truth": "Vacuum leak traced to cracked intake boot",
+                "expected_timestamps": []
+            },
+            {
+                "type": "NEEDLE",
+                "query": "What was the specific temperature of the shop when he performed the first cold start?",
+                "ground_truth": "14°C (57°F)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "ORDERING",
+                "query": "What component was installed immediately after the timing chain tensioner?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            }
+        ]
+    },
+    {
+        "id": "03_blender_tutorial",
+        "title": "Beginner Blender Tutorial (2026) - Full Course",
+        "channel": "Blender Guru",
+        "url": "https://www.youtube.com/watch?v=z-Xl9tGqH14",
+        "duration": "04:19:10",
+        "category": "Tutorial/Education",
+        "hardness": 7,
+        "queries": [
+            {
+                "type": "COUNTING",
+                "query": "How many times did the instructor mention the F9 key for the last-used function?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "COMPARATIVE",
+                "query": "How did the density of the donut mesh change after applying the first modifier?",
+                "ground_truth": "Increased subdivision density",
+                "expected_timestamps": []
+            },
+            {
+                "type": "CAUSAL",
+                "query": "Why did the instructor suggest changing the Resolution Scale at the beginning?",
+                "ground_truth": "For 4K monitor visibility",
+                "expected_timestamps": []
+            },
+            {
+                "type": "NEEDLE",
+                "query": "What specific Interface Scale value did he set for the tutorial?",
+                "ground_truth": "1.8",
+                "expected_timestamps": []
+            },
+            {
+                "type": "ORDERING",
+                "query": "What happened immediately after the Icing object was separated from the Donut object?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            }
+        ]
+    },
+    {
+        "id": "04_matt_turk",
+        "title": "The Quest to Beat Matt Turk",
+        "channel": "Summoning Salt",
+        "url": "https://www.youtube.com/watch?v=HX2YPcIFfP4",
+        "duration": "00:57:15",
+        "category": "Documentary/Vlog",
+        "hardness": 8,
+        "queries": [
+            {
+                "type": "COUNTING",
+                "query": "How many times did the narrator reference the Blindfold record?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "COMPARATIVE",
+                "query": "How did the strategy for King Hippo evolve between the 2008 and 2019 records?",
+                "ground_truth": "Frame-perfect window discovery",
+                "expected_timestamps": []
+            },
+            {
+                "type": "CAUSAL",
+                "query": "Why did the player Sinister1 decide to retire from the category?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "NEEDLE",
+                "query": "What was the exact date Matt Turk's Piston Honda record was finally beaten?",
+                "ground_truth": "August 14, 2021",
+                "expected_timestamps": []
+            },
+            {
+                "type": "ORDERING",
+                "query": "What record was set immediately after the Summoning Salt discovery?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            }
+        ]
+    },
+    {
+        "id": "05_cooking_marathon",
+        "title": "18th Century Cooking Marathon! - Season 21",
+        "channel": "Townsends",
+        "url": "https://www.youtube.com/watch?v=78aCC8Up4_o",
+        "duration": "03:17:10",
+        "category": "Cooking/Food",
+        "hardness": 6,
+        "queries": [
+            {
+                "type": "COUNTING",
+                "query": "How many different types of oatmeal names (pottage, grl, etc.) were listed?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "COMPARATIVE",
+                "query": "How did the texture of the horse bread differ from the poor man's bread?",
+                "ground_truth": "Horse bread coarser texture",
+                "expected_timestamps": []
+            },
+            {
+                "type": "CAUSAL",
+                "query": "Why did the cook add rose water to the second cake but not the first?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "NEEDLE",
+                "query": "What was the weight of the bread ration for a Sunday breakfast in a 18th-century workhouse?",
+                "ground_truth": "4 ounces",
+                "expected_timestamps": []
+            },
+            {
+                "type": "ORDERING",
+                "query": "What happened immediately after the Sabotiere ice cream maker was opened?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            }
+        ]
+    },
+    {
+        "id": "06_woodworking_five_years",
+        "title": "Five Years of Woodworking Projects (Compendium)",
+        "channel": "Blacktail Studio",
+        "url": "https://www.youtube.com/watch?v=0_u6eA2eC28",
+        "duration": "02:35:45",
+        "category": "Craft/Making",
+        "hardness": 8,
+        "queries": [
+            {
+                "type": "COUNTING",
+                "query": "How many times did the creator show the moisture meter reading?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "COMPARATIVE",
+                "query": "How did the leg design evolve from the first project to the tenth?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "CAUSAL",
+                "query": "Why did he switch from Rubio Monocoat to Blacktail Finish halfway through?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "NEEDLE",
+                "query": "What was the price of the first table he ever sold?",
+                "ground_truth": "$400",
+                "expected_timestamps": []
+            },
+            {
+                "type": "ORDERING",
+                "query": "What happened immediately after the epoxy smoke incident?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            }
+        ]
+    },
+    {
+        "id": "07_porsche_restoration",
+        "title": "Full Restoration of a Rusty 1970s Porsche 911",
+        "channel": "Restore It",
+        "url": "https://www.youtube.com/watch?v=u6w-XWpY5G8",
+        "duration": "01:12:30",
+        "category": "Repair/Restoration",
+        "hardness": 5,
+        "queries": [
+            {
+                "type": "COUNTING",
+                "query": "How many times did the restorer apply rust converter?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "COMPARATIVE",
+                "query": "How did the engine bay look before vs. after the dry-ice blasting?",
+                "ground_truth": "Rusty/dirty before, clean/bare metal after",
+                "expected_timestamps": []
+            },
+            {
+                "type": "CAUSAL",
+                "query": "Why were the original seats discarded?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            },
+            {
+                "type": "NEEDLE",
+                "query": "What was the specific diameter of the replacement brake lines?",
+                "ground_truth": "4.75mm",
+                "expected_timestamps": []
+            },
+            {
+                "type": "ORDERING",
+                "query": "What happened immediately after the first engine fire-up?",
+                "ground_truth": "Unknown (requires video)",
+                "expected_timestamps": []
+            }
+        ]
+    }
+]
 
 
-def save_results(test_name: str, video_url: str, video_path: str, results: dict, queries: list, output_dir: Path):
-    """Save test results to markdown file."""
-    output_file = output_dir / f"{test_name}_results.md"
+def create_output_directory(video_id: str) -> Path:
+    """Create output directory for test results."""
+    output_dir = Path("complex_stress_test_results") / video_id
+    output_dir.mkdir(parents=True, exist_ok=True)
+    return output_dir
+
+
+def save_results(output_dir: Path, results: Dict[str, Any]):
+    """Save test results to Markdown file only."""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(f"# SHARINGAN Stress Test: {test_name}\n\n")
-        f.write(f"**Test Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-        f.write(f"**YouTube URL:** {video_url}\n\n")
+    # Save Markdown only
+    md_file = output_dir / f"results_{timestamp}.md"
+    with open(md_file, 'w', encoding='utf-8') as f:
+        f.write(f"# {results['title']}\n\n")
+        f.write(f"**Channel:** {results['channel']}\n\n")
+        f.write(f"**URL:** {results['url']}\n\n")
+        f.write(f"**Duration:** {results['duration']}\n\n")
+        f.write(f"**Category:** {results['category']}\n\n")
+        f.write(f"**Hardness:** {results['hardness']}/10\n\n")
+        f.write(f"**Test Date:** {results['test_date']}\n\n")
+        
+        if results['video_processed']:
+            f.write(f"**Video Processed:** ✅ Yes\n\n")
+            f.write(f"**Processing Time:** {results.get('processing_time', 0):.1f}s\n\n")
+            f.write(f"**Video Duration:** {results.get('video_duration_seconds', 0):.1f}s\n\n")
+            f.write(f"**Frames Processed:** {results.get('num_frames_processed', 0)}\n\n")
+        else:
+            f.write(f"**Video Processed:** ❌ No\n\n")
+            if 'skip_reason' in results:
+                f.write(f"**Skip Reason:** {results['skip_reason']}\n\n")
+            if 'processing_error' in results:
+                f.write(f"**Error:** {results['processing_error']}\n\n")
+        
         f.write("---\n\n")
+        f.write("## Queries\n\n")
         
-        # Video info
-        f.write("## Video Information\n\n")
-        video_info = results['video_info']
-        f.write(f"- **Duration:** {video_info['duration']:.1f}s ({video_info['duration']/60:.1f} min)\n")
-        f.write(f"- **Total Frames:** {video_info['total_frames']:,}\n")
-        f.write(f"- **Processed Frames:** {video_info['processed_frames']:,}\n")
-        f.write(f"- **Original FPS:** {video_info['fps']:.1f}\n")
-        f.write(f"- **Events Detected:** {len(results['events'])}\n")
-        f.write(f"- **Effective Processing FPS:** {video_info['processed_frames']/video_info['duration']:.2f}\n\n")
-        
-        # Events
-        f.write("## Detected Events\n\n")
-        f.write(f"Total events detected: {len(results['events'])}\n\n")
-        f.write("| # | Timestamp | Description |\n")
-        f.write("|---|-----------|-------------|\n")
-        for i, event in enumerate(results['events'], 1):
-            timestamp_str = format_timestamp(event['timestamp'])
-            f.write(f"| {i} | {timestamp_str} | {event['description']} |\n")
-        f.write("\n---\n\n")
-        
-        # Query results
-        f.write("## Query Test Results\n\n")
-        for i, (query, category, answer) in enumerate(queries, 1):
-            f.write(f"### Query {i}: {query}\n\n")
-            f.write(f"**Category:** {category}\n\n")
-            f.write(f"**Answer:** {answer}\n\n")
+        for query in results['queries']:
+            f.write(f"### Query {query['query_number']}: {query['type']}\n\n")
+            f.write(f"**Question:** {query['query']}\n\n")
+            f.write(f"**Ground Truth:** {query['ground_truth']}\n\n")
+            
+            if query.get('skipped'):
+                f.write("**Status:** ⚠️ Skipped (video not processed)\n\n")
+            elif 'query_error' in query:
+                f.write(f"**Status:** ❌ Error\n\n")
+                f.write(f"**Error:** {query['query_error']}\n\n")
+            else:
+                f.write(f"**Query Time:** {query.get('query_time', 0)*1000:.1f}ms\n\n")
+                f.write(f"**Results:** {query.get('num_results', 0)}\n\n")
+                
+                if 'results' in query and query['results']:
+                    f.write("| Rank | Timestamp | Confidence | Window |\n")
+                    f.write("|------|-----------|------------|--------|\n")
+                    for result in query['results']:
+                        f.write(f"| {result['rank']} | {result['timestamp_formatted']} | {result['confidence']:.3f} | {result['window']} |\n")
+                    f.write("\n")
+            
             f.write("---\n\n")
+    
+    print(f"✓ Results saved to {md_file}")
+
+
+def format_timestamp(seconds: float) -> str:
+    """Format seconds as HH:MM:SS."""
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    secs = int(seconds % 60)
+    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+
+
+def test_video(video_config: Dict[str, Any], processor: VideoProcessor) -> Dict[str, Any]:
+    """Test a single video with all queries."""
+    
+    print("\n" + "=" * 80)
+    print(f"Testing: {video_config['title']}")
+    print(f"Channel: {video_config['channel']}")
+    print(f"Duration: {video_config['duration']}")
+    print(f"Hardness: {video_config['hardness']}/10")
+    print("=" * 80)
+    
+    video_id = video_config['id']
+    output_dir = create_output_directory(video_id)
+    
+    results = {
+        "video_id": video_id,
+        "title": video_config['title'],
+        "channel": video_config['channel'],
+        "url": video_config['url'],
+        "duration": video_config['duration'],
+        "category": video_config['category'],
+        "hardness": video_config['hardness'],
+        "test_date": datetime.now().isoformat(),
+        "video_processed": False,
+        "queries": []
+    }
+    
+    # Download video
+    print(f"\nDownloading video...")
+    print("-" * 80)
+    
+    try:
+        video_path = download_youtube_video(video_config['url'])
+        print(f"✓ Video ready: {video_path}")
+    except Exception as e:
+        print(f"✗ Failed to download video: {e}")
+        results['skip_reason'] = f"Download failed: {str(e)}"
+        save_results(output_dir, results)
+        return results
+    
+    # Process video
+    print(f"\nProcessing video...")
+    print("-" * 80)
+    
+    try:
+        start_time = time.time()
+        processor.process(video_path)
+        processing_time = time.time() - start_time
         
-        # Summary
-        f.write("## Test Summary\n\n")
-        f.write(f"- **Video Duration:** {video_info['duration']:.1f}s ({video_info['duration']/60:.1f} min)\n")
-        f.write(f"- **Events Detected:** {len(results['events'])}\n")
-        f.write(f"- **Queries Tested:** {len(queries)}\n")
-        f.write(f"- **Test Status:** ✅ Success\n\n")
+        results['video_processed'] = True
+        results['processing_time'] = processing_time
+        results['video_duration_seconds'] = processor.video_duration
+        results['num_frames_processed'] = len(processor.timestamps)
         
-        f.write("---\n\n")
-        f.write(f"*Generated by SHARINGAN Complex Video Stress Test - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*\n")
+        print(f"✓ Video processed in {processing_time:.1f}s")
+        print(f"   Duration: {processor.video_duration:.1f}s")
+        print(f"   Frames: {len(processor.timestamps)}")
     
-    print(f"\n✓ Results saved to: {output_file}")
-
-
-def test_chocolate_sculpture():
-    """Test 1: Texture & State Change (Chocolate Sculpture)"""
-    print("\n" + "="*80)
-    print("TEST 1: TEXTURE & STATE CHANGE (Chocolate Sculpture)")
-    print("="*80)
+    except Exception as e:
+        print(f"✗ Error processing video: {e}")
+        results['processing_error'] = str(e)
+        results['video_processed'] = False
+        save_results(output_dir, results)
+        return results
     
-    test_name = "01_chocolate_sculpture"
-    # Alternative video if original is unavailable
-    # Original: https://www.youtube.com/watch?v=f2vO_G_pY_E (may be unavailable)
-    # Alternative: Chocolate tempering tutorial
-    video_url = "https://www.youtube.com/watch?v=qhZtJTUvGAU"  # Chocolate tempering basics
-    
-    # Create output directory
-    output_dir = Path("stress_test_results") / test_name
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    print("\nStep 1: Downloading video...")
-    print("-" * 80)
-    video_path = download_youtube_video(video_url)
-    
-    print("\nStep 2: Initializing processor (HIGH QUALITY preset)...")
-    print("-" * 80)
-    processor = VideoProcessor(
-        vlm_model='clip',
-        device='auto',
-        target_fps=8.0,  # High quality for texture details
-        enable_temporal=True,
-        batch_size=32
-    )
-    
-    print("\nStep 3: Processing video...")
-    print("-" * 80)
-    start_time = time.time()
-    results = processor.process(video_path)
-    processing_time = time.time() - start_time
-    print(f"\n✓ Processing completed in {processing_time:.1f}s ({processing_time/60:.1f} min)")
-    
-    print("\nStep 4: Testing queries...")
+    # Test queries
+    print(f"\nTesting {len(video_config['queries'])} queries...")
     print("-" * 80)
     
-    queries = [
-        # Texture & State queries
-        ("What is the chocolate being used for?", "Content"),
-        ("When is chocolate being melted?", "State Change"),
-        ("When is chocolate being poured?", "Action"),
-        ("When is chocolate being painted?", "Action"),
-        ("When is chocolate being carved?", "Action"),
-        ("When is chocolate being sprayed?", "Action"),
-        ("What tools are being used?", "Equipment"),
-        ("When is the spray gun used?", "Equipment"),
-        ("When is the lathe used?", "Equipment"),
-        ("What happens at the beginning?", "Timing"),
-        ("What happens in the middle?", "Timing"),
-        ("What happens at the end?", "Timing"),
-        ("When is the dragon assembled?", "Process"),
-        ("When is the final sculpture shown?", "Final Result"),
-        ("Summarize the sculpture process", "Summary"),
-    ]
-    
-    query_results = []
-    for query, category in queries:
-        print(f"\nQuery [{category}]: {query}")
-        print("-" * 40)
-        answer = processor.chat(query, use_llm=False)
-        print(f"Answer: {answer}")
-        query_results.append((query, category, answer))
-    
-    print("\nStep 5: Saving results...")
-    print("-" * 80)
-    save_results(test_name, video_url, video_path, results, query_results, output_dir)
-    
-    print(f"\n✅ Test 1 completed! Results in: {output_dir}")
-
-
-def test_pc_building():
-    """Test 2: Object Density & Text (PC Building)"""
-    print("\n" + "="*80)
-    print("TEST 2: OBJECT DENSITY & TEXT (PC Building)")
-    print("="*80)
-    
-    test_name = "02_pc_building"
-    video_url = "https://www.youtube.com/watch?v=PXaLc9AYIcg"
-    
-    # Create output directory
-    output_dir = Path("stress_test_results") / test_name
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    print("\nStep 1: Downloading video...")
-    print("-" * 80)
-    video_path = download_youtube_video(video_url)
-    
-    print("\nStep 2: Initializing processor (HIGH QUALITY preset for text)...")
-    print("-" * 80)
-    processor = VideoProcessor(
-        vlm_model='clip',
-        device='auto',
-        target_fps=8.0,  # High quality for text detection
-        enable_temporal=True,
-        batch_size=32
-    )
-    
-    print("\nStep 3: Processing video...")
-    print("-" * 80)
-    start_time = time.time()
-    results = processor.process(video_path)
-    processing_time = time.time() - start_time
-    print(f"\n✓ Processing completed in {processing_time:.1f}s ({processing_time/60:.1f} min)")
-    
-    print("\nStep 4: Testing queries...")
-    print("-" * 80)
-    
-    queries = [
-        # Component identification
-        ("What components are shown?", "Content"),
-        ("When is the CPU installed?", "Action"),
-        ("When is the RAM installed?", "Action"),
-        ("When is the GPU installed?", "Action"),
-        ("When is the motherboard shown?", "Component"),
-        ("When are cables being connected?", "Action"),
-        ("What brands are visible?", "Text/Brand"),
-        ("When is Intel shown?", "Text/Brand"),
-        ("When is NVIDIA shown?", "Text/Brand"),
-        ("When is ASUS shown?", "Text/Brand"),
-        ("What happens first?", "Timing"),
-        ("What happens at the beginning?", "Timing"),
-        ("What happens in the middle?", "Timing"),
-        ("What happens at the end?", "Timing"),
-        ("When is the PC powered on?", "Final Result"),
-        ("Summarize the PC building process", "Summary"),
-    ]
-    
-    query_results = []
-    for query, category in queries:
-        print(f"\nQuery [{category}]: {query}")
-        print("-" * 40)
-        answer = processor.chat(query, use_llm=False)
-        print(f"Answer: {answer}")
-        query_results.append((query, category, answer))
-    
-    print("\nStep 5: Saving results...")
-    print("-" * 80)
-    save_results(test_name, video_url, video_path, results, query_results, output_dir)
-    
-    print(f"\n✅ Test 2 completed! Results in: {output_dir}")
-
-
-def test_chemistry():
-    """Test 3: State Transformation (Chemistry)"""
-    print("\n" + "="*80)
-    print("TEST 3: STATE TRANSFORMATION (Chemistry)")
-    print("="*80)
-    
-    test_name = "03_chemistry"
-    video_url = "https://www.youtube.com/watch?v=zFZ5jQ0yuNA"
-    
-    # Create output directory
-    output_dir = Path("stress_test_results") / test_name
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    print("\nStep 1: Downloading video...")
-    print("-" * 80)
-    video_path = download_youtube_video(video_url)
-    
-    print("\nStep 2: Initializing processor (BALANCED preset for long video)...")
-    print("-" * 80)
-    processor = VideoProcessor(
-        vlm_model='clip',
-        device='auto',
-        target_fps=5.0,  # Balanced for long video
-        enable_temporal=True,
-        batch_size=32
-    )
-    
-    print("\nStep 3: Processing video...")
-    print("-" * 80)
-    start_time = time.time()
-    results = processor.process(video_path)
-    processing_time = time.time() - start_time
-    print(f"\n✓ Processing completed in {processing_time:.1f}s ({processing_time/60:.1f} min)")
-    
-    print("\nStep 4: Testing queries...")
-    print("-" * 80)
-    
-    queries = [
-        # State transformation queries
-        ("What materials are being used?", "Content"),
-        ("When does the liquid turn purple?", "State Change"),
-        ("When does the liquid turn clear?", "State Change"),
-        ("When is heating applied?", "Action"),
-        ("When is mixing done?", "Action"),
-        ("When is filtering done?", "Action"),
-        ("What glassware is visible?", "Equipment"),
-        ("When is a beaker used?", "Equipment"),
-        ("When is a flask used?", "Equipment"),
-        ("When is distillation shown?", "Process"),
-        ("What happens at the beginning?", "Timing"),
-        ("What happens in the middle?", "Timing"),
-        ("What happens at the end?", "Timing"),
-        ("When is the final product shown?", "Final Result"),
-        ("Summarize the chemical process", "Summary"),
-    ]
-    
-    query_results = []
-    for query, category in queries:
-        print(f"\nQuery [{category}]: {query}")
-        print("-" * 40)
-        answer = processor.chat(query, use_llm=False)
-        print(f"Answer: {answer}")
-        query_results.append((query, category, answer))
-    
-    print("\nStep 5: Saving results...")
-    print("-" * 80)
-    save_results(test_name, video_url, video_path, results, query_results, output_dir)
-    
-    print(f"\n✅ Test 3 completed! Results in: {output_dir}")
-
-
-def test_woodworking():
-    """Test 4: Action Segmentation (Woodworking)"""
-    print("\n" + "="*80)
-    print("TEST 4: ACTION SEGMENTATION (Woodworking)")
-    print("="*80)
-    
-    test_name = "04_woodworking"
-    video_url = "https://www.youtube.com/watch?v=1iG1sXaYhwY"
-    
-    # Create output directory
-    output_dir = Path("stress_test_results") / test_name
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    print("\nStep 1: Downloading video...")
-    print("-" * 80)
-    video_path = download_youtube_video(video_url)
-    
-    print("\nStep 2: Initializing processor (BALANCED preset for long video)...")
-    print("-" * 80)
-    processor = VideoProcessor(
-        vlm_model='clip',
-        device='auto',
-        target_fps=5.0,  # Balanced for long video
-        enable_temporal=True,
-        batch_size=32
-    )
-    
-    print("\nStep 3: Processing video...")
-    print("-" * 80)
-    start_time = time.time()
-    results = processor.process(video_path)
-    processing_time = time.time() - start_time
-    print(f"\n✓ Processing completed in {processing_time:.1f}s ({processing_time/60:.1f} min)")
-    
-    print("\nStep 4: Testing queries...")
-    print("-" * 80)
-    
-    queries = [
-        # Action segmentation queries
-        ("What is being built?", "Content"),
-        ("When is wood being selected?", "Phase"),
-        ("When is the form being built?", "Phase"),
-        ("When is epoxy being poured?", "Phase"),
-        ("When is sanding shown?", "Action"),
-        ("When is buffing shown?", "Action"),
-        ("When is finishing applied?", "Phase"),
-        ("What tools are being used?", "Equipment"),
-        ("When is the router used?", "Equipment"),
-        ("When is the sander used?", "Equipment"),
-        ("What are the main building steps?", "Process"),
-        ("What happens at the beginning?", "Timing"),
-        ("What happens in the middle?", "Timing"),
-        ("What happens at the end?", "Timing"),
-        ("When is the final table shown?", "Final Result"),
-        ("Summarize the table building process", "Summary"),
-    ]
-    
-    query_results = []
-    for query, category in queries:
-        print(f"\nQuery [{category}]: {query}")
-        print("-" * 40)
-        answer = processor.chat(query, use_llm=False)
-        print(f"Answer: {answer}")
-        query_results.append((query, category, answer))
-    
-    print("\nStep 5: Saving results...")
-    print("-" * 80)
-    save_results(test_name, video_url, video_path, results, query_results, output_dir)
-    
-    print(f"\n✅ Test 4 completed! Results in: {output_dir}")
-
-
-def test_long_form_anthology():
-    """Test 5: Long-Form Temporal Reasoning (2.5-hour Woodworking Anthology)"""
-    print("\n" + "="*80)
-    print("TEST 5: LONG-FORM TEMPORAL REASONING (2.5-hour Anthology)")
-    print("="*80)
-    
-    test_name = "05_long_form_anthology"
-    video_url = "https://www.youtube.com/watch?v=Alcrxzoo2kk"
-    
-    # Create output directory
-    output_dir = Path("stress_test_results") / test_name
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    print("\nStep 1: Downloading video (this may take a while for 2.5-hour video)...")
-    print("-" * 80)
-    video_path = download_youtube_video(video_url)
-    
-    print("\nStep 2: Initializing processor (LONG-FORM preset)...")
-    print("-" * 80)
-    processor = VideoProcessor(
-        vlm_model='clip',
-        device='auto',
-        target_fps=3.0,  # Lower FPS for very long video
-        enable_temporal=True,
-        batch_size=32
-    )
-    
-    print("\nStep 3: Processing video (this will take a while for 2.5 hours)...")
-    print("-" * 80)
-    start_time = time.time()
-    results = processor.process(video_path)
-    processing_time = time.time() - start_time
-    print(f"\n✓ Processing completed in {processing_time:.1f}s ({processing_time/60:.1f} min)")
-    
-    print("\nStep 4: Testing advanced temporal reasoning queries...")
-    print("-" * 80)
-    
-    queries = [
-        # Evolution of Skill (Temporal Trend Analysis)
-        ("How did the creator's method for fixing wood defects evolve from the earliest project to the most recent one?", "Temporal Trend"),
-        ("What repair techniques are shown in the first 30 minutes vs the last 30 minutes?", "Temporal Comparison"),
+    for i, query_config in enumerate(video_config['queries'], 1):
+        query_type = query_config['type']
+        query_text = query_config['query']
+        ground_truth = query_config['ground_truth']
         
-        # Aggregated Frequency (Counting & Tracking)
-        ("How many distinct tables were built across the entire video?", "Global Counting"),
-        ("Which wood species was used most frequently?", "Frequency Analysis"),
-        ("Count all instances where epoxy was used", "Event Counting"),
+        print(f"\nQuery {i}/{len(video_config['queries'])} [{query_type}]")
+        print(f"Q: {query_text}")
+        print(f"Ground Truth: {ground_truth}")
         
-        # Cross-Horizon Technical Comparison (Interleaved Reasoning)
-        ("Compare the finishing process used for the round Walnut table at the beginning with the water-based poly finish in the final project", "Cross-Horizon Comparison"),
-        ("What tools were used in the first project vs the last project?", "Tool Comparison"),
-        ("Compare sanding techniques shown at the beginning vs the end", "Technique Evolution"),
+        query_result = {
+            "query_number": i,
+            "type": query_type,
+            "query": query_text,
+            "ground_truth": ground_truth,
+            "expected_timestamps": query_config.get('expected_timestamps', [])
+        }
         
-        # Causal Anchor (Causality & Logic)
-        ("Why was shipping the table to the UK going to be a problem?", "Causal Reasoning"),
-        ("What physical constraints made certain tables difficult to ship?", "Constraint Analysis"),
+        try:
+            # Query with both fixes enabled
+            start_time = time.time()
+            query_results = processor.query(
+                query_text,
+                top_k=5,
+                enforce_diversity=True,
+                use_comparative=True
+            )
+            query_time = time.time() - start_time
+            
+            query_result['query_time'] = query_time
+            query_result['num_results'] = len(query_results)
+            query_result['results'] = []
+            
+            print(f"   Query time: {query_time*1000:.1f}ms")
+            print(f"   Results:")
+            
+            for j, result in enumerate(query_results, 1):
+                timestamp = result['timestamp']
+                confidence = result['confidence']
+                window = result.get('window', 'N/A')
+                
+                query_result['results'].append({
+                    "rank": j,
+                    "timestamp": timestamp,
+                    "timestamp_formatted": format_timestamp(timestamp),
+                    "confidence": confidence,
+                    "window": window
+                })
+                
+                print(f"      {j}. {format_timestamp(timestamp)} (confidence: {confidence:.3f}, window: {window})")
         
-        # Temporal Localization (Precision)
-        ("When is the final result shown?", "Final Result"),
-        ("What happens at the very beginning?", "Beginning"),
-        ("What happens in the middle of the video?", "Middle"),
-        ("What happens at the end?", "End"),
+        except Exception as e:
+            print(f"   ✗ Query failed: {e}")
+            query_result['query_error'] = str(e)
         
-        # Tool & Material Indexing (Specificity)
-        ("What specific tools are used for routing?", "Tool Indexing"),
-        ("List all wood species mentioned", "Material Indexing"),
-        ("What finishing products are used?", "Product Indexing"),
+        results['queries'].append(query_result)
+    
+    # Save results
+    save_results(output_dir, results)
+    
+    return results
+
+
+def generate_summary_report(all_results: List[Dict[str, Any]]):
+    """Generate summary report across all videos."""
+    
+    print("\n" + "=" * 80)
+    print("SUMMARY REPORT")
+    print("=" * 80)
+    
+    total_videos = len(all_results)
+    processed_videos = sum(1 for r in all_results if r['video_processed'])
+    total_queries = sum(len(r['queries']) for r in all_results)
+    
+    print(f"\nVideos: {processed_videos}/{total_videos} processed")
+    print(f"Queries: {total_queries} total")
+    
+    # Query type breakdown
+    query_types = {}
+    for result in all_results:
+        for query in result['queries']:
+            qtype = query['type']
+            if qtype not in query_types:
+                query_types[qtype] = 0
+            query_types[qtype] += 1
+    
+    print(f"\nQuery Type Breakdown:")
+    for qtype, count in sorted(query_types.items()):
+        print(f"  {qtype}: {count}")
+    
+    # Hardness distribution
+    print(f"\nHardness Distribution:")
+    for result in all_results:
+        status = "✓" if result['video_processed'] else "✗"
+        print(f"  {status} {result['title'][:50]:50s} Hardness: {result['hardness']}/10")
+    
+    # Save summary to markdown
+    summary_file = Path("complex_stress_test_results") / "summary.md"
+    with open(summary_file, 'w', encoding='utf-8') as f:
+        f.write("# SHARINGAN Complex Video Stress Test - Summary\n\n")
+        f.write(f"**Test Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+        f.write(f"**Total Videos:** {total_videos}\n\n")
+        f.write(f"**Processed Videos:** {processed_videos}\n\n")
+        f.write(f"**Total Queries:** {total_queries}\n\n")
         
-        # Process Understanding (Sequential Reasoning)
-        ("What are the main steps in building a table?", "Process"),
-        ("Describe the typical workflow from raw wood to finished table", "Workflow"),
+        f.write("## Query Type Breakdown\n\n")
+        for qtype, count in sorted(query_types.items()):
+            f.write(f"- **{qtype}:** {count}\n")
+        f.write("\n")
         
-        # Summary & Synthesis
-        ("Summarize the entire anthology", "Summary"),
-    ]
+        f.write("## Videos Tested\n\n")
+        f.write("| Status | Title | Hardness | Queries |\n")
+        f.write("|--------|-------|----------|----------|\n")
+        for result in all_results:
+            status = "✅" if result['video_processed'] else "❌"
+            f.write(f"| {status} | {result['title']} | {result['hardness']}/10 | {len(result['queries'])} |\n")
+        f.write("\n")
     
-    query_results = []
-    for query, category in queries:
-        print(f"\nQuery [{category}]: {query}")
-        print("-" * 40)
-        answer = processor.chat(query, use_llm=False)
-        print(f"Answer: {answer}")
-        query_results.append((query, category, answer))
-    
-    print("\nStep 5: Saving results...")
-    print("-" * 80)
-    save_results(test_name, video_url, video_path, results, query_results, output_dir)
-    
-    print(f"\n✅ Test 5 completed! Results in: {output_dir}")
-    
-    # Print benchmark summary
-    print("\n" + "="*80)
-    print("LONG-FORM VIDEO BENCHMARK SUMMARY")
-    print("="*80)
-    
-    video_duration = results['video_info']['duration'] if results['video_info'] else 0
-    print(f"\nVideo Duration: {video_duration:.1f}s ({video_duration/60:.1f} min or {video_duration/3600:.2f} hours)")
-    print(f"Frames Processed: {results['video_info']['processed_frames'] if results['video_info'] else len(processor.timestamps)}")
-    print(f"Events Detected: {len(results['events'])}")
-    print(f"Processing Time: {processing_time:.1f}s ({processing_time/60:.1f} min)")
-    print(f"Processing Speed: {video_duration/processing_time:.2f}x realtime")
-    
-    print("\nQuery Categories Tested:")
-    categories = {}
-    for _, category, _ in query_results:
-        categories[category] = categories.get(category, 0) + 1
-    
-    for category, count in sorted(categories.items()):
-        print(f"  - {category}: {count} queries")
-    
-    print("\nThis test demonstrates SHARINGAN's superiority over reactive models:")
-    print("  ✓ Global Counting: Event graph enables accurate counting")
-    print("  ✓ Cross-Horizon Linking: Temporal edges connect beginning to end")
-    print("  ✓ Tool/Material Indexing: Specific entity tracking vs generic descriptions")
-    print("  ✓ Query Latency: <1s retrieval vs 30s+ re-processing")
+    print(f"\n✓ Summary saved to {summary_file}")
 
 
 def main():
-    """Run all stress tests."""
-    print("\n" + "="*80)
-    print("SHARINGAN COMPLEX VIDEO STRESS TEST SUITE")
-    print("="*80)
-    print("\nThis suite will test 5 categories of complex videos:")
-    print("1. Texture & State Change (Chocolate Sculpture)")
-    print("2. Object Density & Text (PC Building)")
-    print("3. State Transformation (Chemistry)")
-    print("4. Action Segmentation (Woodworking)")
-    print("5. Long-Form Temporal Reasoning (2.5-hour Anthology)")
-    print("\nEach test will save results to: stress_test_results/<test_name>/")
-    print("="*80)
+    """Main test execution."""
     
-    # Create main results directory
-    results_dir = Path("stress_test_results")
-    results_dir.mkdir(exist_ok=True)
+    print("=" * 80)
+    print("SHARINGAN Complex Video Stress Test")
+    print("=" * 80)
+    print(f"Test Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Videos: {len(VIDEOS)}")
+    print(f"Model: CLIP + Qwen2.5-1.5B-Instruct (4-bit)")
+    print(f"Fixes Enabled: Magnet Suppression + Comparative Query Handling")
+    print("=" * 80)
     
-    # Run all tests
-    tests = [
-        ("1", "Chocolate Sculpture", test_chocolate_sculpture),
-        ("2", "PC Building", test_pc_building),
-        ("3", "Chemistry", test_chemistry),
-        ("4", "Woodworking", test_woodworking),
-        ("5", "Long-Form Anthology", test_long_form_anthology),
-    ]
+    # Initialize processor
+    print("\nInitializing VideoProcessor...")
+    print("   VLM: CLIP ViT-B/32")
+    print("   Device: auto (CUDA if available)")
+    print("   Temporal: enabled")
+    print("   Diversity enforcement: enabled")
+    print("   Comparative handling: enabled")
     
-    print("\nWhich tests would you like to run?")
-    print("1. Chocolate Sculpture (Texture & State Change)")
-    print("2. PC Building (Object Density & Text)")
-    print("3. Chemistry (State Transformation)")
-    print("4. Woodworking (Action Segmentation)")
-    print("5. Long-Form Anthology (2.5-hour Temporal Reasoning)")
-    print("6. Run ALL tests")
-    
-    choice = input("\nEnter test number (1-6) or 'all': ").strip().lower()
-    
-    if choice in ['6', 'all']:
-        # Run all tests
-        for num, name, test_func in tests:
-            try:
-                test_func()
-            except Exception as e:
-                print(f"\n❌ Test {num} ({name}) failed with error: {e}")
-                import traceback
-                traceback.print_exc()
-                continue
-    elif choice in ['1', '2', '3', '4', '5']:
-        # Run specific test
-        test_num = int(choice) - 1
-        num, name, test_func = tests[test_num]
-        try:
-            test_func()
-        except Exception as e:
-            print(f"\n❌ Test {num} ({name}) failed with error: {e}")
-            import traceback
-            traceback.print_exc()
-    else:
-        print("Invalid choice. Exiting.")
+    try:
+        processor = VideoProcessor(
+            vlm_model='clip',
+            device='auto',
+            target_fps=5.0,
+            enable_temporal=True,
+            batch_size=32
+        )
+        print("✓ Processor initialized")
+    except Exception as e:
+        print(f"✗ Failed to initialize processor: {e}")
         return
     
-    print("\n" + "="*80)
-    print("STRESS TEST SUITE COMPLETED")
-    print("="*80)
-    print(f"\nAll results saved to: {results_dir.absolute()}")
-    print("\nCheck individual test folders for detailed results:")
-    for num, name, _ in tests:
-        test_dir = results_dir / f"0{num}_{name.lower().replace(' ', '_')}"
-        if test_dir.exists():
-            print(f"  - {test_dir}")
+    # Create videos directory
+    print(f"\nVideos will be cached in system temp directory")
+    print(f"Results directory: complex_stress_test_results/")
+    
+    # Test each video
+    all_results = []
+    
+    for i, video_config in enumerate(VIDEOS, 1):
+        print(f"\n{'='*80}")
+        print(f"Video {i}/{len(VIDEOS)}")
+        
+        try:
+            result = test_video(video_config, processor)
+            all_results.append(result)
+        except Exception as e:
+            print(f"✗ Error testing video: {e}")
+            all_results.append({
+                "video_id": video_config['id'],
+                "title": video_config['title'],
+                "error": str(e),
+                "video_processed": False,
+                "queries": []
+            })
+    
+    # Generate summary
+    generate_summary_report(all_results)
+    
+    print("\n" + "=" * 80)
+    print("TEST COMPLETE")
+    print("=" * 80)
+    print(f"\nResults saved to: complex_stress_test_results/")
+    print(f"\nNote: Videos are cached in system temp directory for reuse")
+    print(f"Check individual video folders for detailed markdown results")
 
 
 if __name__ == "__main__":
