@@ -119,7 +119,7 @@ Be EXACT. Use structured format. Max 80 words."""
                 quantization_config = BitsAndBytesConfig(
                     load_in_4bit=True,
                     bnb_4bit_quant_type="nf4",
-                    bnb_4bit_compute_dtype=torch.float16,  # Changed from bfloat16
+                    bnb_4bit_compute_dtype=torch.float16,  # Use float16 consistently
                     bnb_4bit_use_double_quant=True,
                 )
                 
@@ -129,7 +129,8 @@ Be EXACT. Use structured format. Max 80 words."""
                     device_map="auto",
                     trust_remote_code=True,
                     low_cpu_mem_usage=True,
-                    torch_dtype=torch.float16  # Ensure consistent dtype
+                    torch_dtype=torch.float16,  # Ensure consistent dtype
+                    attn_implementation="eager"  # Avoid flash attention dtype issues
                 )
                 
                 vram_estimate = {
@@ -211,7 +212,8 @@ Be EXACT. Use structured format. Max 80 words."""
             # Preprocess image
             pixel_values = self.build_transform(448)(pil_image).unsqueeze(0)
             if self.device == "cuda":
-                pixel_values = pixel_values.to(torch.bfloat16).cuda()
+                # Use float16 to match model dtype (avoid BFloat16/Half mismatch)
+                pixel_values = pixel_values.to(torch.float16).cuda()
             
             # Generate caption using InternVL's chat interface
             generation_config = dict(max_new_tokens=max_new_tokens, do_sample=False)
