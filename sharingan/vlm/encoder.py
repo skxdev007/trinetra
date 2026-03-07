@@ -116,9 +116,10 @@ class FrameEncoder:
         model_map = {
             "siglip-base": "google/siglip-base-patch16-224",
             "siglip-large": "google/siglip-large-patch16-256",
+            "siglip-so400m": "google/siglip-so400m-patch14-384",  # BEST: 400M params, 384x384
         }
 
-        hf_model_name = model_map.get(self.model_name, "google/siglip-base-patch16-224")
+        hf_model_name = model_map.get(self.model_name, "google/siglip-so400m-patch14-384")  # Default to best
 
         try:
             print(f"Loading SigLIP model {hf_model_name}...")
@@ -143,8 +144,9 @@ class FrameEncoder:
             dim_map = {
                 "google/siglip-base-patch16-224": 768,
                 "google/siglip-large-patch16-256": 1152,
+                "google/siglip-so400m-patch14-384": 1152,  # SO400M uses 1152D
             }
-            self._embedding_dim = dim_map.get(hf_model_name, 768)
+            self._embedding_dim = dim_map.get(hf_model_name, 1152)  # Default to 1152
 
         except Exception as e:
             raise EncodingError(f"Failed to load SigLIP model: {str(e)}")

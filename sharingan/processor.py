@@ -149,11 +149,14 @@ class VideoProcessor:
         """Map vlm_model to encoder model name."""
         model_map = {
             'clip': 'clip-vit-b32',
-            'siglip': 'siglip-base',
+            'siglip': 'siglip-so400m',  # BEST: SigLIP-SO400M (400M params, 384x384)
             'siglip-base': 'siglip-base',
             'siglip-large': 'siglip-large',
+            'siglip-so400m': 'siglip-so400m',  # Explicit option
+            'qwen2vl': 'qwen2vl-vision',  # Qwen2-VL vision tower only
+            'internvl2': 'internvl2-vision',  # InternVL2 vision tower only
         }
-        return model_map.get(self.vlm_model, 'clip-vit-b32')
+        return model_map.get(self.vlm_model, 'siglip-so400m')  # Default to best
     
     def _generate_descriptions(self, frames: List) -> List[str]:
         """
