@@ -1,27 +1,51 @@
 # SHARINGAN Accuracy Improvement Plan
 
-## Mission: Beat Gemini (80%+ accuracy on TemporalBench)
+## Mission: Beat Gemini on TemporalBench
+
+**CRITICAL:** Binary accuracy is what matters (not QA accuracy)
+**Gemini-1.5-Pro Binary Accuracy:** ~80%
+**Our Target:** 80%+ (match/beat Gemini)
+**Human Performance:** ~90%+
 
 **Current Status:** 100% on 2-question test (was 0% before fixes)
 **Running:** 30-question benchmark in progress
-**Target:** 80%+ accuracy
-**Gemini Baseline:** ~70-80%
+
+**WARNING:** Subset accuracy may drop substantially! We're testing on COIN only (hardest subset for word-level negatives). Overall TemporalBench accuracy across all 5 subsets will be different.
 
 ---
 
-## BREAKTHROUGH: Root Cause Identified ✅
+## BREAKTHROUGH: The Real Problem Identified ✅
 
-### The Real Problem (Not What We Thought)
+### What TemporalBench Actually Tests
 
-**Initial Hypothesis (WRONG):**
-- ❌ LLM is too small (1.5B not enough)
-- ❌ Vision encoder is too weak (SigLIP-base not good enough)
-- ❌ Descriptions are not detailed enough
+**Two Question Types:**
 
-**Actual Root Cause (CORRECT):**
-1. **Task Mismatch**: System designed for "find timestamp of X" but benchmark asks "which ordering is correct?"
-2. **Context Format Wrong**: Flat list of similar descriptions instead of structured SEQUENCE
-3. **InternVL 1B Ceiling**: Cannot reliably distinguish "tightening" vs "loosening" (fine-grained actions)
+1. **Word-Level Negatives** (50% of questions)
+   - One word/phrase changed between options
+   - Examples: "tightens" vs "loosens", "on" vs "off", "left" vs "right"
+   - Requires: Fine-grained visual perception
+   - **COIN is hardest for this** (procedural actions look similar)
+
+2. **Event-Level Negatives** (50% of questions)
+   - Same events, different order
+   - Example: "tighten → pull → light on" vs "pull → light on → tighten"
+   - Requires: Temporal sequence reconstruction
+   - **ActivityNet is hardest for this** (long-range ordering)
+
+### The 5 Critical Attributes (From Paper)
+
+TemporalBench specifically tests these 5 attributes:
+
+1. **COUNT**: "twice" vs "three times"
+2. **DIRECTION**: "tightening" vs "loosening", "pushing" vs "pulling"
+3. **STATE**: "switches on" vs "switches off", "open" vs "closed"
+4. **HAND**: "right hand" vs "left hand"
+5. **ORDER**: "A then B" vs "B then A"
+
+**Our InternVL 1B captions:** "person tightening screw"
+**Missing:** ALL 5 attributes! ❌
+
+**Solution:** Prompt InternVL to explicitly capture all 5 attributes ✅
 
 ### Evidence from Benchmark Analysis
 
@@ -38,6 +62,40 @@ Looking at actual context sent to LLM:
 2. All relevance scores ~10-12% (retrieval found nothing specific)
 3. No temporal sequence structure (just timestamps)
 4. Missing critical discriminators (ON/OFF, tighten/loosen)
+
+---
+
+## TemporalBench Subsets & Strategy
+
+### The 5 Video Subsets
+
+| Subset | Focus | Difficulty | Our Advantage | Strategy |
+|--------|-------|------------|---------------|----------|
+| **COIN** | Instructional procedures | Hard (word-level) | None | Better captions (5 attributes) |
+| **ActivityNet** | General activities | Medium (ordering) | Graph persistence | Event ordering context |
+| **Charades** | Indoor activities | Medium (subtle) | Moderate | Better captions |
+| **EgoExo4D** | Egocentric + 3rd person | Hard (perspective) | Adaptive sampling | Perspective-aware captions |
+| **FineGym** | Sports/gymnastics | **HARDEST** (44% for LLaVA) | **Dense sampling** | **Motion-specific captions** |
+
+### FineGym: Our Best Opportunity 🎯
+
+**Why FineGym is special:**
+- Lowest scores for ALL models (even 72B models struggle)
+- Fast motion requires dense frame sampling
+- Our adaptive sampling increases FPS during high motion
+- Small improvements = disproportionate gains
+
+**Our advantage:**
+- Adaptive sampling: 1 FPS → 5 FPS during motion
+- Dense temporal coverage during critical moments
+- Better suited than sparse sampling (Gemini's approach)
+
+**What we need:**
+- Motion-specific captions (body part positioning, sequence of moves)
+- Higher frame rate during gymnastics routines
+- Better temporal ordering of fast actions
+
+**Reality check:** Even if we excel at FineGym, COIN performance matters more for overall score. We're currently testing COIN only, which is hardest for word-level negatives.
 
 ---
 
@@ -257,10 +315,26 @@ When all frames score ~10-12% relevance:
 
 ## Success Criteria
 
-- [ ] 70%+ accuracy on TemporalBench COIN (30 questions)
+**Primary Goal:**
+- [ ] 80%+ overall accuracy on TemporalBench (match/beat Gemini)
+
+**Subset Goals:**
+- [ ] 70%+ on COIN (word-level negatives - hardest for us)
+- [ ] 85%+ on ActivityNet (event ordering - our strength)
+- [ ] 75%+ on Charades (subtle actions)
+- [ ] 80%+ on EgoExo4D (perspective-aware)
+- [ ] 75%+ on FineGym (fast motion - our advantage)
+
+**Performance Goals:**
 - [x] <40s average query time
 - [x] <2 minutes video processing time (per minute of video)
 - [x] Works on 4GB VRAM (RTX 3050)
+
+**Reality Check:**
+- Currently testing COIN only (30 questions)
+- COIN is hardest subset for word-level negatives
+- Expect COIN accuracy to be LOWER than overall TemporalBench average
+- Need to test all 5 subsets to get true overall accuracy
 
 ---
 

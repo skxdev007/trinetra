@@ -217,14 +217,20 @@ class VideoProcessor:
         Returns:
             List of descriptions
         """
-        # Fine-tuned prompt for temporal reasoning - ULTRA SPECIFIC
-        CAPTION_PROMPT = """Describe EXACTLY what you see:
-- Which hand? (left/right/both)
-- What action? (tightening/loosening/pulling/pushing/connecting/disconnecting)
-- What tool? (screwdriver/wrench/wire/etc)
-- What direction? (clockwise/counterclockwise/left-to-right/right-to-left)
-- Light state? (ON/OFF/turning on/turning off)
-Max 40 words. Be PRECISE."""
+        # CRITICAL: Prompt must capture 5 attributes for TemporalBench:
+        # 1. COUNT (twice, three times)
+        # 2. DIRECTION (tightening/loosening, pushing/pulling)  
+        # 3. STATE (on/off, open/closed)
+        # 4. HAND (left/right/both)
+        # 5. ORDER (captured by frame position)
+        CAPTION_PROMPT = """Describe this frame with EXACT details:
+1. COUNT: How many times? (once/twice/three times)
+2. DIRECTION: Which way? (tightening/loosening, pushing/pulling, clockwise/counterclockwise)
+3. STATE: Current state? (light ON/OFF, screw tight/loose, wire connected/disconnected)
+4. HAND: Which hand? (left/right/both)
+5. TOOL: What tool? (screwdriver/wrench/knife)
+
+Be PRECISE. Max 50 words."""
         
         if use_internvl:
             # Use InternVL2.5-M0.5 (2x faster than SmolVLM)
@@ -359,25 +365,32 @@ Max 40 words. Be PRECISE."""
                 from sharingan.vlm.internvl_encoder import InternVLEncoder
                 self._internvl = InternVLEncoder(device=self.device)
             
-            # Temporal-aware prompt with explicit sequence markers
+            # CRITICAL: Prompt must capture 5 attributes for TemporalBench
+            # 1. COUNT (twice, three times)
+            # 2. DIRECTION (tightening/loosening, pushing/pulling)
+            # 3. STATE (on/off, open/closed)
+            # 4. HAND (left/right/both)
+            # 5. ORDER (first/then/finally)
+            
+            # Determine position in video for ORDER context
             timestamp = self.timestamps[frame_idx]
             video_duration = max(self.timestamps) if self.timestamps else 0
             
-            # Determine position in video
             if timestamp < video_duration * 0.33:
-                position = "EARLY in the video"
+                position = "EARLY in video"
             elif timestamp < video_duration * 0.67:
-                position = "MIDDLE of the video"
+                position = "MIDDLE of video"
             else:
-                position = "LATE in the video"
+                position = "LATE in video"
             
-            prompt = f"""This frame is from the {position}. Describe EXACTLY what you see:
-- Which hand? (left/right/both)
-- What action? (tightening/loosening/pulling/pushing/connecting/disconnecting)
-- What tool? (screwdriver/wrench/wire/etc)
-- What direction? (clockwise/counterclockwise/left-to-right/right-to-left)
-- Light state? (ON/OFF/turning on/turning off)
-Be PRECISE. Max 40 words."""
+            prompt = f"""This frame is {position}. Describe EXACTLY:
+1. COUNT: How many times is action repeated? (once/twice/three times)
+2. DIRECTION: Which direction? (tightening/loosening, pushing/pulling, clockwise/counterclockwise)
+3. STATE: What state? (light ON/OFF, screw tight/loose, wire connected/disconnected)
+4. HAND: Which hand? (left hand/right hand/both hands)
+5. TOOL: What tool? (screwdriver/wrench/knife/etc)
+
+Be PRECISE. Max 50 words."""
             
             description = self._internvl.caption(
                 frame,
