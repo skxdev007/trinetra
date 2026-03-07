@@ -102,7 +102,7 @@ class VideoProcessor:
         enable_temporal: bool = True,
         enable_tracking: bool = False,
         enable_descriptions: bool = True,
-        lazy_descriptions: bool = True,  # NEW: Generate descriptions lazily at query time
+        lazy_descriptions: bool = False,  # CHANGED: Generate all descriptions upfront (better accuracy)
         delta_captioning: bool = True,  # NEW: Only caption keyframes (6x faster)
         batch_size: int = 32,
         cache_dir: str = 'cache'
@@ -153,14 +153,14 @@ class VideoProcessor:
         """Map vlm_model to encoder model name."""
         model_map = {
             'clip': 'clip-vit-b32',
-            'siglip': 'siglip-so400m',  # BEST: SigLIP-SO400M (400M params, 384x384)
+            'siglip': 'siglip-base',  # BEST: SigLIP-base (768D, fast, good accuracy)
             'siglip-base': 'siglip-base',
             'siglip-large': 'siglip-large',
-            'siglip-so400m': 'siglip-so400m',  # Explicit option
+            'siglip-so400m': 'siglip-so400m',  # Explicit option (1152D, slower)
             'qwen2vl': 'qwen2vl-vision',  # Qwen2-VL vision tower only
             'internvl2': 'internvl2-vision',  # InternVL2 vision tower only
         }
-        return model_map.get(self.vlm_model, 'siglip-so400m')  # Default to best
+        return model_map.get(self.vlm_model, 'siglip-base')  # Default to siglip-base
     
     def _detect_keyframes(self, embeddings: np.ndarray, threshold: float = 0.15) -> List[int]:
         """
@@ -217,14 +217,14 @@ class VideoProcessor:
         Returns:
             List of descriptions
         """
-        # Fine-tuned prompt for temporal reasoning
-        CAPTION_PROMPT = """Describe this frame focusing on:
-1. Action: What is the person doing? (e.g., tightening, loosening, pulling, pushing)
-2. Objects: What objects are visible? (e.g., screwdriver, wire, light bulb)
-3. Hands: Which hand is being used? (left, right, both)
-4. State: What is the state of objects? (e.g., light ON/OFF, wire connected/disconnected)
-
-Be specific and concise (max 30 words)."""
+        # Fine-tuned prompt for temporal reasoning - ULTRA SPECIFIC
+        CAPTION_PROMPT = """Describe EXACTLY what you see:
+- Which hand? (left/right/both)
+- What action? (tightening/loosening/pulling/pushing/connecting/disconnecting)
+- What tool? (screwdriver/wrench/wire/etc)
+- What direction? (clockwise/counterclockwise/left-to-right/right-to-left)
+- Light state? (ON/OFF/turning on/turning off)
+Max 40 words. Be PRECISE."""
         
         if use_internvl:
             # Use InternVL2.5-M0.5 (2x faster than SmolVLM)
@@ -234,7 +234,7 @@ Be specific and concise (max 30 words)."""
                 self._internvl = InternVLEncoder(device=self.device)
             
             captioner = self._internvl
-            max_tokens = 50
+            max_tokens = 80  # Increased for more detail
         else:
             # Use SmolVLM (fallback)
             if not self._smolvlm:
@@ -275,6 +275,17 @@ Be specific and concise (max 30 words)."""
                     descriptions[i] = "Content detected"
             
             print(f"   Keyframe descriptions: {len(frame_indices)}/{len(frames)} ")
+            
+            # CRITICAL: Unload InternVL to free VRAM for LLM
+            if use_internvl and hasattr(self, '_internvl') and self._internvl is not None:
+                print(f" Unloading InternVL to free VRAM...")
+                import torch
+                del self._internvl
+                self._internvl = None
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+                print(f" VRAM freed for LLM")
+            
             return descriptions
         
         # Otherwise, describe all frames (full captioning)
@@ -304,6 +315,16 @@ Be specific and concise (max 30 words)."""
                 descriptions.append("Content detected")
         
         print(f"   Descriptions: {len(descriptions)}/{len(frames)} ")
+        
+        # CRITICAL: Unload InternVL to free VRAM for LLM
+        if use_internvl and hasattr(self, '_internvl') and self._internvl is not None:
+            print(f" Unloading InternVL to free VRAM...")
+            import torch
+            del self._internvl
+            self._internvl = None
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            print(f" VRAM freed for LLM")
         
         return descriptions
     
@@ -474,13 +495,13 @@ Be specific and concise (max 30 words)."""
                             batch_descriptions = self._generate_descriptions(
                                 frames,
                                 frame_indices=keyframe_indices,
-                                use_internvl=True
+                                use_internvl=True  # Use InternVL (2x faster)
                             )
                         else:
                             # Full captioning: Caption all frames
                             batch_descriptions = self._generate_descriptions(
                                 frames,
-                                use_internvl=True
+                                use_internvl=True  # Use InternVL (2x faster)
                             )
                         self.frame_descriptions.extend(batch_descriptions)
                     else:
@@ -519,13 +540,13 @@ Be specific and concise (max 30 words)."""
                         batch_descriptions = self._generate_descriptions(
                             frames,
                             frame_indices=keyframe_indices,
-                            use_internvl=True
+                            use_internvl=True  # Use InternVL (2x faster)
                         )
                     else:
                         # Full captioning: Caption all frames
                         batch_descriptions = self._generate_descriptions(
                             frames,
-                            use_internvl=True
+                            use_internvl=True  # Use InternVL (2x faster)
                         )
                     self.frame_descriptions.extend(batch_descriptions)
                 else:

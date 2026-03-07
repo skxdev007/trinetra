@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "dataset": "TemporalBench Long Video COIN",
+    "model": "siglip-so400m",
+    "total_questions": 5,
+    "answered_questions": 0,
+    "correct_answers": 0,
+    "accuracy": 0,
+    "total_time": 19.327884674072266,
+    "avg_query_time": 0,
+    "unique_videos_processed": 2,
+    "target_fps": 5.0,
+    "timestamp": "2026-03-07T17:56:05.564535"
+  },
+  "results": []
+}

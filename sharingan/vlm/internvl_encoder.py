@@ -39,10 +39,12 @@ class InternVLEncoder:
         """Load InternVL2.5-M0.5 model."""
         try:
             from transformers import AutoModel, AutoTokenizer
+            import torchvision.transforms as T
+            from torchvision.transforms.functional import InterpolationMode
         except ImportError:
             raise EncodingError(
-                "InternVL requires 'transformers' package. "
-                "Install with: pip install transformers"
+                "InternVL requires 'transformers' and 'torchvision' packages. "
+                "Install with: pip install transformers torchvision"
             )
 
         try:
@@ -60,7 +62,7 @@ class InternVLEncoder:
             print("   Step 2: Loading model...")
             self.model = AutoModel.from_pretrained(
                 model_name,
-                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
+                torch_dtype=torch.bfloat16 if self.device == "cuda" else torch.float32,
                 trust_remote_code=True,
                 low_cpu_mem_usage=True
             )
@@ -70,6 +72,17 @@ class InternVLEncoder:
             if self.device == "cuda":
                 print("   Step 3: Moving to CUDA...")
                 self.model = self.model.to(self.device)
+            
+            # Build transform for image preprocessing
+            IMAGENET_MEAN = (0.485, 0.456, 0.406)
+            IMAGENET_STD = (0.229, 0.224, 0.225)
+            
+            self.build_transform = lambda input_size: T.Compose([
+                T.Lambda(lambda img: img.convert('RGB') if img.mode != 'RGB' else img),
+                T.Resize((input_size, input_size), interpolation=InterpolationMode.BICUBIC),
+                T.ToTensor(),
+                T.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
+            ])
             
             print(f"✓ InternVL2.5 loaded successfully on {self.device}")
 
@@ -100,16 +113,19 @@ class InternVLEncoder:
                 frame = (frame * 255).astype(np.uint8)
             pil_image = Image.fromarray(frame)
             
-            # Generate caption
+            # Preprocess image
+            pixel_values = self.build_transform(448)(pil_image).unsqueeze(0)
+            if self.device == "cuda":
+                pixel_values = pixel_values.to(torch.bfloat16).cuda()
+            
+            # Generate caption using InternVL's chat interface
+            generation_config = dict(max_new_tokens=max_new_tokens, do_sample=False)
+            
             response = self.model.chat(
                 self.tokenizer,
-                pixel_values=None,
-                question=prompt,
-                generation_config={
-                    'max_new_tokens': max_new_tokens,
-                    'do_sample': False,
-                },
-                image=pil_image
+                pixel_values,
+                prompt,
+                generation_config
             )
             
             return response.strip()

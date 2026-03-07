@@ -118,11 +118,11 @@ def process_video_and_answer(
     # Answer the question
     start_time = time.time()
     try:
-        # Get video context first with action classification
+        # Get video context first WITHOUT action classification (too noisy)
         segments = processor.query(
             question, 
             top_k=10,  # Increased from 5 to get more context
-            enable_action_classification=enable_action_classification
+            enable_action_classification=False  # DISABLED: CLIP zero-shot too noisy
         )
         
         # Print context if verbose
@@ -445,15 +445,15 @@ def main():
                        help='Maximum number of questions to process (for testing)')
     parser.add_argument('--target-fps', type=float, default=5.0,
                        help='Target FPS for video processing')
-    parser.add_argument('--model', type=str, default='siglip-so400m',
+    parser.add_argument('--model', type=str, default='siglip-base',
                        choices=['clip', 'siglip', 'siglip-base', 'siglip-large', 'siglip-so400m', 'smolvlm'],
-                       help='Vision model to use (default: siglip-so400m - BEST)')
+                       help='Vision model to use (default: siglip-base - FAST + GOOD)')
     parser.add_argument('--enable-descriptions', action='store_true', default=True,
                        help='Generate frame descriptions using InternVL2.5 (default: True)')
     parser.add_argument('--no-descriptions', dest='enable_descriptions', action='store_false',
                        help='Disable frame descriptions (faster but less accurate)')
-    parser.add_argument('--delta-captioning', action='store_true', default=True,
-                       help='Only caption keyframes (6x faster, default: True)')
+    parser.add_argument('--delta-captioning', action='store_true', default=False,
+                       help='Only caption keyframes (6x faster but lower accuracy, default: False)')
     parser.add_argument('--no-delta-captioning', dest='delta_captioning', action='store_false',
                        help='Caption all frames (slower but more detailed)')
     parser.add_argument('--system-prompt', type=str, default=None,
