@@ -225,13 +225,13 @@ class VideoLLM:
     
     def _build_context(self, video_context: List[Dict]) -> str:
         """
-        Build rich context with EXPLICIT temporal ordering for LLM.
+        Build STRUCTURED SEQUENCE context for temporal ordering questions.
         
         Key improvements:
-        1. Clear temporal markers (FIRST, THEN, FINALLY)
-        2. Explicit state changes (light ON→OFF, screw tight→loose)
-        3. Action sequence with arrows
-        4. Timeline summary at the end
+        1. STEP-by-STEP format (not just timestamps)
+        2. Explicit state transitions (OFF→ON, tight→loose)
+        3. Action verbs emphasized (TIGHTENS, LOOSENS, PULLS, PUSHES)
+        4. Clear sequence flow with arrows
         """
         if not video_context:
             return "No relevant video segments found."
@@ -240,11 +240,13 @@ class VideoLLM:
         sorted_context = sorted(video_context, key=lambda x: x.get('timestamp', 0))
         
         context_parts = []
-        context_parts.append("VIDEO TIMELINE (chronological order):")
+        context_parts.append("📹 VIDEO SEQUENCE (step-by-step):")
         context_parts.append("=" * 70)
         
-        # Build explicit temporal sequence with clear markers
+        # Build STEP-by-STEP sequence (not just frame descriptions)
         num_segments = min(10, len(sorted_context))
+        prev_desc = ""
+        
         for i, segment in enumerate(sorted_context[:num_segments], 1):
             timestamp = segment.get('timestamp', 0)
             description = segment.get('description', 'Content detected')
@@ -253,47 +255,139 @@ class VideoLLM:
             secs = int(timestamp % 60)
             time_str = f"{mins}:{secs:02d}"
             
-            # Temporal marker based on position
+            # Extract key action and state
+            action = self._extract_key_action(description)
+            state = self._extract_state(description)
+            
+            # Detect state change from previous frame
+            state_change = self._detect_state_change(prev_desc, description)
+            
+            # Build STEP format
             if i == 1:
-                marker = "🔵 FIRST"
-            elif i == num_segments:
-                marker = "🔴 FINALLY"
-            elif i <= num_segments // 3:
-                marker = f"▶️ EARLY (step {i})"
-            elif i <= 2 * num_segments // 3:
-                marker = f"▶️ MIDDLE (step {i})"
+                step_text = f"STEP 1 [{time_str}]: {action}"
             else:
-                marker = f"▶️ LATE (step {i})"
+                step_text = f"STEP {i} [{time_str}]: {action}"
             
-            # Build temporal statement
-            segment_text = f"{marker} at [{time_str}]: {description}"
+            # Add state if important
+            if state:
+                step_text += f" ({state})"
             
-            # Add visual arrow for sequence (except last)
+            # Add state change marker
+            if state_change:
+                step_text += f" ⚡ {state_change}"
+            
+            context_parts.append(step_text)
+            
+            # Add arrow between steps
             if i < num_segments:
-                segment_text += "\n         ↓"
+                context_parts.append("         ↓")
             
-            context_parts.append(segment_text)
+            prev_desc = description
         
         context_parts.append("=" * 70)
         
-        # Add state change summary
-        context_parts.append("\n🔍 KEY STATE CHANGES:")
-        state_changes = self._identify_state_changes(sorted_context[:num_segments])
-        if state_changes:
-            for change in state_changes:
-                context_parts.append(f"  • {change}")
+        # Add critical sequence summary
+        context_parts.append("\n🎯 SEQUENCE SUMMARY:")
+        sequence_summary = self._build_sequence_summary(sorted_context[:num_segments])
+        context_parts.append(f"  {sequence_summary}")
+        
+        # Add state transitions
+        context_parts.append("\n⚡ STATE TRANSITIONS:")
+        transitions = self._identify_state_changes(sorted_context[:num_segments])
+        if transitions:
+            for trans in transitions:
+                context_parts.append(f"  • {trans}")
         else:
             context_parts.append("  • No major state changes detected")
         
-        # Add action sequence summary
-        context_parts.append("\n📋 ACTION SEQUENCE:")
-        action_sequence = self._summarize_action_sequence(sorted_context[:num_segments])
-        if action_sequence:
-            context_parts.append(f"  {action_sequence}")
-        else:
-            context_parts.append("  • See timeline above")
-        
         return "\n".join(context_parts)
+    
+    def _extract_key_action(self, description: str) -> str:
+        """Extract the key action verb from description."""
+        desc_lower = description.lower()
+        
+        # Priority order: most specific to least specific
+        if 'loosening' in desc_lower or 'loosen' in desc_lower:
+            return "Person LOOSENS screw"
+        elif 'tightening' in desc_lower or 'tighten' in desc_lower:
+            return "Person TIGHTENS screw"
+        elif 'pulling' in desc_lower and 'string' in desc_lower:
+            return "Person PULLS string"
+        elif 'pushing' in desc_lower and 'wire' in desc_lower:
+            return "Person PUSHES wire onto connector"
+        elif 'connecting' in desc_lower:
+            return "Person CONNECTS wire"
+        elif 'disconnecting' in desc_lower:
+            return "Person DISCONNECTS wire"
+        elif 'removing' in desc_lower:
+            return "Person REMOVES component"
+        elif 'holding' in desc_lower:
+            return "Person HOLDS tool"
+        else:
+            # Fallback: use first 60 chars of description
+            return description[:60] + "..." if len(description) > 60 else description
+    
+    def _extract_state(self, description: str) -> str:
+        """Extract state information (light on/off, etc)."""
+        desc_lower = description.lower()
+        
+        if 'light is on' in desc_lower or 'light on' in desc_lower:
+            return "light ON"
+        elif 'light is off' in desc_lower or 'light off' in desc_lower:
+            return "light OFF"
+        elif 'turning on' in desc_lower:
+            return "turning ON"
+        elif 'turning off' in desc_lower:
+            return "turning OFF"
+        
+        return ""
+    
+    def _detect_state_change(self, prev_desc: str, curr_desc: str) -> str:
+        """Detect state change between consecutive frames."""
+        if not prev_desc:
+            return ""
+        
+        prev_lower = prev_desc.lower()
+        curr_lower = curr_desc.lower()
+        
+        # Light state change
+        if 'light is off' in prev_lower and 'light is on' in curr_lower:
+            return "LIGHT TURNS ON"
+        elif 'light is on' in prev_lower and 'light is off' in curr_lower:
+            return "LIGHT TURNS OFF"
+        
+        # Action change
+        if 'tightening' in prev_lower and 'loosening' in curr_lower:
+            return "SWITCHES TO LOOSENING"
+        elif 'loosening' in prev_lower and 'tightening' in curr_lower:
+            return "SWITCHES TO TIGHTENING"
+        
+        return ""
+    
+    def _build_sequence_summary(self, segments: List[Dict]) -> str:
+        """Build a one-line sequence summary."""
+        actions = []
+        seen = set()
+        
+        for seg in segments:
+            desc = seg.get('description', '').lower()
+            
+            if 'tighten' in desc and 'tighten' not in seen:
+                actions.append("TIGHTEN")
+                seen.add('tighten')
+            elif 'loosen' in desc and 'loosen' not in seen:
+                actions.append("LOOSEN")
+                seen.add('loosen')
+            elif 'pull' in desc and 'string' in desc and 'pull string' not in seen:
+                actions.append("PULL STRING")
+                seen.add('pull string')
+            elif 'light is on' in desc and 'light on' not in seen:
+                actions.append("LIGHT ON")
+                seen.add('light on')
+        
+        if actions:
+            return " → ".join(actions)
+        return "See steps above"
     
     def _identify_state_changes(self, segments: List[Dict]) -> List[str]:
         """
