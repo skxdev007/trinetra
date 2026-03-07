@@ -625,8 +625,7 @@ class VideoProcessor:
                 # Temporal dilated attention for long-range dependencies (module #4)
                 TemporalDilatedAttention(
                     feature_dim=embed_dim,
-                    num_heads=8,
-                    max_dilation=16
+                    dilations=[1, 4, 8, 16]  # Use default dilations
                 ),
                 
                 # Motion-aware adaptive pooling (module #6)
