@@ -166,6 +166,17 @@ class VideoLLM:
             )
             
             user_prompt = f"{context_text}\n\n{query}\n\nBased on the timeline above, which option matches the sequence? Answer: A or B?"
+            
+            # DEBUG: Print what's being sent to LLM
+            print(f"\n{'='*80}")
+            print(f"DEBUG: LLM INPUT")
+            print(f"{'='*80}")
+            print(f"SYSTEM PROMPT:\n{system_prompt}\n")
+            print(f"{'='*80}")
+            print(f"CONTEXT:\n{context_text}\n")
+            print(f"{'='*80}")
+            print(f"QUESTION:\n{query}\n")
+            print(f"{'='*80}\n")
         else:
             # Regular conversational prompt
             system_prompt = (
