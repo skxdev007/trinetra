@@ -148,7 +148,8 @@ Be EXACT. Use structured format. Max 80 words."""
                     model_name,
                     torch_dtype=torch.bfloat16 if self.device == "cuda" else torch.float32,
                     trust_remote_code=True,
-                    low_cpu_mem_usage=True
+                    low_cpu_mem_usage=True,
+                    attn_implementation="eager"  # Avoid flash attention issues
                 )
                 
                 if self.device == "cuda":
@@ -212,8 +213,11 @@ Be EXACT. Use structured format. Max 80 words."""
             # Preprocess image
             pixel_values = self.build_transform(448)(pil_image).unsqueeze(0)
             if self.device == "cuda":
-                # Use float16 to match model dtype (avoid BFloat16/Half mismatch)
-                pixel_values = pixel_values.to(torch.float16).cuda()
+                # Match model dtype: bfloat16 for non-quantized, float16 for 4-bit
+                if self.use_4bit:
+                    pixel_values = pixel_values.to(torch.float16).cuda()
+                else:
+                    pixel_values = pixel_values.to(torch.bfloat16).cuda()
             
             # Generate caption using InternVL's chat interface
             generation_config = dict(max_new_tokens=max_new_tokens, do_sample=False)
