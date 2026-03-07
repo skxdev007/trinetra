@@ -217,20 +217,22 @@ class VideoProcessor:
         Returns:
             List of descriptions
         """
-        # CRITICAL: Prompt must capture 5 attributes for TemporalBench:
+        # CRITICAL: Prompt must capture 6 attributes for TemporalBench:
         # 1. COUNT (twice, three times)
         # 2. DIRECTION (tightening/loosening, pushing/pulling)  
         # 3. STATE (on/off, open/closed)
         # 4. HAND (left/right/both)
         # 5. ORDER (captured by frame position)
+        # 6. EVENT (what just changed - transitional moments)
         CAPTION_PROMPT = """Describe this frame with EXACT details:
 1. COUNT: How many times? (once/twice/three times)
 2. DIRECTION: Which way? (tightening/loosening, pushing/pulling, clockwise/counterclockwise)
 3. STATE: Current state? (light ON/OFF, screw tight/loose, wire connected/disconnected)
 4. HAND: Which hand? (left/right/both)
 5. TOOL: What tool? (screwdriver/wrench/knife)
+6. EVENT: What just changed? (light turned on/off, wire pushed onto/pulled off, string pulled)
 
-Be PRECISE. Max 50 words."""
+Be PRECISE. Max 60 words."""
         
         if use_internvl:
             # Use InternVL2.5-M0.5 (2x faster than SmolVLM)
@@ -365,12 +367,13 @@ Be PRECISE. Max 50 words."""
                 from sharingan.vlm.internvl_encoder import InternVLEncoder
                 self._internvl = InternVLEncoder(device=self.device)
             
-            # CRITICAL: Prompt must capture 5 attributes for TemporalBench
+            # CRITICAL: Prompt must capture 6 attributes for TemporalBench
             # 1. COUNT (twice, three times)
             # 2. DIRECTION (tightening/loosening, pushing/pulling)
             # 3. STATE (on/off, open/closed)
             # 4. HAND (left/right/both)
             # 5. ORDER (first/then/finally)
+            # 6. EVENT (what just changed - transitional moments)
             
             # Determine position in video for ORDER context
             timestamp = self.timestamps[frame_idx]
@@ -384,13 +387,14 @@ Be PRECISE. Max 50 words."""
                 position = "LATE in video"
             
             prompt = f"""This frame is {position}. Describe EXACTLY:
-1. COUNT: How many times is action repeated? (once/twice/three times)
-2. DIRECTION: Which direction? (tightening/loosening, pushing/pulling, clockwise/counterclockwise)
-3. STATE: What state? (light ON/OFF, screw tight/loose, wire connected/disconnected)
-4. HAND: Which hand? (left hand/right hand/both hands)
-5. TOOL: What tool? (screwdriver/wrench/knife/etc)
+1. COUNT: How many times? (once/twice/three times)
+2. DIRECTION: Which way? (tightening/loosening, pushing/pulling, clockwise/counterclockwise)
+3. STATE: Current state? (light ON/OFF, screw tight/loose, wire connected/disconnected)
+4. HAND: Which hand? (left/right/both)
+5. TOOL: What tool? (screwdriver/wrench/knife)
+6. EVENT: What just changed? (light turned on/off, wire pushed onto/pulled off, string pulled)
 
-Be PRECISE. Max 50 words."""
+Be PRECISE. Max 60 words."""
             
             description = self._internvl.caption(
                 frame,
@@ -797,13 +801,24 @@ Be PRECISE. Max 50 words."""
             results.append(result)
         
         # CRITICAL: Unload InternVL after lazy descriptions to free VRAM for LLM
+        # UPDATE: Only unload if we're running low on VRAM (not always needed)
         if self.enable_descriptions and self.lazy_descriptions and hasattr(self, '_internvl') and self._internvl is not None:
-            print(f" Unloading InternVL to free VRAM for LLM...")
+            # Check if we need to free VRAM
             import torch
-            del self._internvl
-            self._internvl = None
             if torch.cuda.is_available():
-                torch.cuda.empty_cache()
+                # Get current VRAM usage
+                allocated = torch.cuda.memory_allocated() / 1024**3  # GB
+                reserved = torch.cuda.memory_reserved() / 1024**3  # GB
+                
+                # Only unload if we're using >3GB (leave room for Qwen)
+                if reserved > 3.0:
+                    print(f" ⚠️  High VRAM usage ({reserved:.1f}GB), unloading InternVL...")
+                    del self._internvl
+                    self._internvl = None
+                    torch.cuda.empty_cache()
+                    print(f" ✓ VRAM freed for LLM")
+                else:
+                    print(f" ✓ VRAM OK ({reserved:.1f}GB), keeping InternVL loaded")
         
         print(f" Found {len(results)} results")
         return results

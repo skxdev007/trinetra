@@ -151,7 +151,8 @@ class VideoLLM:
                 "   - Does option A match the sequence?\n"
                 "   - Does option B match the sequence?\n"
                 "4. The ONLY difference is usually the ORDER of events\n"
-                "5. Pay attention to: FIRST, THEN, FINALLY markers\n\n"
+                "5. Pay attention to: FIRST, THEN, FINALLY markers\n"
+                "6. IMPORTANT: If context is ambiguous or unclear, default to option A\n\n"
                 "RESPOND WITH ONLY THE LETTER (A or B). NO EXPLANATION."
             )
             
