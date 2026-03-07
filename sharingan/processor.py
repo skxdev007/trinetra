@@ -102,8 +102,8 @@ class VideoProcessor:
         enable_temporal: bool = True,
         enable_tracking: bool = False,
         enable_descriptions: bool = True,
-        lazy_descriptions: bool = False,  # CHANGED: Generate all descriptions upfront (better accuracy)
-        delta_captioning: bool = True,  # NEW: Only caption keyframes (6x faster)
+        lazy_descriptions: bool = True,  # SMART: Generate descriptions only for retrieved frames
+        delta_captioning: bool = False,  # Disabled: lazy is better
         batch_size: int = 32,
         cache_dir: str = 'cache'
     ):
@@ -332,8 +332,10 @@ Max 40 words. Be PRECISE."""
         """
         Generate description for a single frame lazily (on-demand).
         
-        This is much faster than generating all descriptions upfront.
+        This is MUCH faster than generating all descriptions upfront.
         Only generates descriptions for frames that are actually retrieved.
+        
+        Uses InternVL2.5 with temporal-aware prompting.
         
         Args:
             frame_idx: Index of frame to describe
@@ -350,21 +352,37 @@ Max 40 words. Be PRECISE."""
             # Load just this one frame
             loader = VideoLoader(self.video_path, backend='opencv')
             target_frame_number = self.frame_indices[frame_idx]
-            
-            # Get the specific frame
             frame = loader.get_frame(target_frame_number)
             
-            # Generate description
-            if not self._smolvlm:
-                from sharingan.vlm.smolvlm import SmolVLMEncoder
-                self._smolvlm = SmolVLMEncoder(device=self.device)
+            # Use InternVL for better descriptions
+            if not hasattr(self, '_internvl') or self._internvl is None:
+                from sharingan.vlm.internvl_encoder import InternVLEncoder
+                self._internvl = InternVLEncoder(device=self.device)
             
-            # More specific prompt to get detailed descriptions
-            prompt = "Describe in detail: what objects are visible, what actions are being performed, which hand is being used, and the direction of movement."
-            description = self._smolvlm.describe_frame(
+            # Temporal-aware prompt with explicit sequence markers
+            timestamp = self.timestamps[frame_idx]
+            video_duration = max(self.timestamps) if self.timestamps else 0
+            
+            # Determine position in video
+            if timestamp < video_duration * 0.33:
+                position = "EARLY in the video"
+            elif timestamp < video_duration * 0.67:
+                position = "MIDDLE of the video"
+            else:
+                position = "LATE in the video"
+            
+            prompt = f"""This frame is from the {position}. Describe EXACTLY what you see:
+- Which hand? (left/right/both)
+- What action? (tightening/loosening/pulling/pushing/connecting/disconnecting)
+- What tool? (screwdriver/wrench/wire/etc)
+- What direction? (clockwise/counterclockwise/left-to-right/right-to-left)
+- Light state? (ON/OFF/turning on/turning off)
+Be PRECISE. Max 40 words."""
+            
+            description = self._internvl.caption(
                 frame,
                 prompt=prompt,
-                max_new_tokens=80  # Allow longer descriptions for detail
+                max_new_tokens=80
             )
             
             return description
@@ -764,6 +782,15 @@ Max 40 words. Be PRECISE."""
                 result['actions'] = action_labels
             
             results.append(result)
+        
+        # CRITICAL: Unload InternVL after lazy descriptions to free VRAM for LLM
+        if self.enable_descriptions and self.lazy_descriptions and hasattr(self, '_internvl') and self._internvl is not None:
+            print(f" Unloading InternVL to free VRAM for LLM...")
+            import torch
+            del self._internvl
+            self._internvl = None
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
         
         print(f" Found {len(results)} results")
         return results

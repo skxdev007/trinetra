@@ -232,7 +232,7 @@ def run_benchmark(
         target_fps=target_fps,
         enable_temporal=True,
         enable_descriptions=enable_descriptions,
-        lazy_descriptions=False,  # Generate descriptions during processing
+        lazy_descriptions=True,  # FAST: Generate descriptions only for retrieved frames
         delta_captioning=delta_captioning,  # Only caption keyframes (6x faster)
         batch_size=32
     )

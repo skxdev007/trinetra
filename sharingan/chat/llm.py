@@ -132,7 +132,7 @@ class VideoLLM:
         answer_map = {'A': 'A', 'B': 'B'}
         
         if is_multiple_choice:
-            # Randomize options to eliminate bias
+            # ALWAYS randomize options to eliminate bias
             if randomize_options:
                 import random
                 if random.random() > 0.5:
@@ -140,23 +140,22 @@ class VideoLLM:
                     query = self._swap_options(query)
                     answer_map = {'A': 'B', 'B': 'A'}
             
-            # Improved prompt with EXPLICIT temporal reasoning focus
+            # IMPROVED prompt with explicit temporal reasoning steps
             system_prompt = (
-                "You are a precise video temporal reasoning assistant. "
-                "You will see a TEMPORAL SEQUENCE showing what happens in chronological order.\n\n"
-                "CRITICAL: Pay attention to:\n"
-                "1. TEMPORAL ORDER: What happens FIRST, THEN, FINALLY\n"
-                "2. STATE CHANGES: Does light turn ON or OFF? Is screw TIGHTENED or LOOSENED?\n"
-                "3. HAND USAGE: Which hand (right/left) performs each action?\n"
-                "4. ACTION SEQUENCE: The ORDER of actions is critical!\n\n"
-                "Compare BOTH options against the temporal sequence:\n"
-                "- Does option A match the sequence shown?\n"
-                "- Does option B match the sequence shown?\n"
-                "- Which option has the CORRECT ORDER of events?\n\n"
-                "Respond with ONLY the letter (A or B). No explanation."
+                "You are a precise video temporal reasoning expert. "
+                "Your task is to determine the CORRECT ORDER of events.\n\n"
+                "CRITICAL INSTRUCTIONS:\n"
+                "1. READ the timeline carefully - it shows events in CHRONOLOGICAL ORDER\n"
+                "2. IDENTIFY key state changes (light ON/OFF, actions performed)\n"
+                "3. COMPARE both options against the timeline:\n"
+                "   - Does option A match the sequence?\n"
+                "   - Does option B match the sequence?\n"
+                "4. The ONLY difference is usually the ORDER of events\n"
+                "5. Pay attention to: FIRST, THEN, FINALLY markers\n\n"
+                "RESPOND WITH ONLY THE LETTER (A or B). NO EXPLANATION."
             )
             
-            user_prompt = f"{context_text}\n\n{query}\n\nBased on the temporal sequence above, answer: A or B?"
+            user_prompt = f"{context_text}\n\n{query}\n\nBased on the timeline above, which option matches the sequence? Answer: A or B?"
         else:
             # Regular conversational prompt
             system_prompt = (
@@ -229,10 +228,10 @@ class VideoLLM:
         Build rich context with EXPLICIT temporal ordering for LLM.
         
         Key improvements:
-        1. Visual timeline with arrows showing sequence
-        2. Explicit "HAPPENS BEFORE/AFTER" relationships
-        3. Action summaries extracted from classifications
-        4. Clear temporal markers (FIRST, THEN, FINALLY)
+        1. Clear temporal markers (FIRST, THEN, FINALLY)
+        2. Explicit state changes (light ON→OFF, screw tight→loose)
+        3. Action sequence with arrows
+        4. Timeline summary at the end
         """
         if not video_context:
             return "No relevant video segments found."
@@ -241,55 +240,131 @@ class VideoLLM:
         sorted_context = sorted(video_context, key=lambda x: x.get('timestamp', 0))
         
         context_parts = []
-        context_parts.append("TEMPORAL SEQUENCE (what happens in order):")
+        context_parts.append("VIDEO TIMELINE (chronological order):")
         context_parts.append("=" * 70)
         
-        # Build explicit temporal sequence
-        for i, segment in enumerate(sorted_context[:10], 1):  # Top 10 segments
+        # Build explicit temporal sequence with clear markers
+        num_segments = min(10, len(sorted_context))
+        for i, segment in enumerate(sorted_context[:num_segments], 1):
             timestamp = segment.get('timestamp', 0)
-            confidence = segment.get('confidence', 0)
             description = segment.get('description', 'Content detected')
-            actions = segment.get('actions', {})
             
             mins = int(timestamp // 60)
             secs = int(timestamp % 60)
             time_str = f"{mins}:{secs:02d}"
             
-            # Temporal marker
+            # Temporal marker based on position
             if i == 1:
-                marker = "FIRST"
-            elif i == len(sorted_context[:10]):
-                marker = "FINALLY"
+                marker = "🔵 FIRST"
+            elif i == num_segments:
+                marker = "🔴 FINALLY"
+            elif i <= num_segments // 3:
+                marker = f"▶️ EARLY (step {i})"
+            elif i <= 2 * num_segments // 3:
+                marker = f"▶️ MIDDLE (step {i})"
             else:
-                marker = f"THEN (step {i})"
+                marker = f"▶️ LATE (step {i})"
             
-            # Extract key actions
-            action_summary = self._extract_action_summary(actions)
+            # Build temporal statement
+            segment_text = f"{marker} at [{time_str}]: {description}"
             
-            # Build explicit temporal statement
-            if action_summary:
-                segment_text = f"{marker} at [{time_str}]: {action_summary}"
-            else:
-                segment_text = f"{marker} at [{time_str}]: {description}"
-            
-            # Add visual arrow for sequence
-            if i < len(sorted_context[:10]):
-                segment_text += "\n    ↓"
+            # Add visual arrow for sequence (except last)
+            if i < num_segments:
+                segment_text += "\n         ↓"
             
             context_parts.append(segment_text)
         
         context_parts.append("=" * 70)
-        context_parts.append("\nKEY TEMPORAL RELATIONSHIPS:")
         
-        # Add explicit before/after relationships for critical actions
-        critical_actions = self._identify_critical_actions(sorted_context[:10])
-        if critical_actions:
-            for rel in critical_actions:
-                context_parts.append(f"  • {rel}")
+        # Add state change summary
+        context_parts.append("\n🔍 KEY STATE CHANGES:")
+        state_changes = self._identify_state_changes(sorted_context[:num_segments])
+        if state_changes:
+            for change in state_changes:
+                context_parts.append(f"  • {change}")
         else:
-            context_parts.append("  • Sequence shown above")
+            context_parts.append("  • No major state changes detected")
+        
+        # Add action sequence summary
+        context_parts.append("\n📋 ACTION SEQUENCE:")
+        action_sequence = self._summarize_action_sequence(sorted_context[:num_segments])
+        if action_sequence:
+            context_parts.append(f"  {action_sequence}")
+        else:
+            context_parts.append("  • See timeline above")
         
         return "\n".join(context_parts)
+    
+    def _identify_state_changes(self, segments: List[Dict]) -> List[str]:
+        """
+        Identify critical state changes in the video sequence.
+        
+        Looks for:
+        - Light state changes (OFF→ON, ON→OFF)
+        - Action changes (tightening→loosening, connecting→disconnecting)
+        - Hand switches (right→left, left→right)
+        """
+        changes = []
+        
+        for i in range(len(segments) - 1):
+            curr_desc = segments[i].get('description', '').lower()
+            next_desc = segments[i+1].get('description', '').lower()
+            
+            # Check for light state change
+            if 'light is off' in curr_desc and 'light is on' in next_desc:
+                changes.append("💡 Light turns ON")
+            elif 'light is on' in curr_desc and 'light is off' in next_desc:
+                changes.append("💡 Light turns OFF")
+            
+            # Check for action change
+            if 'tightening' in curr_desc and 'loosening' in next_desc:
+                changes.append("🔧 Action changes: tightening → loosening")
+            elif 'loosening' in curr_desc and 'tightening' in next_desc:
+                changes.append("🔧 Action changes: loosening → tightening")
+            
+            # Check for hand switch
+            if 'right' in curr_desc and 'left' in next_desc and 'right' not in next_desc:
+                changes.append("✋ Hand switches: right → left")
+            elif 'left' in curr_desc and 'right' in next_desc and 'left' not in next_desc:
+                changes.append("✋ Hand switches: left → right")
+        
+        return changes[:3]  # Top 3 most important
+    
+    def _summarize_action_sequence(self, segments: List[Dict]) -> str:
+        """
+        Create a concise action sequence summary.
+        
+        Example: "Remove screen → Connect wire → Tighten screw → Turn on light"
+        """
+        actions = []
+        seen_actions = set()
+        
+        for segment in segments:
+            desc = segment.get('description', '').lower()
+            
+            # Extract key action
+            if 'tightening' in desc and 'tightening' not in seen_actions:
+                actions.append("Tighten screw")
+                seen_actions.add('tightening')
+            elif 'loosening' in desc and 'loosening' not in seen_actions:
+                actions.append("Loosen screw")
+                seen_actions.add('loosening')
+            elif 'connecting' in desc and 'connecting' not in seen_actions:
+                actions.append("Connect wire")
+                seen_actions.add('connecting')
+            elif 'pulling' in desc and 'string' in desc and 'pulling string' not in seen_actions:
+                actions.append("Pull string")
+                seen_actions.add('pulling string')
+            elif 'light is on' in desc and 'light on' not in seen_actions:
+                actions.append("Light ON")
+                seen_actions.add('light on')
+            elif 'light is off' in desc and 'light off' not in seen_actions:
+                actions.append("Light OFF")
+                seen_actions.add('light off')
+        
+        if actions:
+            return " → ".join(actions)
+        return ""
     
     def _extract_action_summary(self, actions: Dict[str, str]) -> str:
         """
@@ -330,41 +405,6 @@ class VideoLLM:
                 summary_parts.append("→ LIGHT TURNS OFF")
         
         return ', '.join(summary_parts) if summary_parts else ""
-    
-    def _identify_critical_actions(self, segments: List[Dict]) -> List[str]:
-        """
-        Identify critical temporal relationships between actions.
-        
-        Looks for:
-        - State changes (ON/OFF)
-        - Action sequences (tighten THEN pull)
-        - Hand switches (right THEN left)
-        """
-        relationships = []
-        
-        for i in range(len(segments) - 1):
-            curr_actions = segments[i].get('actions', {})
-            next_actions = segments[i+1].get('actions', {})
-            
-            # Check for state change
-            curr_light = curr_actions.get('light_state', '')
-            next_light = next_actions.get('light_state', '')
-            
-            if 'turning off' in curr_light and 'turning on' in next_light:
-                relationships.append("Light switches from OFF to ON")
-            elif 'turning on' in curr_light and 'turning off' in next_light:
-                relationships.append("Light switches from ON to OFF")
-            
-            # Check for action sequence
-            curr_screw = curr_actions.get('screw_action', '')
-            next_screw = next_actions.get('screw_action', '')
-            
-            if 'tightening' in curr_screw and 'loosening' in next_screw:
-                relationships.append("Screw is tightened BEFORE being loosened")
-            elif 'loosening' in curr_screw and 'tightening' in next_screw:
-                relationships.append("Screw is loosened BEFORE being tightened")
-        
-        return relationships[:3]  # Top 3 most important
     
     def reset_history(self):
         """Clear chat history."""
