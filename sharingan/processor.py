@@ -101,6 +101,8 @@ class VideoProcessor:
         target_fps: float = 5.0,
         enable_temporal: bool = True,
         enable_tracking: bool = False,
+        enable_descriptions: bool = True,
+        lazy_descriptions: bool = True,  # NEW: Generate descriptions lazily at query time
         batch_size: int = 32,
         cache_dir: str = 'cache'
     ):
@@ -108,11 +110,13 @@ class VideoProcessor:
         Initialize video processor.
         
         Args:
-            vlm_model: Vision model ('clip' or 'smolvlm')
+            vlm_model: Vision model ('clip', 'siglip', or 'smolvlm')
             device: Device to use ('cpu', 'cuda', or 'auto')
             target_fps: Frames per second to process
             enable_temporal: Enable temporal reasoning
             enable_tracking: Enable entity tracking
+            enable_descriptions: Generate frame descriptions using SmolVLM (default: True)
+            lazy_descriptions: Generate descriptions only for retrieved frames at query time (default: True, much faster)
             batch_size: Batch size for processing
             cache_dir: Directory for caching embeddings
         """
@@ -121,6 +125,8 @@ class VideoProcessor:
         self.target_fps = target_fps
         self.enable_temporal = enable_temporal
         self.enable_tracking = enable_tracking
+        self.enable_descriptions = enable_descriptions
+        self.lazy_descriptions = lazy_descriptions
         self.batch_size = batch_size
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(exist_ok=True)
@@ -129,13 +135,113 @@ class VideoProcessor:
         self.embeddings = None
         self.timestamps = None
         self.frame_indices = None
+        self.frame_descriptions = None
         self.video_info = None
         self.events = None
+        self.video_path = None  # Store for lazy description generation
         
         # Models (lazy loaded)
         self._encoder = None
         self._smolvlm = None
         self._llm = None
+    
+    def _get_encoder_model_name(self) -> str:
+        """Map vlm_model to encoder model name."""
+        model_map = {
+            'clip': 'clip-vit-b32',
+            'siglip': 'siglip-base',
+            'siglip-base': 'siglip-base',
+            'siglip-large': 'siglip-large',
+        }
+        return model_map.get(self.vlm_model, 'clip-vit-b32')
+    
+    def _generate_descriptions(self, frames: List) -> List[str]:
+        """
+        Generate rich descriptions for frames using SmolVLM.
+        
+        This is the KEY improvement that provides the LLM with actual information
+        about what's happening in the video, instead of just "Content detected".
+        
+        Args:
+            frames: List of frame arrays
+            
+        Returns:
+            List of descriptions
+        """
+        if not self._smolvlm:
+            from sharingan.vlm.smolvlm import SmolVLMEncoder
+            print(f"📝 Initializing SmolVLM for frame descriptions...")
+            self._smolvlm = SmolVLMEncoder(device=self.device)
+        
+        # Generate descriptions one at a time (more stable than batch)
+        prompt = "Describe what is happening in this image in one sentence."
+        descriptions = []
+        
+        print(f"   Generating descriptions for {len(frames)} frames...")
+        for i, frame in enumerate(frames):
+            try:
+                desc = self._smolvlm.describe_frame(
+                    frame,
+                    prompt=prompt,
+                    max_new_tokens=50
+                )
+                descriptions.append(desc)
+                
+                # Progress indicator every 4 frames
+                if (i + 1) % 4 == 0:
+                    print(f"   Descriptions: {i+1}/{len(frames)}", end='\r')
+            except Exception as e:
+                print(f"\n   ⚠️  Failed to generate description for frame {i}: {e}")
+                descriptions.append("Content detected")
+        
+        print(f"   Descriptions: {len(descriptions)}/{len(frames)} ✓")
+        
+        return descriptions
+    
+    def _generate_lazy_description(self, frame_idx: int) -> str:
+        """
+        Generate description for a single frame lazily (on-demand).
+        
+        This is much faster than generating all descriptions upfront.
+        Only generates descriptions for frames that are actually retrieved.
+        
+        Args:
+            frame_idx: Index of frame to describe
+            
+        Returns:
+            Description string
+        """
+        if not self.video_path:
+            return "Content detected"
+        
+        try:
+            from sharingan.video import VideoLoader
+            
+            # Load just this one frame
+            loader = VideoLoader(self.video_path, backend='opencv')
+            target_frame_number = self.frame_indices[frame_idx]
+            
+            # Get the specific frame
+            frame = loader.get_frame(target_frame_number)
+            
+            # Generate description
+            if not self._smolvlm:
+                from sharingan.vlm.smolvlm import SmolVLMEncoder
+                self._smolvlm = SmolVLMEncoder(device=self.device)
+            
+            # More specific prompt to get detailed descriptions
+            prompt = "Describe in detail: what objects are visible, what actions are being performed, which hand is being used, and the direction of movement."
+            description = self._smolvlm.describe_frame(
+                frame,
+                prompt=prompt,
+                max_new_tokens=80  # Allow longer descriptions for detail
+            )
+            
+            return description
+            
+        except Exception as e:
+            print(f"\n   ⚠️  Failed to generate lazy description for frame {frame_idx}: {e}")
+            return "Content detected"
     
     def process(self, video_path: str) -> Dict[str, Any]:
         """
@@ -151,6 +257,7 @@ class VideoProcessor:
                 - embeddings: Frame embeddings
                 - timestamps: Frame timestamps
                 - frame_indices: Frame indices
+                - descriptions: Frame descriptions (if enable_descriptions=True)
         """
         from sharingan.video import VideoLoader, FrameSampler
         from sharingan.vlm import FrameEncoder, SmolVLMEncoder
@@ -177,7 +284,34 @@ class VideoProcessor:
             metadata = store.get_all_metadata()
             self.timestamps = [m['timestamp'] for m in metadata]
             self.frame_indices = [m['frame_index'] for m in metadata]
+            self.frame_descriptions = [m.get('description', 'Content detected') for m in metadata]
+            self.video_duration = max(self.timestamps) if self.timestamps else 0.0
+            
+            # Store video path for lazy operations
+            self.video_path = video_path
+            
+            # Set video_info from cached data
+            self.video_info = {
+                'fps': None,  # Not stored in cache
+                'total_frames': None,  # Not stored in cache
+                'duration': self.video_duration,
+                'processed_frames': len(self.frame_indices)
+            }
+            
+            # Events not cached, set empty
+            self.events = []
+            
             print(f"✓ Loaded {len(self.embeddings)} cached embeddings")
+            
+            # Return early - skip event detection for cached videos
+            return {
+                'video_info': self.video_info,
+                'events': self.events,
+                'embeddings': self.embeddings,
+                'timestamps': self.timestamps,
+                'frame_indices': self.frame_indices,
+                'descriptions': self.frame_descriptions
+            }
         else:
             # Load video
             print(f"📹 Loading video...")
@@ -192,7 +326,8 @@ class VideoProcessor:
                 encoder = self._smolvlm
             else:
                 if not self._encoder:
-                    self._encoder = FrameEncoder(model_name='clip-vit-b32', device=self.device)
+                    model_name = self._get_encoder_model_name()
+                    self._encoder = FrameEncoder(model_name=model_name, device=self.device)
                 encoder = self._encoder
             
             # Process frames
@@ -200,7 +335,12 @@ class VideoProcessor:
             frames = []
             self.timestamps = []
             self.frame_indices = []
+            self.frame_descriptions = []
             self.embeddings = None  # Reset embeddings for new video
+            
+            total_frames_estimate = loader.total_frames if loader.total_frames else 100000
+            frames_processed = 0
+            last_progress_print = 0
             
             for frame_idx, frame, change_score in sampler.sample(loader, source_fps=loader.fps):
                 frames.append(frame)
@@ -217,10 +357,26 @@ class VideoProcessor:
                     else:
                         batch_embs = encoder.encode_batch(frames)
                     
+                    # Generate descriptions if enabled and not lazy
+                    if self.enable_descriptions and not self.lazy_descriptions:
+                        batch_descriptions = self._generate_descriptions(frames)
+                        self.frame_descriptions.extend(batch_descriptions)
+                    else:
+                        self.frame_descriptions.extend(['Content detected'] * len(frames))
+                    
                     if self.embeddings is None:
                         self.embeddings = batch_embs
                     else:
                         self.embeddings = np.vstack([self.embeddings, batch_embs])
+                    
+                    frames_processed += len(frames)
+                    
+                    # Print progress every 10%
+                    progress_pct = (frame_idx / total_frames_estimate) * 100
+                    if progress_pct - last_progress_print >= 10:
+                        elapsed_time = self.timestamps[-1]
+                        print(f"   Progress: {progress_pct:.0f}% ({frames_processed} frames, {elapsed_time/60:.1f} min elapsed)")
+                        last_progress_print = progress_pct
                     
                     frames = []
             
@@ -233,19 +389,43 @@ class VideoProcessor:
                 else:
                     batch_embs = encoder.encode_batch(frames)
                 
+                # Generate descriptions if enabled and not lazy
+                if self.enable_descriptions and not self.lazy_descriptions:
+                    batch_descriptions = self._generate_descriptions(frames)
+                    self.frame_descriptions.extend(batch_descriptions)
+                else:
+                    self.frame_descriptions.extend(['Content detected'] * len(frames))
+                
                 if self.embeddings is None:
                     self.embeddings = batch_embs
                 else:
                     self.embeddings = np.vstack([self.embeddings, batch_embs])
+                
+                frames_processed += len(frames)
             
-            print(f"✓ Processed {len(self.embeddings)} frames")
+            print(f"✓ Processed {len(self.embeddings)} frames (100% complete)")
+            if self.enable_descriptions and not self.lazy_descriptions:
+                print(f"✓ Generated {len(self.frame_descriptions)} frame descriptions")
+            elif self.enable_descriptions and self.lazy_descriptions:
+                print(f"📝 Lazy descriptions enabled - will generate on-demand at query time")
             
-            # Cache embeddings
+            # Store video path for lazy description generation
+            self.video_path = video_path
+            
+            # Cache embeddings with descriptions
             print(f"💾 Caching embeddings...")
             store = EmbeddingStore(quantization=QuantizationType.INT8)
             # Iterate based on timestamps length to ensure index consistency
             for i in range(len(self.timestamps)):
-                store.add_embedding(self.embeddings[i], self.timestamps[i], self.frame_indices[i])
+                metadata = {
+                    'description': self.frame_descriptions[i] if i < len(self.frame_descriptions) else 'Content detected'
+                }
+                store.add_embedding(
+                    self.embeddings[i], 
+                    self.timestamps[i], 
+                    self.frame_indices[i],
+                    metadata=metadata
+                )
             store.save(str(cache_path))
             print(f"✓ Cached to {cache_path}")
             
@@ -259,15 +439,17 @@ class VideoProcessor:
         # Temporal reasoning
         if self.enable_temporal:
             print(f"🔄 Applying temporal reasoning...")
+            # Get embedding dimension from the actual embeddings
+            embed_dim = self.embeddings.shape[1] if len(self.embeddings.shape) > 1 else self.embeddings[0].shape[0]
             engine = TemporalEngine([
-                CrossFrameGatingNetwork(feature_dim=512),
-                TemporalMemoryTokens(num_tokens=8, token_dim=512)
+                CrossFrameGatingNetwork(feature_dim=embed_dim),
+                TemporalMemoryTokens(num_tokens=8, token_dim=embed_dim)
             ])
             embeddings_tensor = torch.from_numpy(np.stack(self.embeddings)).float()
             with torch.no_grad():
                 processed = engine.process_sequence(embeddings_tensor)
             self.embeddings = processed.numpy()
-            print(f"✓ Temporal reasoning applied")
+            print(f"✓ Temporal reasoning applied (dim={embed_dim})")
         
         # Event detection
         print(f"🔍 Detecting events...")
@@ -292,15 +474,19 @@ class VideoProcessor:
         print(f"✓ Detected {len(self.events)} events")
         print(f"✅ Processing complete!")
         
+        # Store video duration for later use
+        self.video_duration = max(self.timestamps) if self.timestamps else 0.0
+        
         return {
             'video_info': self.video_info,
             'events': self.events,
             'embeddings': self.embeddings,
             'timestamps': self.timestamps,
-            'frame_indices': self.frame_indices
+            'frame_indices': self.frame_indices,
+            'descriptions': self.frame_descriptions
         }
     
-    def query(self, text: str, top_k: int = 5, enforce_diversity: bool = True, use_comparative: bool = True) -> List[Dict[str, Any]]:
+    def query(self, text: str, top_k: int = 5, enforce_diversity: bool = True, use_comparative: bool = True, enable_action_classification: bool = True) -> List[Dict[str, Any]]:
         """
         Query video with natural language and intelligent routing.
         
@@ -309,6 +495,7 @@ class VideoProcessor:
             top_k: Number of results to return
             enforce_diversity: Enable magnet cluster suppression (default: True)
             use_comparative: Enable comparative query handling (default: True)
+            enable_action_classification: Enable CLIP zero-shot action classification (default: True)
             
         Returns:
             List of matches with timestamps and confidence scores
@@ -331,7 +518,8 @@ class VideoProcessor:
         
         # Encode query
         if not self._encoder:
-            self._encoder = FrameEncoder(model_name='clip-vit-b32', device=self.device)
+            model_name = self._get_encoder_model_name()
+            self._encoder = FrameEncoder(model_name=model_name, device=self.device)
         
         query_embedding = self._encoder.encode_text(text)
         
@@ -359,11 +547,12 @@ class VideoProcessor:
             # Convert to standard format
             results = []
             for r in retrieval_results:
+                description = self.frame_descriptions[r.frame_idx] if self.frame_descriptions and r.frame_idx < len(self.frame_descriptions) else f"Relevant content found ({r.window_label} section)"
                 results.append({
                     'timestamp': r.timestamp,
                     'frame': r.frame_idx,
                     'confidence': r.confidence,
-                    'description': f"Relevant content found ({r.window_label} section)",
+                    'description': description,
                     'window': r.window_label
                 })
             
@@ -399,25 +588,126 @@ class VideoProcessor:
         
         results = []
         for idx in top_indices:
-            results.append({
+            # Lazy description generation: only for retrieved frames
+            if self.enable_descriptions and self.lazy_descriptions and self.frame_descriptions[idx] == 'Content detected':
+                description = self._generate_lazy_description(idx)
+                self.frame_descriptions[idx] = description
+            else:
+                description = self.frame_descriptions[idx] if self.frame_descriptions and idx < len(self.frame_descriptions) else 'Content detected'
+            
+            result = {
                 'timestamp': self.timestamps[idx],
                 'frame': self.frame_indices[idx],
                 'confidence': float(similarities[idx]),
-                'description': f"Relevant content found"
-            })
+                'description': description
+            }
+            
+            # Add action classification if enabled
+            if enable_action_classification:
+                action_labels = self._classify_frame_actions(idx)
+                result['actions'] = action_labels
+            
+            results.append(result)
         
         print(f"✓ Found {len(results)} results")
         return results
+    
+    def _classify_frame_actions(self, frame_idx: int) -> Dict[str, str]:
+        """
+        Classify fine-grained actions in a frame using CLIP zero-shot.
+        
+        Args:
+            frame_idx: Index of frame to classify
+            
+        Returns:
+            Dictionary of action classifications
+        """
+        if not self.video_path:
+            return {}
+        
+        try:
+            from sharingan.video import VideoLoader
+            import numpy as np
+            
+            # Load the specific frame
+            loader = VideoLoader(self.video_path, backend='opencv')
+            target_frame_number = self.frame_indices[frame_idx]
+            frame = loader.get_frame(target_frame_number)
+            
+            # Initialize encoder if needed
+            if not self._encoder:
+                model_name = self._get_encoder_model_name()
+                from sharingan.vlm import FrameEncoder
+                self._encoder = FrameEncoder(model_name=model_name, device=self.device)
+            
+            # Define action categories to classify
+            action_categories = {
+                'hand_used': [
+                    'a person using their right hand',
+                    'a person using their left hand',
+                    'a person using both hands'
+                ],
+                'screw_action': [
+                    'a person tightening a screw',
+                    'a person loosening a screw',
+                    'no screw action'
+                ],
+                'light_state': [
+                    'a light bulb turning on',
+                    'a light bulb turning off',
+                    'a light bulb staying on',
+                    'no light visible'
+                ],
+                'wire_action': [
+                    'a person connecting a wire',
+                    'a person disconnecting a wire',
+                    'a person pushing a wire',
+                    'a person pulling a wire',
+                    'no wire action'
+                ],
+                'direction': [
+                    'movement from left to right',
+                    'movement from right to left',
+                    'no directional movement'
+                ]
+            }
+            
+            # Classify each category
+            classifications = {}
+            frame_embedding = self._encoder.encode_batch([frame])[0]
+            
+            for category, labels in action_categories.items():
+                # Encode all labels for this category
+                label_embeddings = [self._encoder.encode_text(label) for label in labels]
+                
+                # Compute similarities
+                similarities = [np.dot(frame_embedding, label_emb) for label_emb in label_embeddings]
+                
+                # Get best match
+                best_idx = np.argmax(similarities)
+                best_label = labels[best_idx]
+                best_score = similarities[best_idx]
+                
+                # Only include if confidence is reasonable (>0.2)
+                if best_score > 0.2:
+                    classifications[category] = best_label
+            
+            return classifications
+            
+        except Exception as e:
+            print(f"   ⚠️  Action classification failed for frame {frame_idx}: {e}")
+            return {}
     
     def _apply_temporal_filters(self, similarities: np.ndarray, timestamps: List[float], query: str) -> np.ndarray:
         """
         Apply temporal filters to adjust similarity scores based on query intent and video duration.
         
         Fixes:
-        1. Teaser bias: Penalize first 60s for "final" queries
-        2. Temporal weighting: Boost relevant time regions based on query keywords
-        3. First-frame bias: Penalize first 2 seconds
-        4. Long-form video handling: Adaptive temporal boost based on video duration
+        1. First-frame bias: Penalize first 2 seconds
+        2. Extended intro montage suppression (Issue #11): Adaptive penalty for first 2% or 120s
+        3. Teaser bias: Additional handling for "final" queries
+        4. Temporal weighting: Boost relevant time regions based on query keywords
+        5. Long-form video handling: Adaptive temporal boost based on video duration
         
         Args:
             similarities: Raw similarity scores from CLIP
@@ -439,6 +729,10 @@ class VideoProcessor:
         is_medium_video = 900 <= video_duration < 3600  # 15-60 minutes
         is_long_video = video_duration >= 3600  # >= 60 minutes (1 hour)
         
+        # Calculate adaptive intro duration (2% of video or 120s max)
+        # This fixes Issue #11: Extended intro montages in long-form videos
+        intro_duration = min(120.0, video_duration * 0.02)
+        
         for i, timestamp in enumerate(timestamps):
             weight = 1.0
             
@@ -446,11 +740,15 @@ class VideoProcessor:
             if timestamp < 2.0:
                 weight *= 0.3
             
-            # Fix 2: Teaser bias filter (for "final" queries)
+            # Fix 2: Extended intro montage suppression (Issue #11)
+            # Apply to ALL queries to prevent intro preview contamination
+            if timestamp < intro_duration:
+                weight *= 0.1  # 90% penalty for intro/teaser sections
+            
+            # Fix 3: Additional teaser bias filter (for "final" queries)
             if any(keyword in query_lower for keyword in ['final', 'end', 'result', 'finished', 'complete', 'done']):
-                # Penalize first 60 seconds (teaser/intro section)
-                if timestamp < 60.0:
-                    weight *= 0.1
+                # Already penalized by intro suppression above
+                # No additional penalty needed for first 60s
                 
                 # Adaptive temporal boost based on video duration
                 if is_short_video:
@@ -515,8 +813,9 @@ class VideoProcessor:
         from sharingan.chat import VideoLLM
         
         if not self._llm:
-            print(f"🤖 Initializing Qwen2.5-0.5B...")
-            self._llm = VideoLLM(device=self.device)
+            # Use Qwen2.5-1.5B-Instruct for better reasoning
+            print(f"🤖 Initializing Qwen2.5-1.5B-Instruct...")
+            self._llm = VideoLLM(model_name='qwen-1.5b', device=self.device)
         
         response = self._llm.chat(question, segments)
         return response

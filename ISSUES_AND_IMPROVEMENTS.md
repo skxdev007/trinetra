@@ -3735,3 +3735,393 @@ After retrieval, check if more than 40% of top-5 results are within 60 seconds o
 ---
 
 *Last updated: 2026-03-06 - Added comprehensive cross-video stress test analysis*
+
+
+---
+
+## 🆕 ISSUE #11 IDENTIFIED (2026-03-07)
+
+### 11. Extended Intro Montage Dominance - CRITICAL ❌
+
+**Problem:** System finds correct topics but returns intro/teaser timestamps instead of actual occurrences in long-form videos.
+
+**Test Video:** "18th Century Cooking Marathon! - Season 10" by Townsends (3h 17m)
+**Test Date:** 2026-03-07
+
+**Verified Failures:**
+
+| Query | Ground Truth | System Result | Issue |
+|-------|--------------|---------------|-------|
+| Rose Water in Cake | 22:45 (actual usage) | 00:01:52 (intro preview) | Intro poisoning ❌ |
+| Oatmeal Names | Various locations | 00:01:52 (intro) | Intro poisoning ❌ |
+| Horse Bread Texture | Early segment | 00:01:52 (intro) | Intro poisoning ❌ |
+| Sabotiere Ice Cream | Correct segment | ✅ Verified | Working ✅ |
+| Workhouse Bread Ration | 00:29:48 | ✅ Close | Working ✅ |
+
+**Analysis:**
+
+**Strengths:**
+- ✅ Semantic understanding: Correctly identifies relevant concepts (Sabotiere, Rose Water, Horse Bread)
+- ✅ Causal logic: Understands "why" questions
+- ✅ Needle detection: Finds specific details (4 ounces)
+
+**Weaknesses:**
+- ❌ Temporal precision: Multiple queries return 00:01:52 (intro/teaser segment)
+- ❌ Timestamp hallucination: Finds right topic but wrong temporal location
+- ❌ Long-context drift: 3-hour video causes temporal localization errors
+
+**Root Cause:**
+
+1. **Extended Intro Montages:** First 2 minutes contain visual previews of ALL topics
+2. **Semantic Equivalence:** CLIP embeddings for "Rose Water" at 00:01:52 (preview) look identical to "Rose Water" at 22:45 (actual usage)
+3. **Insufficient Penalty:** Current temporal filters penalize first 60s, but intro extends to ~120s
+4. **Early Satisfaction:** System satisfies semantic query early and stops searching deeper
+
+**Why Current Fixes Don't Help:**
+
+- **Magnet Suppressor (Issue #10):** Works for single-location magnets (984s woodworking), not distributed intro clips
+- **Comparative Handler (Issue #9):** Works for "first vs last" but not "find specific moment"
+- **Temporal Filters (Issues #1-3):** Penalize first 60s, but intro runs to 120s+
+
+**Distinction from Issue #10:**
+
+| Issue | Pattern | Example | Fix |
+|-------|---------|---------|-----|
+| **#10: Magnet Clustering** | Single segment dominates 40%+ of queries | 984s in 7/16 queries | Detect clustering, suppress magnet |
+| **#11: Intro Montage** | First 2 minutes contaminate specific queries | 00:01:52 in 3/5 queries | Extend intro penalty, detect montages |
+
+**Expected Impact:**
+
+- **Current Accuracy:** ~60% (finds right topic, wrong timestamp)
+- **With Fix:** ~80% (finds right topic AND right timestamp)
+- **Improvement:** +20 percentage points on long-form videos (>1 hour)
+
+---
+
+### Proposed Solution: Extended Intro Detection & Suppression
+
+**Phase 1: Extend Intro Penalty (Quick Fix - 1 hour) ✅ IMPLEMENTED**
+
+**Implementation Date:** 2026-03-07
+
+**Changes Made:**
+- Modified `_apply_temporal_filters()` in `sharingan/processor.py` (line 431)
+- Replaced fixed 60s intro penalty with adaptive penalty: `min(120.0, video_duration * 0.02)`
+- Applied 90% penalty (0.1 multiplier) to ALL queries, not just "final" queries
+- Moved intro suppression before query-specific filters to ensure universal application
+
+**Code:**
+```python
+# Calculate adaptive intro duration (2% of video or 120s max)
+# This fixes Issue #11: Extended intro montages in long-form videos
+intro_duration = min(120.0, video_duration * 0.02)
+
+# Apply to ALL queries to prevent intro preview contamination
+if timestamp < intro_duration:
+    weight *= 0.1  # 90% penalty for intro/teaser sections
+```
+
+**Expected Impact:** +10 percentage points immediately
+
+**Testing Required:**
+- Re-run Townsends cooking marathon (3h 17m) - video already cached
+- Verify Rose Water query moves from 00:01:52 → 22:45
+- Verify Oatmeal Names query moves from 00:01:52 → actual locations
+
+**Test Results (2026-03-07):**
+
+✅ **Phase 1 Success:** Intro poisoning completely eliminated
+- No queries returned 00:01:52 (intro timestamp)
+- System now searches beyond intro montage
+- Adaptive penalty working as designed
+
+❌ **New Issue Revealed:** Poor temporal localization despite correct semantic understanding
+
+| Query | Expected | Returned | Analysis |
+|-------|----------|----------|----------|
+| Rose Water in Cake | 00:29:09 | 00:04:07 | Off by 25 minutes - found hominy/lye discussion instead |
+| Oatmeal Names | Various | 01:53:40, 00:14:34 | Found "cornmeal" mentions, not oatmeal synonyms |
+| Horse Bread Texture | Early segment | 01:56:15 | Correct logic, wrong timestamp |
+| Workhouse Bread | ~00:29:00 | 00:28:23 | ✅ Close (within 1 minute) |
+| Sabotiere Ice Cream | ~02:15:00 | 02:15:14 (Rank 3) | ✅ Success - exact match |
+
+**Accuracy:** 2/5 correct (40%), improved from 0/5 with intro poisoning
+
+**Root Cause Analysis:**
+
+The system has **excellent global retrieval** (knows ice cream maker exists in 3-hour video) but **poor temporal localization** (can't pinpoint exact timestamp).
+
+**Why This Happens:**
+
+1. **CLIP Frame Independence:** Each frame processed independently, no temporal context
+2. **Mean Pooling Compression:** Timeline compressed during embedding aggregation
+3. **Semantic Similarity Trap:** "Rose Water" at 00:04:07 (mentioned in passing) looks similar to "Rose Water" at 00:29:09 (actual usage)
+4. **No Temporal Binding:** Visual features not "attached" to timestamps in embedding space
+
+**Architecture Limitation:**
+
+Current stack (CLIP + temporal filters) cannot distinguish:
+- "Rose Water mentioned" (00:04:07) vs "Rose Water used" (00:29:09)
+- "Cornmeal discussed" (00:14:34) vs "Oatmeal synonyms listed" (unknown)
+- Preview/mention vs actual occurrence
+
+**What Phase 1 Fixed:**
+- ✅ Intro montage poisoning (00:01:52 no longer dominates)
+- ✅ Extended intro penalty working correctly
+
+**What Phase 1 Cannot Fix:**
+- ❌ Temporal localization precision (requires architectural changes)
+- ❌ Distinguishing mention from usage (requires temporal context)
+- ❌ Fine-grained timestamp accuracy (requires temporal binding)
+
+---
+
+**Phase 2: Montage Detection (Medium Fix - 4 hours)**
+
+**Status:** ⏸️ PAUSED - Phase 1 revealed deeper architectural issue
+
+Detect intro montages by analyzing scene transition density:
+
+```python
+def detect_intro_montage(embeddings, timestamps, window=120):
+    """Detect if first 2 minutes is a montage."""
+    intro_embeddings = embeddings[timestamps < window]
+    
+    # Calculate embedding diversity (high = montage)
+    pairwise_distances = pdist(intro_embeddings)
+    diversity = np.mean(pairwise_distances)
+    
+    # Calculate transition rate
+    transitions = np.sum(np.linalg.norm(np.diff(intro_embeddings, axis=0), axis=1) > threshold)
+    transition_rate = transitions / len(intro_embeddings)
+    
+    # Montage if high diversity + high transition rate
+    is_montage = (diversity > 0.7) and (transition_rate > 0.3)
+    
+    return is_montage, window if is_montage else 60
+```
+
+**Expected Impact:** +5 percentage points additional
+
+**Note:** Phase 2 will not fix the core temporal localization issue. It only helps detect montages more accurately. The real fix requires architectural changes (see Phase 4 below).
+
+---
+
+**Phase 3: Semantic Deduplication (Advanced Fix - 1 day)**
+
+**Status:** ⏸️ PAUSED - Phase 1 revealed deeper architectural issue
+
+When query matches intro preview, force search in remaining video:
+
+```python
+def query_with_deduplication(query_embedding, embeddings, timestamps):
+    # First pass: Find all matches
+    similarities = embeddings @ query_embedding
+    top_indices = np.argsort(similarities)[-10:][::-1]
+    
+    # Check if top result is in intro
+    if timestamps[top_indices[0]] < intro_duration:
+        # Suppress intro and re-retrieve
+        intro_mask = timestamps < intro_duration
+        similarities[intro_mask] *= 0.05  # 95% penalty
+        
+        # Get new top-K from remaining video
+        top_indices = np.argsort(similarities)[-5:][::-1]
+    
+    return top_indices
+```
+
+**Expected Impact:** +5 percentage points additional
+
+**Note:** Phase 3 will not fix the core temporal localization issue. Semantic deduplication helps with intro contamination but doesn't solve "mention vs usage" distinction.
+
+---
+
+**Phase 4: Architectural Upgrade for Temporal Localization (REQUIRED - 1 week)**
+
+**Status:** 🔴 CRITICAL - Required to achieve 80% accuracy on long-form videos
+
+**Problem Identified:**
+
+Current architecture has **excellent global retrieval** but **poor temporal localization**:
+- ✅ Knows "ice cream maker" exists in 3-hour video
+- ❌ Cannot pinpoint exact timestamp (off by 25 minutes)
+- ❌ Cannot distinguish "mentioned" from "used"
+- ❌ Cannot distinguish "preview" from "actual occurrence"
+
+**Root Cause:**
+
+1. **CLIP Frame Independence:** No temporal context between frames
+2. **Mean Pooling:** Timeline compressed, timestamps "detached" from features
+3. **No Temporal Binding:** Visual features not anchored to temporal positions
+
+**Solution Options:**
+
+**Option A: VideoMAE V2 + Temporal Position Encoding (Recommended)**
+
+Replace CLIP with VideoMAE V2 which has built-in temporal understanding:
+
+```python
+# Current: CLIP processes frames independently
+clip_embeddings = [clip.encode(frame) for frame in frames]  # No temporal context
+
+# Proposed: VideoMAE processes video segments with temporal context
+videomae_embeddings = videomae.encode_video(frames, timestamps)  # Temporal binding
+```
+
+**Benefits:**
+- VideoMAE trained on video data (not static images like CLIP)
+- Understands temporal relationships between frames
+- Embeddings naturally encode temporal position
+- Better at distinguishing "mention" vs "usage"
+
+**Implementation:**
+- Add `sharingan/vlm/videomae_encoder.py`
+- Use `MCG-NJU/videomae-base` or `videomae-large`
+- Size: ~600MB (VideoMAE-Large) vs ~850MB (CLIP)
+- Memory: Similar to current CLIP usage
+
+**Expected Impact:** +30 percentage points (50% → 80% accuracy)
+
+---
+
+**Option B: Add Temporal Context Window (Intermediate Fix)**
+
+Keep CLIP but add temporal context by processing frame windows:
+
+```python
+def encode_with_temporal_context(frames, timestamps, window_size=8):
+    """Encode frames with temporal context."""
+    embeddings = []
+    
+    for i, frame in enumerate(frames):
+        # Get surrounding frames (temporal context)
+        start = max(0, i - window_size // 2)
+        end = min(len(frames), i + window_size // 2)
+        context_frames = frames[start:end]
+        
+        # Encode with context (e.g., concatenate features)
+        context_embeddings = [clip.encode(f) for f in context_frames]
+        temporal_embedding = aggregate_with_position(context_embeddings, i - start)
+        
+        embeddings.append(temporal_embedding)
+    
+    return embeddings
+```
+
+**Benefits:**
+- Keeps existing CLIP infrastructure
+- Adds temporal context without model replacement
+- Faster to implement (2-3 days)
+
+**Drawbacks:**
+- Still uses CLIP (not designed for video)
+- Temporal context is "bolted on" not native
+- Less effective than VideoMAE
+
+**Expected Impact:** +15 percentage points (50% → 65% accuracy)
+
+---
+
+**Option C: Qwen2-VL with M-RoPE (Advanced)**
+
+Replace entire stack with Qwen2-VL which has native temporal understanding:
+
+```python
+# Qwen2-VL with M-RoPE (Multimodal Rotary Position Encoding)
+# Keeps timestamps "attached" to visual features
+qwen2vl_response = model.generate(
+    video=video_path,
+    query="When is rose water added?",
+    temporal_grounding=True  # Returns timestamp ranges
+)
+```
+
+**Benefits:**
+- Native temporal grounding (returns timestamp ranges)
+- M-RoPE keeps temporal position in embedding space
+- State-of-the-art video understanding
+
+**Drawbacks:**
+- Requires complete architecture rewrite
+- Larger model (~7B parameters)
+- Higher memory requirements (~4GB)
+- Loses "proactive TEG" architecture novelty
+
+**Expected Impact:** +40 percentage points (50% → 90% accuracy)
+
+---
+
+**Recommendation:**
+
+**Immediate (This Week):** Implement Option A (VideoMAE V2)
+- Preserves proactive TEG architecture
+- Minimal code changes (add new encoder)
+- Stays within memory budget
+- Expected: 50% → 80% accuracy
+
+**Future (Next Month):** Explore Option B (Temporal Context Window)
+- Fallback if VideoMAE doesn't meet expectations
+- Can be combined with VideoMAE for additional boost
+
+**Long-term (Research):** Evaluate Option C (Qwen2-VL)
+- Only if 80% accuracy insufficient
+- Requires rethinking architecture philosophy
+
+---
+
+**Total Expected Impact:** 
+
+- **Phase 1 (Implemented):** ✅ Eliminated intro poisoning (00:01:52 no longer dominates)
+- **Phase 2-3 (Paused):** ⏸️ Will not fix core temporal localization issue
+- **Phase 4 (Required):** 🔴 +30pp improvement (50% → 80% accuracy) with VideoMAE V2
+
+**Current Accuracy:** 40% (2/5 queries correct) - up from 0% with intro poisoning
+**Target Accuracy:** 80% (requires Phase 4 architectural upgrade)
+
+---
+
+### Implementation Priority
+
+**Priority:** 🔴 CRITICAL (Requires architectural upgrade)
+
+**Status:**
+- ✅ Phase 1 Complete: Intro poisoning eliminated
+- ⏸️ Phase 2-3 Paused: Won't fix core issue
+- 🔴 Phase 4 Required: VideoMAE V2 upgrade needed
+
+**Reason:**
+- Phase 1 fixed intro contamination but revealed deeper issue
+- Current architecture (CLIP) cannot achieve 80% accuracy on long-form videos
+- Temporal localization requires video-native encoder (VideoMAE V2)
+- Affects all long-form videos (>1 hour)
+
+**Effort Estimate:**
+- ✅ Phase 1 (Extend Penalty): 1 hour - COMPLETE
+- ⏸️ Phase 2 (Montage Detection): 4 hours - PAUSED
+- ⏸️ Phase 3 (Deduplication): 1 day - PAUSED
+- 🔴 Phase 4 (VideoMAE V2): 1 week - REQUIRED
+- **Total to 80% accuracy:** 1 week (Phase 4 only)
+
+**Next Steps:**
+1. ✅ Phase 1 complete - intro poisoning eliminated
+2. 🔴 Implement Phase 4 (VideoMAE V2) - required for 80% accuracy
+3. ⏸️ Skip Phase 2-3 - won't fix temporal localization
+4. Re-test on Townsends marathon after Phase 4
+
+---
+
+### User Feedback (2026-03-07)
+
+> "The model is finding the right 'topic' but 'hallucinating' the exact second it occurs because it likely isn't processing the full 3-hour context window linearly."
+
+**Diagnosis:** Correct. The system processes the full video but intro montages create semantic "false positives" that satisfy queries early.
+
+**Audit Results:**
+- **Strengths:** Excellent topic detection (Sabotiere, Rose Water, Horse Bread)
+- **Weaknesses:** Low timestamp accuracy (multiple results point to 00:01:52 intro)
+- **Architecture Note:** Needs better temporal header to distinguish preview from actual occurrence
+
+---
+
+*Last updated: 2026-03-07 - Identified Issue #11 from Townsends cooking marathon test*

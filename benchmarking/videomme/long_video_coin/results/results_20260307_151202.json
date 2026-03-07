@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "dataset": "TemporalBench Long Video COIN",
+    "model": "clip",
+    "total_questions": 10,
+    "answered_questions": 10,
+    "correct_answers": 4,
+    "accuracy": 40.0,
+    "total_time": 467.3584704399109,
+    "avg_query_time": 41.35399270057678,
+    "unique_videos_processed": 3,
+    "target_fps": 5.0,
+    "timestamp": "2026-03-07T15:12:02.029636"
+  },
+  "results": [
+    {
+      "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_1",
+      "video_name": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person pulls the string with the left hand and switches on the bulb. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand.\nB. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nAnswer with the option's letter from the given choices directly.",
+      "ground_truth": "B",
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 106.26559948921204
+    },
+    {
+      "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_2",
+      "video_name": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches off the bulb. \nB. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nAnswer with the option's letter from the given choices directly.",
+      "ground_truth": "B",
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 90.04599118232727
+    },
+    {
+      "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_3",
+      "video_name": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nB. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. The person pulls the string with the left hand and switches on the bulb. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand.\nAnswer with the option's letter from the given choices directly.",
+      "ground_truth": "A",
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 0.537036657333374
+    },
+    {
+      "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_4",
+      "video_name": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and loosens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb. \nB. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nAnswer with the option's letter from the given choices directly.",
+      "ground_truth": "B",
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 0.5704681873321533
+    },
+    {
+      "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_1",
+      "video_name": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold a screwdriver, They remove the right and then just use the left to remove a screen from the base of a light bulb.  A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nB. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nAnswer with the option's letter from the given choices directly.",
+      "ground_truth": "B",
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 90.64719152450562
+    },
+    {
+      "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_2",
+      "video_name": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nB. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pulls the black wire off of the gold connector on the back of the fixture. \nAnswer with the option's letter from the given choices directly.",
+      "ground_truth": "A",
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 36.82481813430786
+    },
+    {
+      "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_3",
+      "video_name": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nB. Someone using their right and left hand to hold to a screwdriver, They remove the right and then just use the right to remove a screen from the base of a light bulb.  A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nAnswer with the option's letter from the given choices directly.",
+      "ground_truth": "A",
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 0.5322604179382324
+    },
+    {
+      "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_4",
+      "video_name": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_99.0.mp4",
+      "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold a screwdriver, They remove the left and then just use the left to remove a screen from the base of a light bulb.  A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nB. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nAnswer with the option's letter from the given choices directly.",
+      "ground_truth": "B",
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 0.5435867309570312
+    },
+    {
+      "idx": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_1",
+      "video_name": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches off the bulb. \nB. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nAnswer with the option's letter from the given choices directly.",
+      "ground_truth": "B",
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 87.04409432411194
+    },
+    {
+      "idx": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_2",
+      "video_name": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_94.0_end_110.0.mp4",
+      "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nB. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pulls the black wire off of the gold connector on the back of the fixture.  The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nAnswer with the option's letter from the given choices directly.",
+      "ground_truth": "A",
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 0.5288803577423096
+    }
+  ]
+}

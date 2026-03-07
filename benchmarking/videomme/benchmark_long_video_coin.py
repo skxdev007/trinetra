@@ -34,36 +34,51 @@ def load_qa_data(qa_file: Path) -> List[Dict]:
 def extract_answer_from_response(response: str, question: str) -> str:
     """
     Extract A or B from the model's response.
-    The question format is: "Which caption best describes this video?\nA. ...\nB. ...\nAnswer with the option's letter..."
+    Uses improved regex-based extraction focusing on the final answer.
     """
-    response = response.strip().upper()
+    import re
     
-    # Direct match
-    if response in ['A', 'B']:
-        return response
+    response = response.strip()
     
-    # Look for "A" or "B" at the start
-    if response.startswith('A'):
-        return 'A'
-    if response.startswith('B'):
-        return 'B'
+    # Method 1: Look for isolated A or B in the last 50 characters
+    # This catches "Answer: A", "The answer is B", etc.
+    response_tail = response[-50:]
+    match = re.search(r'\b([AB])\b', response_tail, re.IGNORECASE)
+    if match:
+        return match.group(1).upper()
     
-    # Look for "OPTION A" or "OPTION B"
-    if 'OPTION A' in response or 'CHOICE A' in response:
-        return 'A'
-    if 'OPTION B' in response or 'CHOICE B' in response:
-        return 'B'
+    # Method 2: Look for "Answer: X" or "Option X" patterns anywhere
+    answer_patterns = [
+        r'(?:answer|choice|option|select)[:\s]+([AB])',
+        r'(?:the\s+)?(?:correct\s+)?(?:answer\s+is\s+)?([AB])',
+        r'(?:I\s+choose\s+)?([AB])\b'
+    ]
     
-    # Count occurrences
-    a_count = response.count('A')
-    b_count = response.count('B')
+    for pattern in answer_patterns:
+        match = re.search(pattern, response, re.IGNORECASE)
+        if match:
+            return match.group(1).upper()
+    
+    # Method 3: If response is very short and contains only A or B
+    if len(response) < 10:
+        response_upper = response.upper()
+        if 'A' in response_upper and 'B' not in response_upper:
+            return 'A'
+        if 'B' in response_upper and 'A' not in response_upper:
+            return 'B'
+    
+    # Method 4: Count occurrences in last 100 chars (avoid question text)
+    tail = response[-100:].upper()
+    a_count = tail.count('A')
+    b_count = tail.count('B')
     
     if a_count > b_count:
         return 'A'
     elif b_count > a_count:
         return 'B'
     
-    # Default to A if unclear
+    # Default to A if completely unclear
+    print(f"  ⚠️  Could not extract clear answer from: '{response[:100]}...'")
     return 'A'
 
 
@@ -71,11 +86,15 @@ def process_video_and_answer(
     processor: VideoProcessor,
     video_path: Path,
     question: str,
-    processed_videos: Dict[str, dict]
-) -> Tuple[str, float]:
+    processed_videos: Dict[str, dict],
+    system_prompt: str = None,
+    user_prompt_template: str = None,
+    verbose: bool = True,  # Added to control printing
+    enable_action_classification: bool = True  # NEW: Enable action classification
+) -> Tuple[str, float, str]:  # Fixed return type
     """
     Process video if not already processed, then answer the question.
-    Returns (answer, query_time).
+    Returns (answer, query_time, response).
     """
     video_key = str(video_path)
     
@@ -98,12 +117,69 @@ def process_video_and_answer(
     
     # Answer the question
     start_time = time.time()
-    response = processor.chat(question, use_llm=False)
+    try:
+        # Get video context first with action classification
+        segments = processor.query(
+            question, 
+            top_k=10,  # Increased from 5 to get more context
+            enable_action_classification=enable_action_classification
+        )
+        
+        # Print context if verbose
+        if verbose:
+            print(f"\n{'='*80}")
+            print(f"CONTEXT SENT TO LLM:")
+            print(f"{'='*80}")
+            print("VIDEO TIMELINE:")
+            print("-" * 60)
+            for i, seg in enumerate(segments, 1):
+                timestamp = seg['timestamp']
+                confidence = seg['confidence']
+                description = seg.get('description', 'Content detected')
+                actions = seg.get('actions', {})
+                
+                mins = int(timestamp // 60)
+                secs = int(timestamp % 60)
+                time_str = f"{mins}:{secs:02d}"
+                
+                print(f"{i}. [{time_str}] {description}")
+                if actions:
+                    print(f"   Actions: {actions}")
+                print(f"   Relevance: {confidence:.1%}")
+            print("-" * 60)
+            print(f"{'='*80}\n")
+        
+        # Override prompts if provided
+        if system_prompt or user_prompt_template:
+            # Get the LLM directly and set custom prompts
+            if not processor._llm:
+                from sharingan.chat import VideoLLM
+                print(f"🤖 Initializing Qwen2.5-1.5B-Instruct...")
+                processor._llm = VideoLLM(model_name='qwen-1.5b', device=processor.device)
+            
+            # Use custom prompts
+            response = processor._llm.chat(
+                query=question,
+                video_context=segments,
+                max_new_tokens=10,
+                temperature=0.3
+            )
+            
+            # Override the chat method's prompts if needed
+            if system_prompt:
+                processor._llm.chat_history = []  # Clear history for custom prompts
+        else:
+            response = processor.chat(question, use_llm=True)
+            
+    except Exception as e:
+        # Fallback to non-LLM response if LLM fails
+        print(f"  ⚠️  LLM failed, using fallback: {e}")
+        response = processor.chat(question, use_llm=False)
     query_time = time.time() - start_time
     
     answer = extract_answer_from_response(response, question)
     
-    return answer, query_time
+    return answer, query_time, response
 
 
 def run_benchmark(
@@ -111,7 +187,11 @@ def run_benchmark(
     dataset_dir: Path,
     output_dir: Path,
     max_questions: int = None,
-    target_fps: float = 5.0
+    target_fps: float = 5.0,
+    vlm_model: str = 'clip',
+    enable_descriptions: bool = True,
+    system_prompt: str = None,  # Added parameter
+    user_prompt_template: str = None  # Added parameter
 ):
     """Run the benchmark on TemporalBench Long Video COIN dataset."""
     
@@ -128,6 +208,10 @@ def run_benchmark(
     
     # Initialize processor
     print(f"\nInitializing VideoProcessor (target_fps={target_fps})...")
+    if enable_descriptions:
+        print(f"📝 Frame descriptions: ENABLED (SmolVLM will generate descriptions)")
+    else:
+        print(f"📝 Frame descriptions: DISABLED (using 'Content detected')")
     print(f"Checking GPU availability...")
     import torch
     if torch.cuda.is_available():
@@ -138,10 +222,11 @@ def run_benchmark(
         print(f"⚠ No GPU detected - using CPU (this will be slower)")
     
     processor = VideoProcessor(
-        vlm_model='clip',
+        vlm_model=vlm_model,  # Use parameter instead of hardcoded 'clip'
         device='auto',
         target_fps=target_fps,
         enable_temporal=True,
+        enable_descriptions=enable_descriptions,
         batch_size=32
     )
     
@@ -178,8 +263,12 @@ def run_benchmark(
         
         try:
             # Process and answer
-            predicted_answer, query_time = process_video_and_answer(
-                processor, video_path, question, processed_videos
+            predicted_answer, query_time, response = process_video_and_answer(
+                processor, video_path, question, processed_videos,
+                system_prompt=system_prompt,
+                user_prompt_template=user_prompt_template,
+                verbose=(i <= 3),  # Show context for first 3 questions
+                enable_action_classification=True  # Enable action classification
             )
             
             # Check correctness
@@ -191,6 +280,7 @@ def run_benchmark(
             accuracy = (correct / total) * 100
             
             print(f"  Question: {question[:100]}...")
+            print(f"  Response: {response[:150]}...")
             print(f"  Predicted: {predicted_answer} | Ground Truth: {ground_truth} | {'✓' if is_correct else '✗'}")
             print(f"  Query time: {query_time:.3f}s")
             print(f"  Running accuracy: {accuracy:.2f}% ({correct}/{total})")
@@ -203,6 +293,7 @@ def run_benchmark(
                 'question': question,
                 'ground_truth': ground_truth,
                 'predicted': predicted_answer,
+                'response': response,  # Added for debugging
                 'correct': is_correct,
                 'query_time': query_time
             })
@@ -228,6 +319,7 @@ def run_benchmark(
         json.dump({
             'metadata': {
                 'dataset': 'TemporalBench Long Video COIN',
+                'model': vlm_model,  # Added model info
                 'total_questions': len(qa_data),
                 'answered_questions': total,
                 'correct_answers': correct,
@@ -246,7 +338,7 @@ def run_benchmark(
     # Save summary as markdown
     save_summary_markdown(
         output_dir, results, processed_videos, 
-        total, correct, accuracy, total_time, avg_query_time, target_fps
+        total, correct, accuracy, total_time, avg_query_time, target_fps, vlm_model, enable_descriptions
     )
     
     # Print summary
@@ -272,7 +364,9 @@ def save_summary_markdown(
     accuracy: float,
     total_time: float,
     avg_query_time: float,
-    target_fps: float
+    target_fps: float,
+    vlm_model: str,
+    enable_descriptions: bool
 ):
     """Save benchmark summary as markdown."""
     
@@ -285,6 +379,8 @@ def save_summary_markdown(
         
         # Overall metrics
         f.write("## Overall Performance\n\n")
+        f.write(f"- **Model:** {vlm_model.upper()}\n")
+        f.write(f"- **Frame Descriptions:** {'ENABLED (SmolVLM)' if enable_descriptions else 'DISABLED'}\n")
         f.write(f"- **Accuracy:** {accuracy:.2f}% ({correct}/{total})\n")
         f.write(f"- **Total Questions:** {total}\n")
         f.write(f"- **Unique Videos:** {len(processed_videos)}\n")
@@ -342,6 +438,21 @@ def main():
                        help='Maximum number of questions to process (for testing)')
     parser.add_argument('--target-fps', type=float, default=5.0,
                        help='Target FPS for video processing')
+    parser.add_argument('--model', type=str, default='clip',
+                       choices=['clip', 'siglip', 'siglip-base', 'siglip-large', 'smolvlm'],
+                       help='Vision model to use (default: clip)')
+    parser.add_argument('--enable-descriptions', action='store_true', default=True,
+                       help='Generate frame descriptions using SmolVLM (default: True)')
+    parser.add_argument('--no-descriptions', dest='enable_descriptions', action='store_false',
+                       help='Disable frame descriptions (faster but less accurate)')
+    parser.add_argument('--system-prompt', type=str, default=None,
+                       help='Custom system prompt for LLM')
+    parser.add_argument('--user-prompt-template', type=str, default=None,
+                       help='Custom user prompt template')
+    parser.add_argument('--enable-action-classification', action='store_true', default=True,
+                       help='Enable CLIP zero-shot action classification (default: True)')
+    parser.add_argument('--no-action-classification', dest='enable_action_classification', action='store_false',
+                       help='Disable action classification')
     
     args = parser.parse_args()
     
@@ -364,7 +475,11 @@ def main():
         dataset_dir=dataset_dir,
         output_dir=output_dir,
         max_questions=args.max_questions,
-        target_fps=args.target_fps
+        target_fps=args.target_fps,
+        vlm_model=args.model,
+        enable_descriptions=args.enable_descriptions,
+        system_prompt=args.system_prompt,
+        user_prompt_template=args.user_prompt_template
     )
 
 

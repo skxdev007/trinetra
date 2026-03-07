@@ -1,16 +1,16 @@
 # SHARINGAN: Complete Video Understanding Pipeline
 
-**Last Updated:** March 6, 2026
+**Last Updated:** March 7, 2026
 
-**Version:** 2.0 (with Query Intelligence Layer)
+**Version:** 2.2 (Focused on CLIP + Temporal Reasoning)
 
 ---
 
 ## Overview
 
-SHARINGAN is a proactive video understanding system that processes video once and enables unlimited queries with sub-second response time. The system uses CLIP for visual encoding, multi-scale temporal reasoning for context, and intelligent query routing for accuracy.
+SHARINGAN is a proactive video understanding system that processes video once and enables unlimited queries with sub-second response time. The system uses CLIP for cross-modal visual-text encoding combined with multi-scale temporal reasoning.
 
-**Key Innovation:** Process once, query forever with intelligent query understanding.
+**Key Innovation:** Process once, query forever with intelligent query understanding and temporal context.
 
 ---
 
@@ -738,25 +738,10 @@ graph TD
 - **Storage:** SSD for fast embedding loading
 - **OS:** Linux (best CUDA support)
 
----
+**Last Updated:** March 7, 2026
 
-## Citation
-
-If you use SHARINGAN in your research, please cite:
-
-```bibtex
-@article{sharingan2026,
-  title={SHARINGAN: Proactive Video Understanding with Query Intelligence},
-  author={[Your Name]},
-  journal={arXiv preprint},
-  year={2026}
-}
-```
-
----
-
-**Last Updated:** March 6, 2026
-
-**Version:** 2.0 (Query Intelligence Layer)
+**Version:** 2.2 (Focused on CLIP + Temporal Reasoning)
 
 **Status:** Production-ready with ongoing enhancements
+
+---

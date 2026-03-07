@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "dataset": "TemporalBench Long Video COIN",
+    "model": "siglip",
+    "total_questions": 10,
+    "answered_questions": 10,
+    "correct_answers": 6,
+    "accuracy": 60.0,
+    "total_time": 17.669044256210327,
+    "avg_query_time": 0,
+    "unique_videos_processed": 3,
+    "target_fps": 5.0,
+    "timestamp": "2026-03-07T14:09:56.198229"
+  },
+  "results": []
+}

@@ -53,7 +53,7 @@ class ActionClassifier:
                 "camera pans",
                 "scene change"
             ]
-            print(f"✓ ActionClassifier initialized with {len(self.action_labels)} action labels")
+            print(f"[OK] ActionClassifier initialized with {len(self.action_labels)} action labels")
     
     def _load_videomae_classifier(self):
         """Load VideoMAE model with Kinetics-400 classification head."""
@@ -70,9 +70,9 @@ class ActionClassifier:
             
             # Kinetics-400 has 400 action classes
             num_labels = len(self.videomae_model.config.id2label)
-            print(f"✓ ActionClassifier initialized with Kinetics-400 ({num_labels} action classes)")
+            print(f"[OK] ActionClassifier initialized with Kinetics-400 ({num_labels} action classes)")
         except Exception as e:
-            print(f"⚠ Failed to load VideoMAE classifier: {e}")
+            print(f"[WARN] Failed to load VideoMAE classifier: {e}")
             print(f"  Falling back to generic labels")
             self.use_videomae_classifier = False
             self.action_labels = ["person performs action"]
@@ -128,7 +128,7 @@ class ActionClassifier:
                 return results
                 
             except Exception as e:
-                print(f"⚠ VideoMAE classification failed: {e}")
+                print(f"[WARN] VideoMAE classification failed: {e}")
                 # Fall through to placeholder
         
         # Placeholder fallback

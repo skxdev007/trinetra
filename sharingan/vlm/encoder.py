@@ -20,6 +20,8 @@ class FrameEncoder:
                 - "clip-vit-b32": CLIP ViT-B/32 (default)
                 - "clip-vit-b16": CLIP ViT-B/16
                 - "clip-vit-l14": CLIP ViT-L/14
+                - "siglip-base": SigLIP Base (768D)
+                - "siglip-large": SigLIP Large (1152D)
             device: Device to run on ("cpu", "cuda", or "auto")
 
         Raises:
@@ -44,6 +46,8 @@ class FrameEncoder:
         try:
             if "clip" in self.model_name.lower():
                 self._load_clip_model()
+            elif "siglip" in self.model_name.lower():
+                self._load_siglip_model()
             else:
                 raise EncodingError(f"Unsupported model: {self.model_name}")
         except Exception as e:
@@ -87,9 +91,9 @@ class FrameEncoder:
             if self.device != "cpu" and torch.cuda.is_available():
                 print(f"Step 3: Moving model to {self.device}...")
                 self.model = self.model.to(self.device)
-                print(f"✓ Model successfully loaded on {self.device}")
+                print(f"[OK] Model successfully loaded on {self.device}")
             else:
-                print(f"✓ Model successfully loaded on CPU")
+                print(f"[OK] Model successfully loaded on CPU")
             
             # Get embedding dimension
             dim_map = {"ViT-B/32": 512, "ViT-B/16": 512, "ViT-L/14": 768}
@@ -97,6 +101,53 @@ class FrameEncoder:
 
         except Exception as e:
             raise EncodingError(f"Failed to load CLIP model: {str(e)}")
+
+    def _load_siglip_model(self) -> None:
+        """Load SigLIP model."""
+        try:
+            from transformers import AutoProcessor, AutoModel
+        except ImportError:
+            raise EncodingError(
+                "SigLIP model requires 'transformers' package. "
+                "Install with: pip install transformers"
+            )
+
+        # Map model names to HuggingFace identifiers
+        model_map = {
+            "siglip-base": "google/siglip-base-patch16-224",
+            "siglip-large": "google/siglip-large-patch16-256",
+        }
+
+        hf_model_name = model_map.get(self.model_name, "google/siglip-base-patch16-224")
+
+        try:
+            print(f"Loading SigLIP model {hf_model_name}...")
+            print(f"Target device: {self.device}")
+            
+            print(f"Step 1: Loading processor...")
+            self.preprocess = AutoProcessor.from_pretrained(hf_model_name)
+            
+            print(f"Step 2: Loading model...")
+            self.model = AutoModel.from_pretrained(hf_model_name)
+            self.model.eval()
+            
+            # Move to target device
+            if self.device != "cpu" and torch.cuda.is_available():
+                print(f"Step 3: Moving model to {self.device}...")
+                self.model = self.model.to(self.device)
+                print(f"[OK] Model successfully loaded on {self.device}")
+            else:
+                print(f"[OK] Model successfully loaded on CPU")
+            
+            # Get embedding dimension
+            dim_map = {
+                "google/siglip-base-patch16-224": 768,
+                "google/siglip-large-patch16-256": 1152,
+            }
+            self._embedding_dim = dim_map.get(hf_model_name, 768)
+
+        except Exception as e:
+            raise EncodingError(f"Failed to load SigLIP model: {str(e)}")
 
     @torch.no_grad()
     def encode_frame(self, frame: np.ndarray) -> np.ndarray:
@@ -119,13 +170,23 @@ class FrameEncoder:
             pil_image = Image.fromarray(frame)
 
             # Preprocess and encode
-            image_tensor = self.preprocess(pil_image).unsqueeze(0).to(self.device)
+            if "clip" in self.model_name.lower():
+                image_tensor = self.preprocess(pil_image).unsqueeze(0).to(self.device)
+            elif "siglip" in self.model_name.lower():
+                inputs = self.preprocess(images=pil_image, return_tensors="pt")
+                image_tensor = inputs["pixel_values"].to(self.device)
+            else:
+                raise EncodingError(f"Preprocessing not implemented for {self.model_name}")
 
-            # Encode with CLIP
+            # Encode with CLIP or SigLIP
             if "clip" in self.model_name.lower():
                 embedding = self.model.encode_image(image_tensor)
                 # Normalize embedding
                 embedding = F.normalize(embedding, dim=-1)
+            elif "siglip" in self.model_name.lower():
+                outputs = self.model.get_image_features(pixel_values=image_tensor)
+                # Normalize embedding
+                embedding = F.normalize(outputs, dim=-1)
             else:
                 raise EncodingError(f"Encoding not implemented for {self.model_name}")
 
@@ -161,13 +222,23 @@ class FrameEncoder:
                 pil_images.append(Image.fromarray(frame))
 
             # Preprocess batch
-            image_tensors = torch.stack([
-                self.preprocess(img) for img in pil_images
-            ]).to(self.device)
+            if "clip" in self.model_name.lower():
+                image_tensors = torch.stack([
+                    self.preprocess(img) for img in pil_images
+                ]).to(self.device)
+            elif "siglip" in self.model_name.lower():
+                inputs = self.preprocess(images=pil_images, return_tensors="pt")
+                image_tensors = inputs["pixel_values"].to(self.device)
+            else:
+                raise EncodingError(f"Batch preprocessing not implemented for {self.model_name}")
 
             # Encode batch
             if "clip" in self.model_name.lower():
                 embeddings = self.model.encode_image(image_tensors)
+                # Normalize embeddings
+                embeddings = F.normalize(embeddings, dim=-1)
+            elif "siglip" in self.model_name.lower():
+                embeddings = self.model.get_image_features(pixel_values=image_tensors)
                 # Normalize embeddings
                 embeddings = F.normalize(embeddings, dim=-1)
             else:
@@ -207,6 +278,18 @@ class FrameEncoder:
                 text_tokens = clip.tokenize([text], truncate=True).to(self.device)
                 with torch.no_grad():
                     text_embedding = self.model.encode_text(text_tokens)
+                    text_embedding = F.normalize(text_embedding, dim=-1)
+                return text_embedding.cpu().numpy().squeeze()
+            elif "siglip" in self.model_name.lower():
+                # Truncate text to fit SigLIP's token limit
+                max_chars = 300
+                if len(text) > max_chars:
+                    text = text[:max_chars-3] + "..."
+                
+                inputs = self.preprocess(text=[text], return_tensors="pt", padding="max_length", truncation=True)
+                inputs = {k: v.to(self.device) for k, v in inputs.items()}
+                with torch.no_grad():
+                    text_embedding = self.model.get_text_features(**inputs)
                     text_embedding = F.normalize(text_embedding, dim=-1)
                 return text_embedding.cpu().numpy().squeeze()
             else:
