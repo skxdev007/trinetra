@@ -78,7 +78,7 @@ def extract_answer_from_response(response: str, question: str) -> str:
         return 'B'
     
     # Default to A if completely unclear
-    print(f"  ⚠️  Could not extract clear answer from: '{response[:100]}...'")
+    print(f"    Could not extract clear answer from: '{response[:100]}...'")
     return 'A'
 
 
@@ -109,7 +109,7 @@ def process_video_and_answer(
             'results': results,
             'process_time': process_time
         }
-        print(f"  >>> ✓ Video processed in {process_time:.1f}s")
+        print(f"  >>>  Video processed in {process_time:.1f}s")
         print(f"  >>> Events detected: {len(results.get('events', []))}")
         print(f"  >>> Total videos processed so far: {len(processed_videos)}")
     else:
@@ -154,7 +154,7 @@ def process_video_and_answer(
             # Get the LLM directly and set custom prompts
             if not processor._llm:
                 from sharingan.chat import VideoLLM
-                print(f"🤖 Initializing Qwen2.5-1.5B-Instruct...")
+                print(f" Initializing Qwen2.5-1.5B-Instruct...")
                 processor._llm = VideoLLM(model_name='qwen-1.5b', device=processor.device)
             
             # Use custom prompts
@@ -173,7 +173,7 @@ def process_video_and_answer(
             
     except Exception as e:
         # Fallback to non-LLM response if LLM fails
-        print(f"  ⚠️  LLM failed, using fallback: {e}")
+        print(f"    LLM failed, using fallback: {e}")
         response = processor.chat(question, use_llm=False)
     query_time = time.time() - start_time
     
@@ -188,8 +188,9 @@ def run_benchmark(
     output_dir: Path,
     max_questions: int = None,
     target_fps: float = 5.0,
-    vlm_model: str = 'clip',
+    vlm_model: str = 'siglip-so400m',
     enable_descriptions: bool = True,
+    delta_captioning: bool = True,
     system_prompt: str = None,  # Added parameter
     user_prompt_template: str = None  # Added parameter
 ):
@@ -208,18 +209,22 @@ def run_benchmark(
     
     # Initialize processor
     print(f"\nInitializing VideoProcessor (target_fps={target_fps})...")
+    print(f"Vision Model: {vlm_model.upper()}")
     if enable_descriptions:
-        print(f"📝 Frame descriptions: ENABLED (SmolVLM will generate descriptions)")
+        if delta_captioning:
+            print(f"Frame descriptions: ENABLED with Delta-Captioning (InternVL2.5 - 6x faster)")
+        else:
+            print(f"Frame descriptions: ENABLED (InternVL2.5 will caption all frames)")
     else:
-        print(f"📝 Frame descriptions: DISABLED (using 'Content detected')")
+        print(f"Frame descriptions: DISABLED (using 'Content detected')")
     print(f"Checking GPU availability...")
     import torch
     if torch.cuda.is_available():
-        print(f"✓ GPU detected: {torch.cuda.get_device_name(0)}")
-        print(f"✓ CUDA version: {torch.version.cuda}")
-        print(f"✓ GPU will be used for processing")
+        print(f"GPU detected: {torch.cuda.get_device_name(0)}")
+        print(f"CUDA version: {torch.version.cuda}")
+        print(f"GPU will be used for processing")
     else:
-        print(f"⚠ No GPU detected - using CPU (this will be slower)")
+        print(f"No GPU detected - using CPU (this will be slower)")
     
     processor = VideoProcessor(
         vlm_model=vlm_model,  # Use parameter instead of hardcoded 'clip'
@@ -227,6 +232,8 @@ def run_benchmark(
         target_fps=target_fps,
         enable_temporal=True,
         enable_descriptions=enable_descriptions,
+        lazy_descriptions=False,  # Generate descriptions during processing
+        delta_captioning=delta_captioning,  # Only caption keyframes (6x faster)
         batch_size=32
     )
     
@@ -281,7 +288,7 @@ def run_benchmark(
             
             print(f"  Question: {question[:100]}...")
             print(f"  Response: {response[:150]}...")
-            print(f"  Predicted: {predicted_answer} | Ground Truth: {ground_truth} | {'✓' if is_correct else '✗'}")
+            print(f"  Predicted: {predicted_answer} | Ground Truth: {ground_truth} | {'' if is_correct else ''}")
             print(f"  Query time: {query_time:.3f}s")
             print(f"  Running accuracy: {accuracy:.2f}% ({correct}/{total})")
             
@@ -333,7 +340,7 @@ def run_benchmark(
             'results': results
         }, f, indent=2)
     
-    print(f"\n✓ Detailed results saved to: {results_json}")
+    print(f"\n Detailed results saved to: {results_json}")
     
     # Save summary as markdown
     save_summary_markdown(
@@ -406,7 +413,7 @@ def save_summary_markdown(
             question_short = result['question'][:60].replace('\n', ' ') + "..."
             gt = result['ground_truth']
             pred = result['predicted']
-            correct_mark = '✓' if result['correct'] else '✗'
+            correct_mark = '' if result['correct'] else ''
             query_time = result['query_time']
             
             f.write(f"| {i} | {video_name} | {question_short} | {gt} | {pred} | {correct_mark} | {query_time:.3f}s |\n")
@@ -417,7 +424,7 @@ def save_summary_markdown(
         f.write("\n---\n\n")
         f.write(f"*Generated by SHARINGAN TemporalBench Benchmark - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*\n")
     
-    print(f"✓ Summary saved to: {output_file}")
+    print(f" Summary saved to: {output_file}")
 
 
 def main():
@@ -438,13 +445,17 @@ def main():
                        help='Maximum number of questions to process (for testing)')
     parser.add_argument('--target-fps', type=float, default=5.0,
                        help='Target FPS for video processing')
-    parser.add_argument('--model', type=str, default='clip',
-                       choices=['clip', 'siglip', 'siglip-base', 'siglip-large', 'smolvlm'],
-                       help='Vision model to use (default: clip)')
+    parser.add_argument('--model', type=str, default='siglip-so400m',
+                       choices=['clip', 'siglip', 'siglip-base', 'siglip-large', 'siglip-so400m', 'smolvlm'],
+                       help='Vision model to use (default: siglip-so400m - BEST)')
     parser.add_argument('--enable-descriptions', action='store_true', default=True,
-                       help='Generate frame descriptions using SmolVLM (default: True)')
+                       help='Generate frame descriptions using InternVL2.5 (default: True)')
     parser.add_argument('--no-descriptions', dest='enable_descriptions', action='store_false',
                        help='Disable frame descriptions (faster but less accurate)')
+    parser.add_argument('--delta-captioning', action='store_true', default=True,
+                       help='Only caption keyframes (6x faster, default: True)')
+    parser.add_argument('--no-delta-captioning', dest='delta_captioning', action='store_false',
+                       help='Caption all frames (slower but more detailed)')
     parser.add_argument('--system-prompt', type=str, default=None,
                        help='Custom system prompt for LLM')
     parser.add_argument('--user-prompt-template', type=str, default=None,
@@ -478,6 +489,7 @@ def main():
         target_fps=args.target_fps,
         vlm_model=args.model,
         enable_descriptions=args.enable_descriptions,
+        delta_captioning=args.delta_captioning,
         system_prompt=args.system_prompt,
         user_prompt_template=args.user_prompt_template
     )

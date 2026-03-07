@@ -1,16 +1,16 @@
 {
   "metadata": {
     "dataset": "TemporalBench Long Video COIN",
-    "model": "clip",
+    "model": "siglip-base",
     "total_questions": 20,
     "answered_questions": 20,
-    "correct_answers": 11,
-    "accuracy": 55.00000000000001,
-    "total_time": 98.51149249076843,
-    "avg_query_time": 0.8995607376098633,
+    "correct_answers": 12,
+    "accuracy": 60.0,
+    "total_time": 276.12683629989624,
+    "avg_query_time": 7.823305165767669,
     "unique_videos_processed": 6,
     "target_fps": 5.0,
-    "timestamp": "2026-03-07T15:29:40.736123"
+    "timestamp": "2026-03-07T16:07:24.161736"
   },
   "results": [
     {
@@ -22,7 +22,7 @@
       "predicted": "A",
       "response": "A",
       "correct": false,
-      "query_time": 10.242413520812988
+      "query_time": 31.81943988800049
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_2",
@@ -33,7 +33,7 @@
       "predicted": "A",
       "response": "A",
       "correct": false,
-      "query_time": 0.380598783493042
+      "query_time": 11.727072715759277
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_3",
@@ -44,7 +44,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 0.3837745189666748
+      "query_time": 10.29323148727417
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_4",
@@ -55,7 +55,7 @@
       "predicted": "A",
       "response": "A",
       "correct": false,
-      "query_time": 0.4050595760345459
+      "query_time": 9.861114263534546
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_1",
@@ -66,7 +66,7 @@
       "predicted": "A",
       "response": "A",
       "correct": false,
-      "query_time": 0.40151405334472656
+      "query_time": 10.712026119232178
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_2",
@@ -77,7 +77,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 0.3913755416870117
+      "query_time": 11.459081649780273
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_3",
@@ -88,7 +88,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 0.3978593349456787
+      "query_time": 7.9448535442352295
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_4",
@@ -99,7 +99,7 @@
       "predicted": "A",
       "response": "A",
       "correct": false,
-      "query_time": 0.37619853019714355
+      "query_time": 4.068041563034058
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_1",
@@ -107,10 +107,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_94.0_end_110.0.mp4",
       "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches off the bulb. \nB. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "B",
-      "predicted": "A",
-      "response": "A",
-      "correct": false,
-      "query_time": 0.4049215316772461
+      "predicted": "B",
+      "response": "B",
+      "correct": true,
+      "query_time": 3.873039722442627
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_2",
@@ -121,7 +121,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 0.3991882801055908
+      "query_time": 3.808555841445923
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_3",
@@ -132,7 +132,7 @@
       "predicted": "B",
       "response": "B",
       "correct": true,
-      "query_time": 0.3912031650543213
+      "query_time": 8.918644666671753
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_4",
@@ -140,10 +140,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_94.0_end_110.0.mp4",
       "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nB. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and loosens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb. \nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "A",
-      "predicted": "B",
-      "response": "B",
-      "correct": false,
-      "query_time": 0.3748793601989746
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 10.63282561302185
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_133.0_end_161.0.mp4_1",
@@ -154,7 +154,7 @@
       "predicted": "A",
       "response": "A",
       "correct": false,
-      "query_time": 0.437863826751709
+      "query_time": 6.49826455116272
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_133.0_end_161.0.mp4_2",
@@ -165,7 +165,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 0.3882725238800049
+      "query_time": 3.977020502090454
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_133.0_end_161.0.mp4_3",
@@ -176,7 +176,7 @@
       "predicted": "A",
       "response": "A",
       "correct": false,
-      "query_time": 0.40676164627075195
+      "query_time": 3.8908963203430176
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_1",
@@ -187,7 +187,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 0.46344780921936035
+      "query_time": 3.449873447418213
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_2",
@@ -198,7 +198,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 0.39382171630859375
+      "query_time": 3.3662984371185303
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_3",
@@ -209,7 +209,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 0.4632093906402588
+      "query_time": 3.2837696075439453
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_4",
@@ -220,7 +220,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 0.45900869369506836
+      "query_time": 3.3019282817840576
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_143.0.mp4_1",
@@ -228,10 +228,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\hNuX5Tthg_U_start_74.0_end_143.0.mp4",
       "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and then both hands are seen to use spoons to mix it around. Then some meat is put in the bowl. In the end, the camera zooms in closer onto the bowl A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up.\nB. Both hands are seen to use spoons to mix the marinade around, then some meat is put in the bowl. Using right hand to pour some oil into the marinade. In the end, the camera zooms in closer onto the bowl. A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "A",
-      "predicted": "A",
-      "response": "A",
-      "correct": true,
-      "query_time": 0.4298429489135742
+      "predicted": "B",
+      "response": "B",
+      "correct": false,
+      "query_time": 3.580125093460083
     }
   ]
 }

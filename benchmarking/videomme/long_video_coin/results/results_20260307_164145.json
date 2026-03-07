@@ -1,16 +1,16 @@
 {
   "metadata": {
     "dataset": "TemporalBench Long Video COIN",
-    "model": "clip",
+    "model": "siglip-base",
     "total_questions": 20,
     "answered_questions": 20,
-    "correct_answers": 11,
-    "accuracy": 55.00000000000001,
-    "total_time": 135.72348475456238,
-    "avg_query_time": 6.764540696144104,
+    "correct_answers": 12,
+    "accuracy": 60.0,
+    "total_time": 195.1998610496521,
+    "avg_query_time": 4.966032242774963,
     "unique_videos_processed": 6,
     "target_fps": 5.0,
-    "timestamp": "2026-03-07T15:47:55.121044"
+    "timestamp": "2026-03-07T16:41:45.960201"
   },
   "results": [
     {
@@ -22,7 +22,7 @@
       "predicted": "A",
       "response": "A",
       "correct": false,
-      "query_time": 20.745688915252686
+      "query_time": 19.81022334098816
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_2",
@@ -30,10 +30,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_110.0.mp4",
       "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches off the bulb. \nB. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "B",
-      "predicted": "B",
-      "response": "B",
-      "correct": true,
-      "query_time": 6.081831693649292
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 4.074049949645996
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_3",
@@ -44,7 +44,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 5.879417181015015
+      "query_time": 4.003167152404785
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_110.0.mp4_4",
@@ -55,7 +55,7 @@
       "predicted": "A",
       "response": "A",
       "correct": false,
-      "query_time": 6.44982647895813
+      "query_time": 3.927872657775879
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_1",
@@ -63,10 +63,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_99.0.mp4",
       "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold a screwdriver, They remove the right and then just use the left to remove a screen from the base of a light bulb.  A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nB. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "B",
-      "predicted": "B",
-      "response": "B",
-      "correct": true,
-      "query_time": 6.0566465854644775
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 4.699028015136719
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_2",
@@ -77,7 +77,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 6.184938192367554
+      "query_time": 4.342374801635742
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_3",
@@ -88,7 +88,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 6.0105578899383545
+      "query_time": 4.707354307174683
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_11.0_end_99.0.mp4_4",
@@ -96,10 +96,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_11.0_end_99.0.mp4",
       "question": "Which caption best describes this video?\nA. Someone using their right and left hand to hold a screwdriver, They remove the left and then just use the left to remove a screen from the base of a light bulb.  A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nB. Someone using their right and left hand to hold to a screwdriver, They remove the left and then just use the right to remove a screen from the base of a light bulb. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "B",
-      "predicted": "B",
-      "response": "B",
-      "correct": true,
-      "query_time": 5.918057441711426
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 4.897936105728149
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_1",
@@ -110,7 +110,7 @@
       "predicted": "B",
       "response": "B",
       "correct": true,
-      "query_time": 6.043447256088257
+      "query_time": 4.48841667175293
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_2",
@@ -121,7 +121,7 @@
       "predicted": "A",
       "response": "A",
       "correct": true,
-      "query_time": 6.110247373580933
+      "query_time": 4.560508966445923
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_3",
@@ -129,10 +129,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_94.0_end_110.0.mp4",
       "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person pulls the string with the left hand and switches on the bulb. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand.\nB. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "B",
-      "predicted": "B",
-      "response": "B",
-      "correct": true,
-      "query_time": 6.082810640335083
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 4.3115150928497314
     },
     {
       "idx": "long_video/COIN/XY-aOfWBDSs_start_94.0_end_110.0.mp4_4",
@@ -140,10 +140,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\XY-aOfWBDSs_start_94.0_end_110.0.mp4",
       "question": "Which caption best describes this video?\nA. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and tightens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb.\nB. A person grabs a black wire with their right hand and a fixture that looks like a light fixture with their left hand and pushes the black wire onto the gold connector on the back of the fixture. The person holds the screwdriver in the right hand and loosens the screw while holding the socket with the left hand. The person pulls the string with the left hand and switches on the bulb. \nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "A",
-      "predicted": "A",
-      "response": "A",
-      "correct": true,
-      "query_time": 6.010810852050781
+      "predicted": "B",
+      "response": "B",
+      "correct": false,
+      "query_time": 4.0614495277404785
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_133.0_end_161.0.mp4_1",
@@ -151,10 +151,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\hNuX5Tthg_U_start_133.0_end_161.0.mp4",
       "question": "Which caption best describes this video?\nA. A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up. Someone is holding meat in the right hand and slowly turning it so you can see the cooked product. Then, removing some meat on a metal skewer from over an open flame grill. A still picture of the meat in a plate is shown.\nB. A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up. Someone removing some meat on a metal skewer from over a open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "B",
-      "predicted": "A",
-      "response": "A",
-      "correct": false,
-      "query_time": 6.135234117507935
+      "predicted": "B",
+      "response": "B",
+      "correct": true,
+      "query_time": 4.372239351272583
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_133.0_end_161.0.mp4_2",
@@ -162,10 +162,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\hNuX5Tthg_U_start_133.0_end_161.0.mp4",
       "question": "Which caption best describes this video?\nA. A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up. Someone removing some meat on a metal skewer from over a open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product.\nB. A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up. Someone adding some meat on a metal skewer over an open flame grill. A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product. \nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "A",
-      "predicted": "B",
-      "response": "B",
-      "correct": false,
-      "query_time": 6.029341220855713
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 4.283958435058594
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_133.0_end_161.0.mp4_3",
@@ -173,10 +173,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\hNuX5Tthg_U_start_133.0_end_161.0.mp4",
       "question": "Which caption best describes this video?\nA. The camera zooms in onto a part of the skewer. A few pieces of meat are being grilled over a charcoal pit on skewers. The edges of the meat begin to crisp up. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. Someone removing some meat on a metal skewer from over a open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product.\nB. A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up. Someone removing some meat on a metal skewer from over a open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "B",
-      "predicted": "B",
-      "response": "B",
-      "correct": true,
-      "query_time": 6.328629970550537
+      "predicted": "A",
+      "response": "A",
+      "correct": false,
+      "query_time": 4.283912897109985
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_1",
@@ -184,10 +184,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\hNuX5Tthg_U_start_74.0_end_161.0.mp4",
       "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and then both hands are seen to use spoons to mix it around. Then some meat is put in the bowl. In the end, the camera zooms in closer onto the bowl A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up. Someone removing some meat on a metal skewer from over a open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product.\nB. Using right hand to pour some oil into the marinade and then both hands are seen to use spoons to mix it around. Then some meat is put in the bowl. In the end, the camera zooms in closer onto the bowl The camera zooms in onto a part of the skewer. A few pieces of meat are being grilled over a charcoal pit on skewers. The edges of the meat begin to crisp up. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. Someone removing some meat on a metal skewer from over a open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "A",
-      "predicted": "B",
-      "response": "B",
-      "correct": false,
-      "query_time": 5.878148794174194
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 3.8355910778045654
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_2",
@@ -195,10 +195,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\hNuX5Tthg_U_start_74.0_end_161.0.mp4",
       "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and then both hands are seen to use spoons to mix it around. Then some meat is put in the bowl. In the end, the camera zooms in closer onto the bowl Someone removing some meat on a metal skewer from over a open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product.\nB. Using right hand to pour some oil into the marinade and then both hands are seen to use spoons to mix it around. Then some meat is put in the bowl. In the end, the camera zooms out farther from the bowl  Someone removing some meat on a metal skewer from over a open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "A",
-      "predicted": "B",
-      "response": "B",
-      "correct": false,
-      "query_time": 5.623275518417358
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 3.530362606048584
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_3",
@@ -206,10 +206,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\hNuX5Tthg_U_start_74.0_end_161.0.mp4",
       "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and then both hands are seen to use spoons to mix it around. Then some meat is put in the bowl. In the end, the camera zooms in closer onto the bowl A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up. Someone removing some meat on a metal skewer from over a open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product.\nB. Using right hand to pour some oil into the marinade and then both hands are seen to use spoons to mix it around. Then some meat is put in the bowl. In the end, the camera zooms in closer onto the bowl A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up. Someone adding some meat on a metal skewer over an open flame grill. A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product. \nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "A",
-      "predicted": "B",
-      "response": "B",
-      "correct": false,
-      "query_time": 5.685030221939087
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 3.6888253688812256
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_161.0.mp4_4",
@@ -217,10 +217,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\hNuX5Tthg_U_start_74.0_end_161.0.mp4",
       "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and then both hands are seen to use spoons to mix it around. Then some meat is put in the bowl. In the end, the camera zooms in closer onto the bowl A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up. Someone removing some meat on a metal skewer from over a open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and slowly turning it so you can see the cooked product.\nB. Using right hand to pour some oil into the marinade and then both hands are seen to use spoons to mix it around. Then some meat is put in the bowl. In the end, the camera zooms in closer onto the bowl A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up. Someone removing some meat on a metal skewer from over an open flame grill.  A still picture of the meat in a plate is shown. Then holding it in right hand and quickly turning it so you can see the cooked product. \nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "A",
-      "predicted": "B",
-      "response": "B",
-      "correct": false,
-      "query_time": 6.23673415184021
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 3.6880509853363037
     },
     {
       "idx": "long_video/COIN/hNuX5Tthg_U_start_74.0_end_143.0.mp4_1",
@@ -228,10 +228,10 @@
       "video_path": "benchmarking\\videomme\\long_video_coin\\dataset\\long_video\\COIN\\hNuX5Tthg_U_start_74.0_end_143.0.mp4",
       "question": "Which caption best describes this video?\nA. Using right hand to pour some oil into the marinade and then both hands are seen to use spoons to mix it around. Then some meat is put in the bowl. In the end, the camera zooms in closer onto the bowl A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up.\nB. Both hands are seen to use spoons to mix the marinade around, then some meat is put in the bowl. Using right hand to pour some oil into the marinade. In the end, the camera zooms in closer onto the bowl. A few pieces of meat are being grilled over a charcoal pit on skewers. The camera zooms in onto a part of the skewer. Smoke is coming up from the coals and the meat cooks and its fat and juices fall into the coal. The edges of the meat begin to crisp up.\nAnswer with the option's letter from the given choices directly.",
       "ground_truth": "A",
-      "predicted": "B",
-      "response": "B",
-      "correct": false,
-      "query_time": 5.800139427185059
+      "predicted": "A",
+      "response": "A",
+      "correct": true,
+      "query_time": 3.753807544708252
     }
   ]
 }
