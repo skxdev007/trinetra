@@ -144,15 +144,24 @@ class VideoLLM:
             system_prompt = (
                 "You are a precise video temporal reasoning expert. "
                 "Your task is to determine the CORRECT ORDER of events.\n\n"
-                "CRITICAL INSTRUCTIONS:\n"
-                "1. READ the timeline carefully - it shows events in CHRONOLOGICAL ORDER\n"
-                "2. IDENTIFY key state changes (light ON/OFF, actions performed)\n"
-                "3. COMPARE both options against the timeline:\n"
-                "   - Does option A match the sequence?\n"
-                "   - Does option B match the sequence?\n"
-                "4. The ONLY difference is usually the ORDER of events\n"
-                "5. Pay attention to: FIRST, THEN, FINALLY markers\n"
-                "6. IMPORTANT: If context is ambiguous or unclear, default to option A\n\n"
+                "TEMPORAL REASONING PROTOCOL:\n"
+                "1. READ the EVENT SEQUENCE - events are listed in CHRONOLOGICAL ORDER (earliest to latest)\n"
+                "2. IDENTIFY the timestamps - earlier timestamp = happened FIRST\n"
+                "3. EXTRACT key attributes from each event:\n"
+                "   - HAND: Which hand? (left/right/both)\n"
+                "   - ACTION: What action? (tightening/loosening/pushing/pulling)\n"
+                "   - DIRECTION: Which way? (clockwise/counterclockwise/onto/off)\n"
+                "   - STATE: What state? (light ON/OFF, screw tight/loose, wire connected/disconnected)\n"
+                "   - COUNT: How many times? (first/second/third)\n"
+                "4. COMPARE both options against the timeline:\n"
+                "   - For 'THEN' questions: Check if Event A timestamp < Event B timestamp\n"
+                "   - For 'BEFORE/AFTER' questions: Compare timestamps directly\n"
+                "   - For 'FIRST/LAST' questions: Use Event 1 (earliest) or Event N (latest)\n"
+                "5. MATCH the sequence:\n"
+                "   - Does option A match the chronological order?\n"
+                "   - Does option B match the chronological order?\n"
+                "6. The ONLY difference is usually ORDER, DIRECTION, STATE, or HAND\n"
+                "7. Pay attention to: FIRST, THEN, FINALLY, BEFORE, AFTER markers\n\n"
                 "RESPOND WITH ONLY THE LETTER (A or B). NO EXPLANATION."
             )
             
@@ -226,13 +235,16 @@ class VideoLLM:
     
     def _build_context(self, video_context: List[Dict]) -> str:
         """
-        Build STRUCTURED SEQUENCE context for temporal ordering questions.
+        Build EVENT-GROUPED context for temporal ordering questions.
         
-        Key improvements:
-        1. STEP-by-STEP format (not just timestamps)
-        2. Explicit state transitions (OFF→ON, tight→loose)
-        3. Action verbs emphasized (TIGHTENS, LOOSENS, PULLS, PUSHES)
-        4. Clear sequence flow with arrows
+        Key improvements over frame-level:
+        1. Group consecutive similar frames into events (reduces redundancy)
+        2. Emphasize action boundaries (when things START and STOP)
+        3. Show event duration (helps distinguish brief vs sustained actions)
+        4. Clear transitions between different actions
+        
+        Conservative grouping: Only group frames with IDENTICAL actions
+        to avoid losing important temporal details.
         """
         if not video_context:
             return "No relevant video segments found."
@@ -240,61 +252,61 @@ class VideoLLM:
         # Sort by timestamp for temporal ordering
         sorted_context = sorted(video_context, key=lambda x: x.get('timestamp', 0))
         
+        # Group frames into events
+        events = self._group_frames_into_events(sorted_context[:10])
+        
         context_parts = []
-        context_parts.append("📹 VIDEO SEQUENCE (step-by-step):")
+        context_parts.append("📹 VIDEO SEQUENCE (event-based):")
         context_parts.append("=" * 70)
         
-        # Build STEP-by-STEP sequence (not just frame descriptions)
-        num_segments = min(10, len(sorted_context))
-        prev_desc = ""
-        
-        for i, segment in enumerate(sorted_context[:num_segments], 1):
-            timestamp = segment.get('timestamp', 0)
-            description = segment.get('description', 'Content detected')
+        # Build EVENT-by-EVENT sequence
+        for i, event in enumerate(events, 1):
+            start_time = event['start_timestamp']
+            end_time = event['end_timestamp']
+            duration = end_time - start_time
+            action = event['action']
+            frame_count = event['frame_count']
             
-            mins = int(timestamp // 60)
-            secs = int(timestamp % 60)
-            time_str = f"{mins}:{secs:02d}"
+            # Format timestamps
+            start_mins = int(start_time // 60)
+            start_secs = int(start_time % 60)
+            end_mins = int(end_time // 60)
+            end_secs = int(end_time % 60)
             
-            # Extract key action and state
-            action = self._extract_key_action(description)
-            state = self._extract_state(description)
-            
-            # Detect state change from previous frame
-            state_change = self._detect_state_change(prev_desc, description)
-            
-            # Build STEP format
-            if i == 1:
-                step_text = f"STEP 1 [{time_str}]: {action}"
+            # Build event text
+            if frame_count == 1:
+                # Single frame = brief action
+                event_text = f"EVENT {i} [{start_mins}:{start_secs:02d}]: {action}"
             else:
-                step_text = f"STEP {i} [{time_str}]: {action}"
+                # Multiple frames = sustained action
+                event_text = f"EVENT {i} [{start_mins}:{start_secs:02d}-{end_mins}:{end_secs:02d}]: {action} ({duration:.1f}s, {frame_count} frames)"
             
-            # Add state if important
-            if state:
-                step_text += f" ({state})"
+            # Add state change marker if present
+            if event.get('state_change'):
+                event_text += f" ⚡ {event['state_change']}"
             
-            # Add state change marker
-            if state_change:
-                step_text += f" ⚡ {state_change}"
+            context_parts.append(event_text)
             
-            context_parts.append(step_text)
-            
-            # Add arrow between steps
-            if i < num_segments:
+            # Add arrow between events
+            if i < len(events):
                 context_parts.append("         ↓")
-            
-            prev_desc = description
         
         context_parts.append("=" * 70)
         
         # Add critical sequence summary
-        context_parts.append("\n🎯 SEQUENCE SUMMARY:")
-        sequence_summary = self._build_sequence_summary(sorted_context[:num_segments])
-        context_parts.append(f"  {sequence_summary}")
+        context_parts.append("\n🎯 ACTION SEQUENCE:")
+        action_sequence = " → ".join([e['action_short'] for e in events])
+        context_parts.append(f"  {action_sequence}")
+        
+        # Add timing summary
+        context_parts.append("\n⏱️ TIMING:")
+        for i, event in enumerate(events, 1):
+            duration = event['end_timestamp'] - event['start_timestamp']
+            context_parts.append(f"  • Event {i}: {duration:.1f}s ({event['frame_count']} frames)")
         
         # Add state transitions
         context_parts.append("\n⚡ STATE TRANSITIONS:")
-        transitions = self._identify_state_changes(sorted_context[:num_segments])
+        transitions = [e['state_change'] for e in events if e.get('state_change')]
         if transitions:
             for trans in transitions:
                 context_parts.append(f"  • {trans}")
@@ -302,6 +314,154 @@ class VideoLLM:
             context_parts.append("  • No major state changes detected")
         
         return "\n".join(context_parts)
+    
+    def _group_frames_into_events(self, segments: List[Dict]) -> List[Dict]:
+        """
+        Group consecutive frames with similar actions into events.
+        
+        Conservative grouping strategy:
+        - Only group frames with VERY similar actions (>80% word overlap)
+        - Preserve temporal boundaries (don't merge distant frames)
+        - Keep state changes as separate events
+        
+        Returns list of events with:
+        - start_timestamp, end_timestamp
+        - action (full description)
+        - action_short (verb only, for summary)
+        - frame_count
+        - state_change (if any)
+        """
+        if not segments:
+            return []
+        
+        events = []
+        current_event = None
+        
+        for seg in segments:
+            timestamp = seg.get('timestamp', 0)
+            description = seg.get('description', 'Content detected')
+            action = self._extract_key_action(description)
+            action_short = self._extract_action_short(description)
+            state_change = ""
+            
+            if current_event is None:
+                # Start first event
+                current_event = {
+                    'start_timestamp': timestamp,
+                    'end_timestamp': timestamp,
+                    'action': action,
+                    'action_short': action_short,
+                    'frame_count': 1,
+                    'frames': [seg],
+                    'state_change': ""
+                }
+            else:
+                # Check if this frame continues the current event
+                prev_action_short = current_event['action_short']
+                time_gap = timestamp - current_event['end_timestamp']
+                
+                # Group if: same action AND close in time (< 10s gap)
+                if self._is_same_action(prev_action_short, action_short) and time_gap < 10:
+                    # Continue current event
+                    current_event['end_timestamp'] = timestamp
+                    current_event['frame_count'] += 1
+                    current_event['frames'].append(seg)
+                else:
+                    # Action changed or time gap too large
+                    # Detect state change between events
+                    if current_event['frames'] and seg:
+                        prev_desc = current_event['frames'][-1].get('description', '')
+                        curr_desc = description
+                        state_change = self._detect_state_change(prev_desc, curr_desc)
+                    
+                    # Save current event
+                    events.append(current_event)
+                    
+                    # Start new event
+                    current_event = {
+                        'start_timestamp': timestamp,
+                        'end_timestamp': timestamp,
+                        'action': action,
+                        'action_short': action_short,
+                        'frame_count': 1,
+                        'frames': [seg],
+                        'state_change': state_change
+                    }
+        
+        # Don't forget the last event
+        if current_event:
+            events.append(current_event)
+        
+        return events
+    
+    def _extract_action_short(self, description: str) -> str:
+        """
+        Extract just the main action verb from description.
+        Used for grouping similar actions.
+        
+        Examples:
+        - "Person TIGHTENS screw with screwdriver" → "TIGHTEN"
+        - "Hand PULLS string to turn on light" → "PULL"
+        - "Light turns ON" → "LIGHT ON"
+        """
+        desc_upper = description.upper()
+        
+        # Action verbs to look for
+        action_verbs = [
+            'TIGHTEN', 'LOOSEN', 'PULL', 'PUSH', 'TURN', 'TWIST',
+            'CONNECT', 'DISCONNECT', 'ATTACH', 'DETACH', 'REMOVE',
+            'INSERT', 'EXTRACT', 'POUR', 'MIX', 'CUT', 'SLICE',
+            'GRILL', 'COOK', 'ADD', 'ZOOM', 'HOLD', 'GRAB'
+        ]
+        
+        for verb in action_verbs:
+            if verb in desc_upper:
+                return verb
+        
+        # State changes
+        if 'LIGHT' in desc_upper or 'BULB' in desc_upper:
+            if 'ON' in desc_upper or 'SWITCH ON' in desc_upper:
+                return 'LIGHT ON'
+            elif 'OFF' in desc_upper or 'SWITCH OFF' in desc_upper:
+                return 'LIGHT OFF'
+        
+        # Fallback: return first 2-3 words
+        words = description.split()
+        if len(words) >= 2:
+            return ' '.join(words[:2]).upper()
+        return description[:20].upper()
+    
+    def _is_same_action(self, action1: str, action2: str) -> bool:
+        """
+        Check if two action descriptions represent the same action.
+        Conservative: only return True if very similar.
+        """
+        if not action1 or not action2:
+            return False
+        
+        # Exact match
+        if action1 == action2:
+            return True
+        
+        # Check if one contains the other (for variations)
+        a1 = action1.upper().strip()
+        a2 = action2.upper().strip()
+        
+        if a1 in a2 or a2 in a1:
+            return True
+        
+        # Check word overlap (>80% similar)
+        words1 = set(a1.split())
+        words2 = set(a2.split())
+        
+        if not words1 or not words2:
+            return False
+        
+        overlap = len(words1 & words2)
+        total = len(words1 | words2)
+        similarity = overlap / total if total > 0 else 0
+        
+        return similarity > 0.8
     
     def _extract_key_action(self, description: str) -> str:
         """Extract the key action verb from description."""

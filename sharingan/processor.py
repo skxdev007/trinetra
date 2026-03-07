@@ -105,7 +105,10 @@ class VideoProcessor:
         lazy_descriptions: bool = True,  # SMART: Generate descriptions only for retrieved frames
         delta_captioning: bool = False,  # Disabled: lazy is better
         batch_size: int = 32,
-        cache_dir: str = 'cache'
+        cache_dir: str = 'cache',
+        internvl_model_size: str = '4b',
+        internvl_use_4bit: bool = True,
+        caption_prompt: str = None
     ):
         """
         Initialize video processor.
@@ -118,9 +121,12 @@ class VideoProcessor:
             enable_tracking: Enable entity tracking
             enable_descriptions: Generate frame descriptions using InternVL/SmolVLM (default: True)
             lazy_descriptions: Generate descriptions only for retrieved frames at query time (default: True, much faster)
-            delta_captioning: Only caption keyframes detected by attention shifts (default: True, 6x faster)
+            delta_captioning: Only caption keyframes detected by attention shifts (default: False, lazy is better)
             batch_size: Batch size for processing
             cache_dir: Directory for caching embeddings
+            internvl_model_size: InternVL model size ('1b', '4b', '8b', default: '4b')
+            internvl_use_4bit: Use 4-bit quantization for InternVL (default: True)
+            caption_prompt: Custom prompt for InternVL captioning (default: TemporalBench optimized)
         """
         self.vlm_model = vlm_model
         self.device = device
@@ -133,6 +139,9 @@ class VideoProcessor:
         self.batch_size = batch_size
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(exist_ok=True)
+        self.internvl_model_size = internvl_model_size
+        self.internvl_use_4bit = internvl_use_4bit
+        self.caption_prompt = caption_prompt
         
         # State
         self.embeddings = None
@@ -212,37 +221,25 @@ class VideoProcessor:
         Args:
             frames: List of frame arrays
             frame_indices: Optional list of indices to describe (for delta-captioning)
-            use_internvl: Use InternVL2.5-M0.5 (faster) instead of SmolVLM
+            use_internvl: Use InternVL2.5 (default: 4B with 4-bit) instead of SmolVLM
             
         Returns:
             List of descriptions
         """
-        # CRITICAL: Prompt must capture 6 attributes for TemporalBench:
-        # 1. COUNT (twice, three times)
-        # 2. DIRECTION (tightening/loosening, pushing/pulling)  
-        # 3. STATE (on/off, open/closed)
-        # 4. HAND (left/right/both)
-        # 5. ORDER (captured by frame position)
-        # 6. EVENT (what just changed - transitional moments)
-        CAPTION_PROMPT = """Describe this frame with EXACT details:
-1. COUNT: How many times? (once/twice/three times)
-2. DIRECTION: Which way? (tightening/loosening, pushing/pulling, clockwise/counterclockwise)
-3. STATE: Current state? (light ON/OFF, screw tight/loose, wire connected/disconnected)
-4. HAND: Which hand? (left/right/both)
-5. TOOL: What tool? (screwdriver/wrench/knife)
-6. EVENT: What just changed? (light turned on/off, wire pushed onto/pulled off, string pulled)
-
-Be PRECISE. Max 60 words."""
-        
         if use_internvl:
-            # Use InternVL2.5-M0.5 (2x faster than SmolVLM)
+            # Use InternVL2.5-4B with 4-bit quantization (better perception, fits in 4GB)
             if not hasattr(self, '_internvl') or self._internvl is None:
                 from sharingan.vlm.internvl_encoder import InternVLEncoder
-                print(f" Initializing InternVL2.5-M0.5 for frame descriptions...")
-                self._internvl = InternVLEncoder(device=self.device)
+                print(f" Initializing InternVL2.5-{self.internvl_model_size.upper()} for frame descriptions...")
+                self._internvl = InternVLEncoder(
+                    device=self.device,
+                    model_size=self.internvl_model_size,
+                    use_4bit=self.internvl_use_4bit,
+                    caption_prompt=self.caption_prompt
+                )
             
             captioner = self._internvl
-            max_tokens = 80  # Increased for more detail
+            max_tokens = 100  # Increased for structured output
         else:
             # Use SmolVLM (fallback)
             if not self._smolvlm:
@@ -263,13 +260,11 @@ Be PRECISE. Max 60 words."""
                     if use_internvl:
                         desc = captioner.caption(
                             frames[idx],
-                            prompt=CAPTION_PROMPT,
                             max_new_tokens=max_tokens
                         )
                     else:
                         desc = captioner.describe_frame(
                             frames[idx],
-                            prompt=CAPTION_PROMPT,
                             max_new_tokens=max_tokens
                         )
                     descriptions[idx] = desc
@@ -304,13 +299,11 @@ Be PRECISE. Max 60 words."""
                 if use_internvl:
                     desc = captioner.caption(
                         frame,
-                        prompt=CAPTION_PROMPT,
                         max_new_tokens=max_tokens
                     )
                 else:
                     desc = captioner.describe_frame(
                         frame,
-                        prompt=CAPTION_PROMPT,
                         max_new_tokens=max_tokens
                     )
                 descriptions.append(desc)
@@ -365,41 +358,17 @@ Be PRECISE. Max 60 words."""
             # Use InternVL for better descriptions
             if not hasattr(self, '_internvl') or self._internvl is None:
                 from sharingan.vlm.internvl_encoder import InternVLEncoder
-                self._internvl = InternVLEncoder(device=self.device)
+                self._internvl = InternVLEncoder(
+                    device=self.device,
+                    model_size=self.internvl_model_size,
+                    use_4bit=self.internvl_use_4bit,
+                    caption_prompt=self.caption_prompt
+                )
             
-            # CRITICAL: Prompt must capture 6 attributes for TemporalBench
-            # 1. COUNT (twice, three times)
-            # 2. DIRECTION (tightening/loosening, pushing/pulling)
-            # 3. STATE (on/off, open/closed)
-            # 4. HAND (left/right/both)
-            # 5. ORDER (first/then/finally)
-            # 6. EVENT (what just changed - transitional moments)
-            
-            # Determine position in video for ORDER context
-            timestamp = self.timestamps[frame_idx]
-            video_duration = max(self.timestamps) if self.timestamps else 0
-            
-            if timestamp < video_duration * 0.33:
-                position = "EARLY in video"
-            elif timestamp < video_duration * 0.67:
-                position = "MIDDLE of video"
-            else:
-                position = "LATE in video"
-            
-            prompt = f"""This frame is {position}. Describe EXACTLY:
-1. COUNT: How many times? (once/twice/three times)
-2. DIRECTION: Which way? (tightening/loosening, pushing/pulling, clockwise/counterclockwise)
-3. STATE: Current state? (light ON/OFF, screw tight/loose, wire connected/disconnected)
-4. HAND: Which hand? (left/right/both)
-5. TOOL: What tool? (screwdriver/wrench/knife)
-6. EVENT: What just changed? (light turned on/off, wire pushed onto/pulled off, string pulled)
-
-Be PRECISE. Max 60 words."""
-            
+            # Use default prompt (already configured in InternVLEncoder)
             description = self._internvl.caption(
                 frame,
-                prompt=prompt,
-                max_new_tokens=80
+                max_new_tokens=100
             )
             
             return description
@@ -627,20 +596,75 @@ Be PRECISE. Max 60 words."""
                 'processed_frames': len(self.frame_indices)
             }
         
-        # Temporal reasoning
+        # Temporal reasoning - FULL CONFIGURATION (ALL 7 MODULES ENABLED)
         if self.enable_temporal:
-            print(f" Applying temporal reasoning...")
+            print(f" 🚀 Applying FULL temporal reasoning stack (ALL 7 MODULES)...")
             # Get embedding dimension from the actual embeddings
             embed_dim = self.embeddings.shape[1] if len(self.embeddings.shape) > 1 else self.embeddings[0].shape[0]
+            
+            from sharingan.temporal import (
+                MultiScaleTASStream,
+                TemporalDilatedAttention,
+                MotionAwareAdaptivePooling
+            )
+            from sharingan.temporal.time_encoding import ContinuousTimeEncoder
+            
+            # Build full temporal engine with ALL 7 modules
+            # Note: MultiScaleTASStream includes TAS (3 scales) + GRU internally
             engine = TemporalEngine([
+                # Multi-scale temporal attention (includes TAS + GRU)
+                # This covers modules: TAS, Multi-Scale TAS, and GRU
+                MultiScaleTASStream(
+                    embed_dim=embed_dim,
+                    window_size=64
+                ),
+                
+                # Cross-frame gating (module #3)
                 CrossFrameGatingNetwork(feature_dim=embed_dim),
+                
+                # Temporal dilated attention for long-range dependencies (module #4)
+                TemporalDilatedAttention(
+                    feature_dim=embed_dim,
+                    num_heads=8,
+                    max_dilation=16
+                ),
+                
+                # Motion-aware adaptive pooling (module #6)
+                MotionAwareAdaptivePooling(
+                    feature_dim=embed_dim,
+                    motion_threshold=0.1
+                ),
+                
+                # Temporal memory tokens (module #5)
                 TemporalMemoryTokens(num_tokens=8, token_dim=embed_dim)
             ])
+            
+            # Add time encoding to embeddings (module #7)
+            time_encoder = ContinuousTimeEncoder(embed_dim=embed_dim)
+            timestamps_tensor = torch.from_numpy(np.array(self.timestamps)).float()
+            time_encodings = time_encoder(timestamps_tensor)
+            
             embeddings_tensor = torch.from_numpy(np.stack(self.embeddings)).float()
+            
+            # Add time encodings to embeddings
+            embeddings_with_time = embeddings_tensor + time_encodings
+            
             with torch.no_grad():
-                processed = engine.process_sequence(embeddings_tensor)
+                processed = engine.process_sequence(embeddings_with_time)
             self.embeddings = processed.numpy()
-            print(f" Temporal reasoning applied (dim={embed_dim})")
+            
+            # Print module counts
+            counts = engine.get_module_count()
+            print(f" ✓ Temporal reasoning applied: ALL 7 MODULES ENABLED")
+            print(f"   1. TAS (Single-scale) - included in MultiScaleTASStream")
+            print(f"   2. Multi-Scale TAS - {counts['TAS']} module(s)")
+            print(f"   3. Cross-Frame Gating - {counts['Gating']} module(s)")
+            print(f"   4. Temporal Dilated Attention - {counts['TDA']} module(s)")
+            print(f"   5. Memory Tokens - {counts['Memory']} module(s)")
+            print(f"   6. Motion Pooling - {counts['Pooling']} module(s)")
+            print(f"   7. Continuous Time Encoding - ENABLED")
+            print(f"   - GRU - included in MultiScaleTASStream")
+            print(f"   - Embedding dim: {embed_dim}")
         
         # Event detection
         print(f" Detecting events...")
@@ -771,7 +795,7 @@ Be PRECISE. Max 60 words."""
             )
             
             if magnet_detected:
-                print(f"⚠️  Magnet cluster detected and suppressed")
+                print(f"WARNING: Magnet cluster detected and suppressed")
         else:
             # Standard top-k without diversity enforcement
             top_k = min(top_k, len(similarities))
@@ -800,25 +824,25 @@ Be PRECISE. Max 60 words."""
             
             results.append(result)
         
-        # CRITICAL: Unload InternVL after lazy descriptions to free VRAM for LLM
-        # UPDATE: Only unload if we're running low on VRAM (not always needed)
+        # CRITICAL: ALWAYS unload InternVL after lazy descriptions to free VRAM for Qwen
+        # InternVL sits at ~3.0GB, leaving only ~1GB for Qwen (needs ~900MB + overhead)
+        # Conditional unload was unreliable - make it deterministic
         if self.enable_descriptions and self.lazy_descriptions and hasattr(self, '_internvl') and self._internvl is not None:
-            # Check if we need to free VRAM
             import torch
             if torch.cuda.is_available():
-                # Get current VRAM usage
-                allocated = torch.cuda.memory_allocated() / 1024**3  # GB
+                # Get current VRAM usage for logging
                 reserved = torch.cuda.memory_reserved() / 1024**3  # GB
-                
-                # Only unload if we're using >3GB (leave room for Qwen)
-                if reserved > 3.0:
-                    print(f" ⚠️  High VRAM usage ({reserved:.1f}GB), unloading InternVL...")
-                    del self._internvl
-                    self._internvl = None
-                    torch.cuda.empty_cache()
-                    print(f" ✓ VRAM freed for LLM")
-                else:
-                    print(f" ✓ VRAM OK ({reserved:.1f}GB), keeping InternVL loaded")
+                print(f" 🔄 Unloading InternVL to free VRAM for Qwen (current: {reserved:.1f}GB)...")
+            else:
+                print(f" 🔄 Unloading InternVL...")
+            
+            del self._internvl
+            self._internvl = None
+            
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            
+            print(f" ✓ VRAM freed for LLM")
         
         print(f" Found {len(results)} results")
         return results
